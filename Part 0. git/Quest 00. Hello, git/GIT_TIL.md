@@ -178,8 +178,9 @@ git clone https://github.com/dowookims/JS.git practiceRepo
 * `git commit -v` diff 메시지를 포함하여 커밋을 작성한다
 * `git commit -m 메시지` commit 메시지를 인라인으로 작성한다.
 * `git commit -a`는 Tracked 상태의 파일을 자동으로 Staging Area에 넣는다.
-* `git commit --ammend` 는 이전에 했던 커밋을 수정할 때 사용한다. 이 명령은 `Staging area`를 사용하여 커밋한다.
+* `git commit --amend` 는 이전에 했던 커밋을 수정할 때 사용한다. 이 명령은 `Staging area`를 사용하여 커밋한다.
   * Staging Area에 수정된 사항이 없으면 commit message만 수정한다.
+  * amend 는 기전에 있던 커밋을 덮어쓴다.
 
 #### 5) git push
 
