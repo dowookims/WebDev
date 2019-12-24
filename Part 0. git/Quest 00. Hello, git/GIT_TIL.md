@@ -158,6 +158,7 @@ git clone https://github.com/dowookims/JS.git
 ```git
 git clone https://github.com/dowookims/JS.git practiceRepo
 ```
+
 라고 할 경우 `practiceRepo`라는 이름으로 위 url에 있는 repository가 복사된다.
 
 #### 3) git add
@@ -166,13 +167,30 @@ git clone https://github.com/dowookims/JS.git practiceRepo
 * 또한, Tracked 지만, 아직 `staged`되지 않은 경우에도 이 명령어를 사용해야 한다.
 
 #### 4) git commit
+
 현재 컨텐츠의 인덱스와, 변화한 부분에 대한 로그가 담긴 커밋을 새로 만든다. 새 커밋은 `HEAD`의 자식이 된다.
 
 커밋할 컨텐츠는 다음과 같은 여러 가지 방법으로 지정할 수 있다.
 
 1. 커밋 command를 사용하기 전에 `git add`를 사용하여 인덱스에 점진적으로 "추가" 변경사항 적용
 2. commit command 입력 전에 `git rm`을 사용하여 파일을 워킹 트리 또는 인덱스에서 지웠을 경우
-3. 
+
+#### 5) git push
+
+
+
+#### 6) git pull
+
+
+
+#### 7) git branch
+
+
+
+#### 8) git stash
+
+
+
 ***
 참고 자료
 
