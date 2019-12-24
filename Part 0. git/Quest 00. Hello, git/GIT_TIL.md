@@ -165,6 +165,14 @@ git clone https://github.com/dowookims/JS.git practiceRepo
 * `git add 대상`으로 파일을 추적할 수 있게 한다. 즉, untracked file을 tracked로.
 * 또한, Tracked 지만, 아직 `staged`되지 않은 경우에도 이 명령어를 사용해야 한다.
 
+#### 4) git commit
+현재 컨텐츠의 인덱스와, 변화한 부분에 대한 로그가 담긴 커밋을 새로 만든다. 새 커밋은 `HEAD`의 자식이 된다.
+
+커밋할 컨텐츠는 다음과 같은 여러 가지 방법으로 지정할 수 있다.
+
+1. 커밋 command를 사용하기 전에 `git add`를 사용하여 인덱스에 점진적으로 "추가" 변경사항 적용
+2. commit command 입력 전에 `git rm`을 사용하여 파일을 워킹 트리 또는 인덱스에서 지웠을 경우
+3. 
 ***
 참고 자료
 
