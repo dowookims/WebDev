@@ -176,7 +176,8 @@ git clone https://github.com/dowookims/JS.git practiceRepo
 2. commit command 입력 전에 `git rm`을 사용하여 파일을 워킹 트리 또는 인덱스에서 지웠을 경우
 
 * `git commit -v` diff 메시지를 포함하여 커밋을 작성한다
-* `git commit -m 메시지` commit 메시지를 git 명령어를 통해 작성한다
+* `git commit -m 메시지` commit 메시지를 인라인으로 작성한다.
+* `git commit -a`는 Tracked 상태의 파일을 자동으로 Staging Area에 넣는다.
 
 #### 5) git push
 
