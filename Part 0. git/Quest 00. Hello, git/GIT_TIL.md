@@ -128,9 +128,42 @@ Subversion과 같은 CVCS 은 큰틀에서 관리하는 정보들이 대부분 �
 #### 2) Git의 세 가지 상태
 
 ![Git status](https://git-scm.com/book/en/v2/images/areas.png)
+
+* Working Directory : 프로젝트의 특정 버전을 Checkout한 것.
+  * working directory의 모든 파일은 Tracked(관리대상임) 과 Untracked(관리 대상이 아님)으로 나눈다.
+  * Tracked 파일의 경우 이미 snapshot 에 포함된 파일을 말한다
+    * Unmodified : 수정하지 않음
+    * Modified : 수정함
+    * Staged : 커밋하면 파일에 저장 됨
+* Staging Area : Git 디렉터리에 있다. 단순한 파일이며, 곧 커밋할 파일에 대한 정보를 저장한다.
 * commited : 데이터가 로컬 DB에 저장 됨
 * Modified : 수정 파일을 아직 로컬 데이터베이스에 커밋하지 않음
 * Staged : 현재 수정한 파일을 곧 커밋할 것이라 표시한 상태
+
+### 3) Git 의 명령어
+
+#### 1) git init
+
+`git init`은 프로젝트 디렉토리에 `.git` 이라는 하위 디렉토리를 만든다. 이 `.git`안에는 저장소에 필요한 Skeleton File들이 들어 있다.
+
+#### 2) git clone
+
+`git clone` 은 다른 프로젝트에 참여하거나, Git repository를 복사할 때 사용한다.
+
+```git
+git clone https://github.com/dowookims/JS.git
+```
+를 하면 `JS`라는 이름으로, 현재 위치에 디렉토리가 생성된다. 이는
+
+```git
+git clone https://github.com/dowookims/JS.git practiceRepo
+```
+라고 할 경우 `practiceRepo`라는 이름으로 위 url에 있는 repository가 복사된다.
+
+#### 3) git add
+
+* `git add 대상`으로 파일을 추적할 수 있게 한다. 즉, untracked file을 tracked로.
+* 또한, Tracked 지만, 아직 `staged`되지 않은 경우에도 이 명령어를 사용해야 한다.
 
 ***
 참고 자료
