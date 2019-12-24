@@ -190,6 +190,11 @@ git clone https://github.com/dowookims/JS.git practiceRepo
 #### 8) git stash
 
 
+#### 9) git diff
+
+Staged와 Unstaged 상태의 변경 내용을 보기 위해 사용한다. 단순히 파일이 변경되었음을 확인하는게 아니라, 어떤 내용이 변경되었는지 확인 할 때 사용한다.
+* `git diff` 수정했지만 아직 staged 상태가 아닌 파일을 비교 해 볼 수 있다.
+* `git diff --cached` or `git diff --staged` 워킹 디렉터리와 Staging area를 비교한다
 
 ***
 참고 자료
