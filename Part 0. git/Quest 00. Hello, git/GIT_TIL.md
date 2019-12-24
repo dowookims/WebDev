@@ -188,11 +188,9 @@ git clone https://github.com/dowookims/JS.git practiceRepo
 
 #### 6) git pull
 
-
+git pull은 원격 저장소(remote) 브랜치에서 데이터를 가져올 뿐만 아니라 자동으로 로컬 브랜치와 merge 시킬 수 있다. `git fetch`는 원격 저장소에서 데이터를 가져오긴 하지만, 자동 merge가 안되기 때문에 사용자가 수동으로 merge를 진행해야 한다.
 
 #### 7) git branch
-
-
 
 #### 8) git stash
 
@@ -200,12 +198,14 @@ git clone https://github.com/dowookims/JS.git practiceRepo
 #### 9) git diff
 
 Staged와 Unstaged 상태의 변경 내용을 보기 위해 사용한다. 단순히 파일이 변경되었음을 확인하는게 아니라, 어떤 내용이 변경되었는지 확인 할 때 사용한다.
+
 * `git diff` 수정했지만 아직 staged 상태가 아닌 파일을 비교 해 볼 수 있다.
 * `git diff --cached` or `git diff --staged` 워킹 디렉터리와 Staging area를 비교한다
 
 #### 10) git log
 
 저장소의 히스토리를 볼 때 사용한다. 특별한 args 없이 사용하면 커밋 히스토리를 시간순으로 보여준다.
+
 * `git log -p` 각 커밋의 diff 결과를 보여준다.
 * `git log --stat` 각 커밋의 통계 정보를 조회할 수 있다. 어떤 파일이 수정됐는지, 얼마나 많은 파일이 변경됐는지 등.
 * `git log --graph` : 커밋이력을 그래프화 하여 볼 수 있다.
@@ -220,6 +220,14 @@ Staged와 Unstaged 상태의 변경 내용을 보기 위해 사용한다. 단순
 git log --pretty=oneline
 git log --pretty=format:"%h - %an, %ar : %s"
 ```
+
+#### 11) git checkout
+
+* Staging Area에 올라가 있고, modefied된 파일을 이전으로 돌릴때도 사용 가능하다.
+
+#### 12) git reset
+
+* `git reset HEAD 파일명` 으로 Stagingg된 파일을 Unstaged로 바꿀 수 있다.
 
 ***
 참고 자료
