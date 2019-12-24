@@ -178,6 +178,8 @@ git clone https://github.com/dowookims/JS.git practiceRepo
 * `git commit -v` diff 메시지를 포함하여 커밋을 작성한다
 * `git commit -m 메시지` commit 메시지를 인라인으로 작성한다.
 * `git commit -a`는 Tracked 상태의 파일을 자동으로 Staging Area에 넣는다.
+* `git commit --ammend` 는 이전에 했던 커밋을 수정할 때 사용한다. 이 명령은 `Staging area`를 사용하여 커밋한다.
+  * Staging Area에 수정된 사항이 없으면 commit message만 수정한다.
 
 #### 5) git push
 
@@ -199,6 +201,24 @@ git clone https://github.com/dowookims/JS.git practiceRepo
 Staged와 Unstaged 상태의 변경 내용을 보기 위해 사용한다. 단순히 파일이 변경되었음을 확인하는게 아니라, 어떤 내용이 변경되었는지 확인 할 때 사용한다.
 * `git diff` 수정했지만 아직 staged 상태가 아닌 파일을 비교 해 볼 수 있다.
 * `git diff --cached` or `git diff --staged` 워킹 디렉터리와 Staging area를 비교한다
+
+#### 10) git log
+
+저장소의 히스토리를 볼 때 사용한다. 특별한 args 없이 사용하면 커밋 히스토리를 시간순으로 보여준다.
+* `git log -p` 각 커밋의 diff 결과를 보여준다.
+* `git log --stat` 각 커밋의 통계 정보를 조회할 수 있다. 어떤 파일이 수정됐는지, 얼마나 많은 파일이 변경됐는지 등.
+* `git log --graph` : 커밋이력을 그래프화 하여 볼 수 있다.
+* `git log pretty` log의 내용을 보여줄 때 기본 형식 이외에 다른 옵션을 선택 할 수 있게 한다.
+  * `oneline` : commit message
+  * `short` : `oneline` + authtor
+  * `full` : `short` + Commit 이력을 남긴 사람
+  * `fuller` : `full` + Author date, Commit Date
+  * `format` : 사용자가 지정해서 로그 형식을 만들 수 있다
+
+```bash
+git log --pretty=oneline
+git log --pretty=format:"%h - %an, %ar : %s"
+```
 
 ***
 참고 자료
