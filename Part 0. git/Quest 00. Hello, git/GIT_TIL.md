@@ -194,11 +194,34 @@ git pull은 원격 저장소(remote) 브랜치에서 데이터를 가져올 뿐�
 
 #### 7) git branch
 
-git 은 commit 하면
+git 은 commit 하면 
 
 * Staging Area에 있는 데이터의 스냅샷에 대한 포인터
 * 저자나 커밋 메시지 같은 메타데이터
 * 이전 커밋에 대한 포인터 등을 포함하는 커밋 개체
+
+등을 저장한다.
+
+예를 들어, 파일이 3개 있는 디렉토리가 하나 있고, 이 파일을 Staging Area에 저장하고 커밋하는 예제에서, 파일을 Stage 하면 Git 저장소에 파일을 저장하고(Blob), Staging Area에 해당 파일에 대한 체크섬을 저장한다.
+```bash
+git add README test.rb LICENSE
+git commit -m 'The initial commit of my project'
+```
+
+![commit](https://git-scm.com/book/en/v2/images/commit-and-tree.png)
+
+그림에서 보듯, `git commit`으로 커밋 시 root directory와 각 하위 directory의 트리 개체를 체크섬과 함께 repo에 저장한다. 그 다음 커밋 개체를 만들고, metadata와 root directory tree obj를 가리키는 포인터 정보를 commit 객체에 넣어 저장한다.
+
+![commit2](https://git-scm.com/book/en/v2/images/commits-and-parents.png)
+다시 파일을 수정하고 커밋하면 이전 커밋이 무엇인지도 저장한다.
+
+Git의 브랜치는 커밋 사이를 가볍게 이동할 수 있는 어떤 포인터 같은 것으로 동작하게 된다.
+사용자가 브랜치를 이동하게 되면, 현재 작업 중인 브랜치를 `HEAD`로 표현한다. 또한, `git checkout 브랜치명`이라는 명령어를 통해 HEAD를 이동 시키며 작업 할 수 있다.
+
+브랜치 작업을 많이 하다보면, 수 많은 브랜치들을 왔다갔다 하며 작업을 하게 되는데, 이를 확인하는 방법으로 `git log` 를 활용하여 확인 할 수 있다.
+
+* `git branch`는 브랜치 목록을 보여준다.
+* `git branch -v` 는 브랜치와 함께 마지막 커밋 메시지를 보여준다.
 
 #### 8) git stash
 
