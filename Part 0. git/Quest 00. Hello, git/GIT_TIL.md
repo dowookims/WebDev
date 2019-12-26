@@ -286,3 +286,5 @@ Learn git
 [Git](https://git-scm.com/book)
 
 [Naver D2](https://d2.naver.com/helloworld/1011)
+
+[Heee's Development Blog](https://gmlwjd9405.github.io/2018/05/18/git-stash.html)
