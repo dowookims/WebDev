@@ -186,11 +186,13 @@ git clone https://github.com/dowookims/JS.git practiceRepo
 
 로컬 저장소를 사용하여, 작업한 파일들을 원격 저장소에 업데이트 하는 명령.
 
-`git push 원격 저장소 이름 브런치 명`
+`git push 원격 저장소 이름 목적지`
 
 #### 6) git pull
 
 git pull은 원격 저장소(remote) 브랜치에서 데이터를 가져올 뿐만 아니라 자동으로 로컬 브랜치와 merge 시킬 수 있다. `git fetch`는 원격 저장소에서 데이터를 가져오긴 하지만, 자동 merge가 안되기 때문에 사용자가 수동으로 merge를 진행해야 한다.
+
+`git pull 원격 저장소 이름 목적지`
 
 #### 7) git branch
 
@@ -224,6 +226,9 @@ Git의 브랜치는 커밋 사이를 가볍게 이동할 수 있는 어떤 포�
 * `git branch -v` 는 브랜치와 함께 마지막 커밋 메시지를 보여준다.
 
 #### 8) git stash
+
+아직 마무리하지 않은 작업을 스택에 잠시 저장 할 수 있도록 하는 명령어  
+아직 완료하지 않은 일을 commit 하지 않고 나중에 다시 꺼내어 사용 할 수 있게한다.
 
 #### 9) git diff
 
@@ -260,7 +265,11 @@ git log --pretty=format:"%h - %an, %ar : %s"
 * `git reset HEAD 파일명` 으로 Stagingg된 파일을 Unstaged로 바꿀 수 있다.
 
 ***
-참고 자료
+Learn git
+![learngitbranch](Screenshot&#32;at&#32;Dec&#32;26&#32;15-01-16.png)
+
+***
+참고자료
 
 [Git](https://git-scm.com/book)
 
