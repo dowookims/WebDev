@@ -230,6 +230,18 @@ Git의 브랜치는 커밋 사이를 가볍게 이동할 수 있는 어떤 포�
 아직 마무리하지 않은 작업을 스택에 잠시 저장 할 수 있도록 하는 명령어  
 아직 완료하지 않은 일을 commit 하지 않고 나중에 다시 꺼내어 사용 할 수 있게한다.
 
+* `git stash` 를 사용하면 워킹 디렉토리에서 수정한 파일들만 저장.
+* stash는 아래 파일들을 보관하는 장소이다.
+  * Modified이면서 Tracked 상태인 파일
+  * Staging Area에 있는 파일(Staged 상태의 파일)
+
+* `git stash`, `git stash save` 로 스택에 새로운 stash 를 만든다.
+* `git stash list`: 저장한 stash 목록을 확인 할 수 있다.
+* `git stash apply` : 가장 최근의 stash를 가져와 사용한다.
+* `git stash apply [stash 이름]`으로 stash 이름에 해당하는 stash를 적용한다.
+* `git stash drop` : 가장 최근의 stash를 제거한다.
+* `git stash drop [stash 이름]` 으로 stash 이름에 해당하는 stash를 제거한다.
+
 #### 9) git diff
 
 Staged와 Unstaged 상태의 변경 내용을 보기 위해 사용한다. 단순히 파일이 변경되었음을 확인하는게 아니라, 어떤 내용이 변경되었는지 확인 할 때 사용한다.

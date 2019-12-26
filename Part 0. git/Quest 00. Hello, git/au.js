@@ -4,6 +4,5 @@ const obj = {
   c : [1,2,3]
 }
 
-console.log("AQ>JS")
-console.log("AQ>JS")
+console.log(obj)
 console.log("AQ>JS")
