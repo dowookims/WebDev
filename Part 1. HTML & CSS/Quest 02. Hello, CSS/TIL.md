@@ -3,18 +3,41 @@
 ## Topics
 
 - CSS 기초 문법
+
 - CSS를 HTML에 적용하는 세 가지 방법
   - Inline Style
   - `<style>`
   - `<link rel="stylesheet" href="...">`
+
 - 레이아웃을 위해 몇 가지 중요한 속성들
   - `position`
+
   - `left`/`top`
+
   - `display`
+
   - `width`/`height`
+
   - `display: flex;`
+
   - `display: grid;`
+
+  - Float
+
+    - float 속성을 사용해 박스를 왼쪽(left) 또는 오른쪽(right)으로 "부유"시키는 레이아웃 기법
+
+    - 이미지에 텍스트를 둘러싸게 만드려는 목표로 나온 기법
+
+    - 플로팅된 요소는 그 요소의 종류에 상관없이 블럭 박스가 된다.
+
+    - 인라인 요소를 플로팅시키는 인라인 블럭 박스처럼 렌더링된다.
+
+      출처:  [Web Club](https://webclub.tistory.com/606)
+
+      
+
   - CSS Box Model
+
     - Box Model은 position, margin, border, padding, content 순으로 구성된 모델
     - Box Size(width, height) = content(width, height) + (border + padding) * 2
     - 사용자가 지정한 width 값보다 초과하는 경우가 있기 때문에, `box-sizing : border-box` 를 활용하여 padding 과 border 값을 포함하여 계산하는 방법이 있음.
@@ -24,12 +47,12 @@
     - Inline
       - 텍스트 주입.
       - width 값은 컨텐츠 영역만큼 자동으로 잡히며, line break를 하지 않음
-      - margin은 위아래에 적용되지 않음
-      - padding의 경우 위아래는 시각적으로 추각되나 공간을 차지 하지 않음
+      - margin, padding은 위아래에 적용되지 않음
     - Inline-block
       - inline + block
       - line break 되지 않음
       - block 처럼 width와 height 지정 가능하며, 지정하지 않을 시 inline 처럼 컨텐츠만큼 영역이 잡힌다.
+
 - 브라우저별 Developer tools
 
 ## Checklist
@@ -75,6 +98,12 @@
 ```
 
 * 가로나 세로로 여러 개의 박스가 공간을 채우되, 그 중 한 개의 박스만 가변적인 크기를 가지고 나머지 박스는 고정된 크기를 갖게 하려면 어떻게 해야 할까요?
+
+  ```
+flex : 개별 item에 flex-grow, flex-flow-shrink 등을 활용한다
+  ```
+
+  
 
 * `float` 속성은 왜 좋지 않을까요?
 
