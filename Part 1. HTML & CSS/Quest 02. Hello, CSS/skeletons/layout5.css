@@ -10,6 +10,8 @@ body {
 
 .contents {
 	/* TODO: 이 곳을 채우세요! */
+	display: grid;
+	grid-template-columns: 200px auto 300px;
 }
 
 .main {
@@ -35,4 +37,5 @@ body {
 footer {
 	background-color: yellow;
 	/* TODO: 이 곳을 채우세요! */
+	height: 50px;
 }

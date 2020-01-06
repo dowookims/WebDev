@@ -3,6 +3,7 @@ body {
 	left: 0;
 	top: 0;
 	width: 100%;
+	height: 100%;
 	margin: 0;
 	padding: 0;
 }
@@ -18,7 +19,6 @@ body {
 	/* TODO: 이 곳을 채우세요! */
 	display: flex;
 	flex-direction: column;
-	align-items: flex-start;
 }
 
 .main header {
@@ -26,7 +26,6 @@ body {
 	/* TODO: 이 곳을 채우세요! */
 	height: 30px;
 	width: 100%;
-	white-space: wrap;
 }
 
 .left {
@@ -46,5 +45,6 @@ body {
 footer {
 	background-color: yellow;
 	/* TODO: 이 곳을 채우세요! */
+	width: 100%;
 	height: 50px;
 }
