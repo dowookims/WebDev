@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="test.css">
+  <title>Document</title>
+  <style>
+    #auser {
+      background-color: pink;
+    }
+    div {
+      background-color: tomato;
+    }
+    #auser {
+      background-color: tomato;
+    }
+    #auser div {
+      height: 300px;
+      background-color: yellow;
+    }
+
+    #auser div:first-child {
+      box-sizing: border-box;
+      background-color: yellowgreen;
+    }
+
+    .s1 {
+      padding: 10px;
+      margin: 20px;
+    }
+    
+  </style>
+</head>
+<body>
+  <div id="auser">
+    <div class="box1">
+      <p>
+        <span class="s1">수박</span>
+        <span class="s2">참외</span>
+        <span class="s3">메론</span>
+        <span class="s4">망고스틴</span>
+      </p>
+    </div>
+    <div class="box2"></div>
+  </div>
+</body>
+</html>
