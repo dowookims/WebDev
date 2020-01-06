@@ -4,46 +4,59 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="test.css">
+
   <title>Document</title>
   <style>
-    #auser {
-      background-color: pink;
+    .box {
+      display: inline-block;
+      background: pink;
+      height: 80px;
+      width: 80px;
+      word-wrap: break-word;
+      text-overflow: ellipsis;
+      hyphens: auto;
     }
-    div {
-      background-color: tomato;
+    
+    .box:empty {
+      background: lime;
     }
-    #auser {
-      background-color: tomato;
-    }
-    #auser div {
-      height: 300px;
+
+    .tb {
+      width: 100px;
       background-color: yellow;
+      height: 100px;
     }
-
-    #auser div:first-child {
-      box-sizing: border-box;
-      background-color: yellowgreen;
+    .pp {
+      hyphens: auto;
+      -webkit-hyphens: auto;
+      -moz-hyphens: auto;
+      -ms-hyphens: auto;
+      word-wrap: break-word;
     }
-
-    .s1 {
-      padding: 10px;
-      margin: 20px;
+    .pp::before {
+      content: "\201c";
+      font-size: 30px;
+      font-weight: 700;
+    }
+    .pp::after {
+      content: "\201d";
+      font-size: 30px;
+      font-weight: 700;
     }
     
   </style>
 </head>
 <body>
-  <div id="auser">
-    <div class="box1">
-      <p>
-        <span class="s1">수박</span>
-        <span class="s2">참외</span>
-        <span class="s3">메론</span>
-        <span class="s4">망고스틴</span>
-      </p>
-    </div>
-    <div class="box2"></div>
+  <div class="box"><!-- I will be lime. --></div>
+  <div class="box">I will be the powerful nontheless word</div>
+  <div class="box">
+	<!-- I will be pink in older browsers because of the whitespace around this comment. -->
+  </div>
+  <div class="box">
+    <p><!-- I will be pink in all browsers because of the non-collapsible whitespace and elements around this comment. --></p>
+  </div>
+  <div class="tb">
+    <p class="pp">Pneumonoultramicroscopicsilicovolcanoconiosis</p>
   </div>
 </body>
 </html>
