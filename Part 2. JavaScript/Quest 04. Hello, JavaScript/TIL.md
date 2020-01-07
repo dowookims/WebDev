@@ -6,7 +6,10 @@
 
 ### 1. 기본 타입
 
-그 자체가 하나의 값을 가지는 데이터 자료형.
+그 자체가 하나의 값을 가지는 데이터 자료형. 자바스크립트는 기본 타입에도 타입별로 호출 가능한 표준 메서드를 정의하고 있다. 이들은 기본 타입의 값들에 대해 객체 형태로 메서드 호출시, 이들 기본 값은 메서드 처리순간에 객체로 변환된 다음 각 타입별 표준 메서드를 호출하게 되며, 호출이 끝나면 다시 기본값으로 돌아가게 된다.
+
+```js
+```
 
 #### 1) Number
 
@@ -158,5 +161,30 @@ console.log(obj.a) // 4
     `alt + cmd + i `
 * let를 이용하여 변수를 선언하는 것과 const를 이용하여 변수를 선언하는 것은 어떻게 다를까요?
   * var를 이용하여 선언하는 방법은 어떻게 다를까요?
+
+  ```
+  var는 function scope 이고, const와 let은 block-scoped.
+  const는 상수로서 값을 재할당 할 수 없지만, let은 재할당이 가능하다.
+  또한, let과 const 는 변수 재선언이 불가능하다.
+  ```
+
+  * 특이한 var의 세계
+  ```js
+  for(var j=0; j<10; j++) {
+    console.log('j', j)
+  }
+  console.log("j = ", j) // j = 10
+
+  (function() {
+  // var 변수는 여기까지 hoisting이 된다.
+  for(var i=0; i<10; i++) {
+    console.log('i', i)
+  }
+  })()
+  console.log('after loop i is', i) // ReferenceError: i is not defined
+  ```
+
+  var, let, const 모두 hoisting이 존재하나, 각 키워드들은 자신들이 효력을 발휘 할 수 있는 범위 내에서 hoisting이 발생한다.
+
 * 자바스크립트의 익명 함수는 무엇인가요?
   * 자바스크립트의 Arrow function은 무엇일까요?
