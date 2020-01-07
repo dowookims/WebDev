@@ -19,10 +19,14 @@ const getStar = (n) => {
   }
 }
 
-let d = getNumber()
+// let d = getNumber()
 
 if (typeof(d) === "number"){
-  getStar(d)
+  if (d >= 1){
+    getStar(d)
+  } else {
+    console.log('1이상의 수를 입력해 주세요.')
+  }
 } else {
   console.log("숫자만 입력하세요")
 }
