@@ -14,6 +14,8 @@ JS는 number 타입의 숫자형 단 하나만 존재한다. JS에서 모든 숫
 
 또한, +infinite, -infinite, NaN도 존재한다.
 
+* NaN은 수치 연산을 해서 정상적인 값을 얻지 못할 때 출력되는 값이다.
+
 #### 2) String
 
 텍스트 데이터를 나타내는데 사용하며, 16비트 부호없는 정수 값 요소들의 집합이다. String의 각 요소는 String의 위치를 차지한다(const a = "number" => a[0] = n)
@@ -44,7 +46,7 @@ true 와 false 값 만을 가진다.
 
 ### 2. 참조 타입
 
-자바스크립트에서 기본 타입을 제외한 모든 값은 객체이다.
+자바스크립트에서 기본 타입을 제외한 모든 값은 객체이다. 이는, 객체의 모든 연산이 실제 값이 아닌 참조값으로 처리 됨을 의미한다.
 
 #### Object
 
@@ -66,17 +68,75 @@ true 와 false 값 만을 가진다.
     const foo = {
       name: 'foo',
       age: 30,
-      gender: 'male
+      gender: 'male'
     };
     console.log(typeof(foo)); // object
     console.log(foo); // { name: 'foo', age: 30, gender: 'male' }
     ```
 
-##### [1] Array
+* 객체에서 프로퍼티를 읽고, 쓰기 위해 객체 명 이후 object.propertyName 또는 object[propertyName]으로 접근 할 수 있다.
+  * 대괄호([])로 접근시 대괄호 안에서 접근하려는 프로퍼티 명은 문자열 타입으로 되어 있어야 한다. 만약 변수가 들어가게 되는 경우, 변수의 값은 문자열로, 그 프로퍼티 명을 나타내야 한다.
 
-##### [2] function
+* 자바스크립트 객체의 프로퍼티에 값을 할당 할 때, 프로퍼티가 이미 있는 경우 해당 프로퍼티의 값이 갱신되지만, 객체의 해당 프로퍼티에 값이 없을 경우 새로운 프로퍼티가 동적으로 생성된 후 값이 할당된다.
+  
+* 접근하려는 프로퍼티가 표현식 또는 예약어 일 경우 반드시 대괄호로 접근해야 한다.
 
-##### [3] regex
+###### [-1] 순회
+
+Object 타입은 `for key in obj`로 순회가 가능하다
+
+```js
+const obj = {
+  a: 1,
+  b: 2,
+  c :3
+}
+
+for ( item in obj ) {
+  console.log(obj[item])
+  /*
+    1
+    2
+    3
+  */ 
+}
+```
+
+##### [-2] 객체의 프로퍼티 삭제
+
+delete(Object.key)로 삭제가 가능하다.
+
+##### [-3] Call By Value , Call By Reference
+
+* Call By Value의 경우 함수를 호출할 때, 인자로 기본 타입의 값을 넘길 경우, 매개변수로 복사된 값이 전달된다. 그렇기에 함수 내부에 매개변수를 이용해 값을 변경해도 실제로 호출된 변수의 값이 변경되지는 않는다.
+
+```js
+let n = 30;
+function changeNum(n){
+  n = 40;
+  console.log(n)
+}
+chnageNum(n) // 40
+console.log(n) // 30
+```
+
+* Call By Reference의 경우 인자로 참조 타입인 객체를 전달하고, 이 때 객체의 프로퍼티값이 함수의 매개변수로 복사되지 않고 인자로 넘긴 객체의 참조값이 그대로 함수 내부로 전달된다. 그렇기에 함수 내부에서 참조값을 이용해 인자로 넘긴 실체 객체의 값을 변경 가능하다.
+
+```js
+const obj = {
+  a: 1,
+  b: 2
+}
+
+function chnageNum(obj){
+  obj.a = 4;
+  console.log(obj.a)
+}
+chnageNum(obj) // 4
+console.log(obj.a) // 4
+```
+
+##### [-3] Prototype
 
 ## CheckList
 
