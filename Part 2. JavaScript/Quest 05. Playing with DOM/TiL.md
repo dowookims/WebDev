@@ -102,3 +102,22 @@ foo = function(){
 
 x = 1;
 ```
+
+#### 클로저
+
+이미 생명 주기가 끝난 외부 함수의 변수를 참조하는 함수를 클로저라 한다.
+
+클로저는 은닉화 및 캡슐화로 활용 할 수 있다. 또는 전역 namespace 사용을 방지하기 위해 활용되기도 한다.
+
+```js
+function outerFunc(){
+  var x = 10;
+  var innerFunc = function(){ console.log(x); }
+  return innerFunc;
+}
+
+var inner = outerFunc();
+inner(); // 10
+```
+
+클로저의 경우 성능 문제를 야기 시킬 가능성이 있기에, 충분한 고려와 사이드 이펙트를 고려하여 함수를 작성하여야 한다.
