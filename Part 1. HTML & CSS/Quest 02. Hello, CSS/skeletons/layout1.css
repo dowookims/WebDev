@@ -24,4 +24,7 @@ aside {
 	/* TODO: 이 곳을 채우세요! */
 	display: inline-block;
 	height: 100%;
+	position: absolute;
+	left: 200px;
+	right: 0;
 }

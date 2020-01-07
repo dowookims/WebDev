@@ -10,7 +10,6 @@ body {
 
 .contents {
 	/* TODO: 이 곳을 채우세요! */
-	display: inline-block;
 	position: relative;
 	height: 100%;
 }
@@ -18,7 +17,12 @@ body {
 .main {
 	background-color: skyblue;
 	/* TODO: 이 곳을 채우세요! */
-	height: 100%;
+	display: inline-block;
+	position: absolute;
+	top: 0;
+	bottom: 50px;
+	left: 200px;
+	right: 300px;
 }
 
 .main header {
@@ -31,7 +35,9 @@ body {
 	background-color: pink;
 	/* TODO: 이 곳을 채우세요! */
 	width: 200px;
+	left: 0;
 	position: absolute;
+	display: inline-block;
 	height: 100%;
 
 }
@@ -41,6 +47,7 @@ body {
 	/* TODO: 이 곳을 채우세요! */
 	width: 300px;
 	height: 100%;
+	display: inline-block;
 	position: absolute;
 	top: 0;
 	right: 0;

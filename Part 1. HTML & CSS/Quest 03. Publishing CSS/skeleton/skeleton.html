@@ -2,9 +2,237 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<link rel="stylesheet" href="./skeleton.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<meta name="publisher" content="knowre">
+		<meta name="author" content="dowookim">
+		<meta name="copyright" content="knowre">
+		<meta name="title" content="knowre-web-dev-html">
+		<meta name="keyword" content="knowre web-dev-curriculum">
+		<meta name="description" content="knowre web-dev-ducrriculumn을 진행하는 페이지 입니다.">
+		<link rel="stylesheet" href="layout4.css">
+		<link rel="stylesheet" type="text/css" href="./skeleton.css" >
 	</head>
 	<body>
 		<!-- TODO: Quest 1에서 완성한 HTML을 바탕으로 필요한 부분을 수정해 보세요 -->
+		<header class="nav">
+			<div class="logo-div">
+				<img src="./GitHub-Mark-32px.png" alt="github icon" />
+			</div>
+			<nav>
+				<div class="nav-search-div">
+					<div class="nav-repo-div">
+						<span>This repository</span>
+					</div>
+					<div class="nav-search-input">
+						<input type="text" placeholder="Search" />
+					</div>
+				</div>
+				<div class="nav-menu-div">
+					<ul class="nav-menu-text">
+						<li>
+							<a href="https://github.com/pulls">Pull requests</a>
+						</li>
+						<li>
+							<a href="https://github.com/issues">issues</a>
+						</li>
+						<li>
+							<a href="https://github.com/marketplace">marketplace</a>
+						</li>
+						<li>
+							<a href="https://github.com/explore">explore</a>
+						</li>
+					</ul>
+				</div>
+			</nav>
+		</header>
+
+		<section class="main">
+			<header class="main-header">
+				<h1>
+					<img src="./repo.svg" alt="repo">
+					<span><a href="https://www.github.com/Knowre">Knowre</a></span>
+					<span class="h1-sep"> / <span>
+					<span><a href="https://github.com/Knowre-Dev/WebDevCurriculum">WebDevCurriculum</a></span>
+				</h1>
+				<nav>
+					<ul>
+						<li class="active">
+							<img src="./code.svg" alt="code" />
+							<a href="">code</a>
+						</li>
+						<li>
+							<img src="./issue-opened.svg" alt="issue" />
+							<a href="">issues
+								<span>0</span>
+							</a>
+						</li>
+						<li>
+							<img src="./git-pull-request.svg" alt="pull-request" />
+							<a href="">Pull requests
+								<span>1</span>
+							</a>
+						</li>
+						<li>
+							<img src="./play.svg" alt="action" />
+							<a href="">Actions</a>
+						</li>
+						<li>
+							<img src="./project.svg" alt="project" />
+							<a href="">Projects
+								<span>0</span>
+							</a>
+						</li>
+						<li>
+							<img src="./Vector.svg" alt="secruity" />
+							<a href="">Secrutiy</a>
+						</li>
+						<li>
+							<img src="./graph.svg" alt="graph" />
+							<a href="">Insights</a>
+						</li>
+						<li>
+							<img src="./gear.svg" alt="setting" />
+							<a href="#">Settings</a>
+						</li>
+					</ul>
+				</nav>
+			</header>
+
+			<section class="main-detail">
+				<!-- TODO: 메인의 부분 -->
+				<h2>KnowRe web development curriculum for noobs</h2>
+				<div class="main-detail-shell">
+					<ul>
+						<li>
+							<img src="./history.svg" alt="commit" >
+							<a href="">
+								<span class="main-detail-num">44<span>
+								<span class="main-detail-txt">commits</span>
+							</a>
+						</li>
+						<li>
+							<img src="./git-branch.svg" alt="branch" >
+							<a href="">
+								<span class="main-detail-num">1<span>
+								<span class="main-detail-txt">branch</span>
+							</a>
+						</li>
+						<li>
+							<img src="./package.svg" alt="branch" >
+							<a href="">
+								<span class="main-detail-num">0<span>
+								<span class="main-detail-txt">packages</span>
+							</a>
+						</li>
+						<li>
+							<img src="./tag.svg" alt="tag" >
+							<a href="">
+								<span class="main-detail-num">0<span>
+								<span class="main-detail-txt">releases</span class="main-detail-txt">
+							</a>
+						</li>
+						<li>
+							<img src="./Shape.svg" alt="contributors" >
+							<a href="">
+								<span class="main-detail-num">2<span>
+								<span class="main-detail-txt">contributors</span>
+							</a>
+						</li>
+						<!-- 사용 언어  -->
+					</ul>
+					<div class="main-detail-lang"></div>
+				</div>
+
+				<div class="file-detail-div">
+					<div class="file-detail-left">
+						<button class="branch-btn">
+							<span class="branch">Branch:</span>develop</button>
+						<a class="pr-link" href="">New pull request</a>
+					</div>
+					<div class="file-detail-right">
+						<div class="file-related-btn-div">
+							<a href="">Create new file</a>
+							<a href="">Upload files</a>
+							<a href="">Find file</a>
+						</div>
+						<button class="clone-btn">Clone or download</button>
+					</div>
+				</div>
+				<div class="commit-m">
+					<p><span>Knowre</span> Quest 02 added constraint</p>
+				</div>
+				<div class="architecture-div">
+					<table class="architecture">
+						<thead>
+							<tr class="table-info">
+								<th><span>Type</span></th>
+								<th><span>Latest commit message</span></th>
+								<th><span>Commit time</span></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="architecture-row active-row">
+								<td>
+									<img class="archi-img" src="./file-directory.svg" alt="directory">
+									<span class="arch-file-name">Part 0. git/Quest 00. Hello, git</span>
+								</td>
+								<td>Part 0 ~ 1 리뉴얼</td>
+								<td>2 years ago</td>
+							</tr>
+							<tr class="architecture-row">
+								<td>
+									<img class="archi-img" src="./file-directory.svg" alt="directory">
+									<span class="arch-file-name">Part 1. HTML & CSS</span>
+								</td>
+								<td>Part 0 ~ 1 리뉴얼</td>
+								<td>2 years ago</td>
+							</tr>
+							<tr class="architecture-row">
+								<td>
+									<img class="archi-img" src="./file.svg" alt="file">
+									<span class="arch-file-name">Part 1. HTML & CSS</span>
+									</td>
+								<td>Fix : readme.md</td>
+								<td>2 years ago</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="file-detail-info">
+						<div class="file-detail-header">
+							<img src="book.svg" alt="file-name" >
+							<h3>README.md</h3>
+						</div>
+						<div class="file-detail-content">
+							<h1>KnowRe web development curriculum</h1>
+							<hr />
+						</div>
+					</div>
+				</div>
+			</section>
+		</section>
+
+		<footer class="footer">
+			<!-- TODO: 하단의 Copyright, Terms, Privacy 등은 어떻게 처리하면 좋을까요? -->
+			<div>
+				<ul>
+					<li>© 2018 GitHub, Inc.</li>
+					<li><a href="https://www.github.com/site/terms">Terms</a></li>
+					<li><a href="https://www.github.com/site/privacy">Privacy</a></li>
+					<li><a href="https://github.com/security">Security</a></li>
+					<li><a href="https://githubstatus.com">Status</a></li>
+					<li><a href="https://help.github.com">Help</a></li>
+				</ul>
+				<img src="./Shape (1).svg" alt="github">
+				<ul>
+					<li><a href="https://github.com/contact">Contact GitHub</a></li>
+					<li><a href="https://github.com/pricing">Pricing</a></li>
+					<li><a href="https://developer.github.com">API</a></li>
+					<li><a href="https://training.github.com">Training</a></li>
+					<li><a href="https://github.blog">Blog</a></li>
+					<li><a href="https://github.com/about">About</a></li>
+				</ul>
+			</div>
+		</footer>
 	</body>
 </html>
