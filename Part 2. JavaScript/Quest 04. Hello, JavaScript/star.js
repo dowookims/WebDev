@@ -20,4 +20,9 @@ const getStar = (n) => {
 }
 
 let d = getNumber()
-getStar(d)
+
+if (typeof(d) === "number"){
+  getStar(d)
+} else {
+  console.log("숫자만 입력하세요")
+}
