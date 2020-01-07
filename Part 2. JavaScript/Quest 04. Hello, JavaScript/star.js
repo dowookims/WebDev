@@ -21,6 +21,7 @@ const getStar = (n) => {
 
 // let d = getNumber()
 
+
 if (typeof(d) === "number"){
   if (d >= 1){
     getStar(d)

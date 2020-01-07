@@ -139,11 +139,248 @@ chnageNum(obj) // 4
 console.log(obj.a) // 4
 ```
 
-##### [-3] Prototype
+##### [-4] Prototype
 
 자바스크립트의 모든 객체는 자신의 부모 역할을 하는 객체와 연결되어 있다. 자바스크립트에서 이러한 부모 객체를 프로토타입 객체라고 부른다.
 
 * ESMAScript에서 자바스크립트의 모든 객체는 자신의 프로토타입을 가리키는 [[Prototype]]이라는 숨겨진 프로퍼티를 가지고 있다고 설명되어 있으며, 크롬 브라우저에서는 객체에 프로퍼티로 `__proto__`로 접근 가능할 수 있다.
+
+#### function
+
+##### 1) 함수의 정의
+
+* 함수 선언문
+  
+  반드시 함수명이 정의되어야 한다.
+
+  ```js
+  function add(x,y) {
+    return x + y;
+  }
+  ```
+
+* 함수 표현식
+  
+  함수를 숫자나 문자열처럼 변수에 할당하는 방식으로, 함수 리터럴로 하나의 함수를 만들고, 생성된 함수를 변수에 할당하여 함수를 생성하는 방법.
+
+  ```js
+  const add = function(x, y){
+    return x + y;
+  }
+  add(4,3) // 7
+  ```
+
+* Function()
+
+```js
+const add = new Function('x', 'y', 'return x + y');
+console.log(add(3,4))
+```
+
+##### 2) 함수의 호이스팅
+
+```js
+add(2, 3); //5
+
+function add(x,y) {
+  return x + y;
+}
+
+add(3, 4) // 7
+```
+
+```js
+add(2, 3) // uncaught type error
+
+const add = function(x,y){
+  return x + y;
+};
+
+add(3, 4) // 7
+```
+
+##### 2) 함수 객체
+
+자바스크립트에서 함수도 객체이다. 이는 함수도 일반 객체처럼 취급이 될 수 있다는 것이다. 때문에 자바스크립트 함수는
+
+* 리터털에 의해 생성 가능
+* 변수나 배열의 요소, 객체 프로퍼티 등에 할당 가능
+* 함수의 인자로 전달 가능
+* 함수의 리턴값으로 리턴 가능
+* 동적 프로퍼티 생성 및 할당 가능
+
+이와 같은 특성이 있으므로, 자바스크립트에서의 함수를 **일급 객체** 라고 부른다.
+
+* 함수 객체의 기본 프로퍼티중에 잘 보아야 할 것은
+  * caller
+  * arguments
+  * length : 인자의 개수
+  * prototype
+
+* 함수의 prototype은 Function.prototype 객체이지만, 이 또한 함수이다. 이 함수 객체의 부모는 Object.prototype 객체이다.
+  * Function.prototype 객체는
+    * constructor
+    * toString()
+    * apply, call, bind 메서드 등을 가지고 있다.
+
+##### 3) 함수의 다양한 형태
+
+* callback 함수
+  * 익명 함수의 대표적인 사용
+  * 코드를 통해 명시적으로 호출하는 함수가 아니라, 함수를 등록만 하고, 이벤트가 발생하거나 특정 시점에 도달했을 때 시스템에서 호출하는 함수.
+  * 특정 함수의 인자로 코드 내부에서 호출되는 함수
+  * 대표적으로 이벤트 핸들러.
+
+* 즉시 실행 함수 (Immediate functions)
+  * 함수를 정의함과 동시에 바로 실행하는 함수. 익명 함수를 응용한 형태
+  * 초기화 등에 사용된다.
+
+* 내부 함수
+  * 함수 코드 내부에 다시 함수를 정의한 것.
+  * 클로저를 생성하거나 독립적인 헬퍼함수를 구현하는 용도 등으로 사용
+
+  ```js
+  function parent(){
+    var a = 100;
+    var b = 200;
+
+    function child(){
+      var b = 300;
+      console.log(a);
+      console.log(b);
+    }
+    child();
+  }
+  parent();
+  child(); // not defined error
+  ```
+
+    * 내부 함수를 사용하면 부모 함수의 변수에 접근이 가능하다.(스코프 체이닝)
+    * 내부 함수는 일반적으로 자신이 정의된 부모 함수 내부에서만 호출 가능하다.
+    * 부모함수가 내부 함수를 외부로 리턴하면, 부모 함수 밖에서도 사용 가능하다.
+  
+  ```js
+  function parent() {
+    var a = 100;
+    var child = function() {
+      console.log(a)
+    }
+    return child;
+  }
+
+  var inner = parent() // 100
+  ```
+
+  * 위 child 처럼, 부모 함수 스코프의 변수를 참조하는 inner() 와 같은 함수를 클로저라고 한다.
+
+```js
+(function (name){
+  console.log('This is the immediate function -> ' + name);
+})('foo')
+```
+
+* 함수를 리턴하는 함수
+
+함수도 일급 객체이므로 일반 값처럼 함수 자체를 리턴할 수 있다. 함수를 호출함과 동시에 다른 함수로 바꾸거나, 자기 자신을 재정의하는 함수를 구현할 수 있다.
+
+```js
+var self = function(){
+  console.log('a');
+  return function(){
+    console.log('b');
+  }
+}
+
+self = self(); // a
+self() // b
+```
+
+##### 4) 함수 호출과 this
+
+###### (1) arguments 객체
+
+런타임 시에 호출된 인자의 개수를 확인하고, 이에 따라 동작을 다르게 해줘야 할 필요가 있을 경우 사용하는 것이 arguments 객체
+
+arguments 객체는 함수를 호출할 때 넘긴 인자들이 배열 형태로 저장된 객체이다. 이 객체는 실제 배열이 아닌 유사 배열 객체이다.
+
+```js
+function add(a, b) {
+  console.dir(arguments);
+  return a + b;
+}
+
+console.log(add(1))
+console.log(add(1, 2))
+console.log(add(1, 2, 3))
+```
+
+arguments 객체는
+  * 함수 호출 시 넘겨진 인자
+  * length
+  * callee
+로 구성되어 있으며, 배열이 아니므로 배열 메서드 사용시 에러가 발생하기 때문에, call과 apply 등을 활용하여 작업을 진행한다.
+
+###### (2) this 바인딩
+
+자바스크립트 함수 호출 시, 함수가 호출되는 방식(패턴)에 따라 this가 다른 객체를 참조하기 때문에 사용시 유의해야 한다. 객체의 프로퍼티가 함수일 경우, 함수를 메서드라고 부르는데, 이 때 메서드를 호출할 때 내부 코드에서 사용된 this는 해당 메서드를 호출한 객체로 바인딩 된다.
+
+자바스크립트에서 함수 호출 시, 해당 함수 내부 코드에서 사용된 this는 전역 객체에 바인딩 된다. (브라우저는 window, 노드는 global)
+
+```js
+var value = 100;
+
+var myObj = {
+  value: 1,
+  func1: function(){
+    this.value += 1;
+    console.log('func1() called. this.value : ' + this.value);
+    func2 = function(){
+      this.value += 1;
+      console.log('func2() called. this.value : ' + this.value);
+      func3 = function(){
+        this.value += 1;
+        console.log('func3() called. this.value : ' + this.value);
+      }
+      func3()
+    }
+    func2();
+  }
+};
+
+myObj.func1();
+/*
+ func1() called. this.value : 2
+ func2() called. this.value : 101
+ func3() called. this.value : 102
+*/
+```
+
+내부 함수도 함수이기 때문에 this에 binding 된다. 이를 극복하기 위한 방법으로
+
+```js
+var value = 100;
+
+var myObj = {
+  value: 1,
+  func1: function(){
+    var that = this;
+    this.value += 1;
+    console.log('func1() called. this.value : ' + this.value);
+    func2 = function(){
+      that.value += 1;
+      console.log('func2() called. this.value : ' + that.value);
+      func3 = function(){
+        that.value += 1;
+        console.log('func3() called. this.value : ' + that.value);
+      }
+      func3()
+    }
+    func2();
+  }
+};
+
+myObj.func1();
+```
 
 ## CheckList
 
@@ -187,4 +424,5 @@ console.log(obj.a) // 4
   var, let, const 모두 hoisting이 존재하나, 각 키워드들은 자신들이 효력을 발휘 할 수 있는 범위 내에서 hoisting이 발생한다.
 
 * 자바스크립트의 익명 함수는 무엇인가요?
+  * 익명 함수는 이름이 없는 함수를 의미한다.
   * 자바스크립트의 Arrow function은 무엇일까요?
