@@ -21,6 +21,8 @@ const getStar = (n) => {
 
 // let d = getNumber()
 
+let w = 3.2
+let d = parseInt(w)
 
 if (typeof(d) === "number"){
   if (d >= 1){
