@@ -426,3 +426,8 @@ myObj.func1();
 * 자바스크립트의 익명 함수는 무엇인가요?
   * 익명 함수는 이름이 없는 함수를 의미한다.
   * 자바스크립트의 Arrow function은 무엇일까요?
+    * arrow function은 익명 함수로 표현하는 함수의 축약형 표현이며, 콜백 함수로도 사용 가능하다.
+    * arrow function은 function 키워드로 생성한 함수와 차이점이 있는데, 가장 큰 차이점은 this 이다. 일반 함수의 호출의 경우, 호출한 객체로 this가 바인딩 되기 때문에, 익명함수로 이루어진 콜백의 경우 전역 객체(window 또는 global)에 바인딩 된다.
+    * 그러나 arrow function의 경우 함수 선언시 상위 스코프의 this를 가리킨다. 이를 Lexical Scope라고 한다.
+    * arrow function을 사용할 때 조심해야 할 부분으로, 메서드로써 arrow function의 사용이다. Object의 method로 사용될 경우, 상위 scope인 global을 this로 인식 할 수 있기 때문이다. 이럴 경우 함수 축약형 표현이 더 적절하다.
+    * Prototype을 정의 할 때도 arrow function을 피해야 한다.
