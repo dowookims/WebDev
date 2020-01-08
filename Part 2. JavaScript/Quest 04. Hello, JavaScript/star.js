@@ -1,6 +1,7 @@
-const getNumber = () => { 
-  return parseInt(prompt("input numbers", "1"))
-}
+const readline = require('readline').createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
 const getStar = (n) => {
   const blank = " "
@@ -19,17 +20,30 @@ const getStar = (n) => {
   }
 }
 
-// let d = getNumber()
-
-let w = 3.2
-let d = parseInt(w)
-
-if (typeof(d) === "number"){
-  if (d >= 1){
-    getStar(d)
-  } else {
-    console.log('1이상의 수를 입력해 주세요.')
-  }
-} else {
-  console.log("숫자만 입력하세요")
+const numValidator = (txt) => {
+  const d = parseInt(txt)
+  if (typeof(d) === "number"){
+    if (d >= 1){
+      getStar(d)
+    } else if(isNaN(d)) {
+      console.log("숫자만 입력하세요")
+    } else {
+      console.log('1이상의 수를 입력해 주세요.')
+    }
+  } 
 }
+
+const getNumber = () => {
+  readline.question("input numbers \n", num => {
+    numValidator(num)
+    readline.close()
+  })
+}
+
+
+getNumber()
+
+
+
+
+
