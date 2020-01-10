@@ -1,1 +1,60 @@
 /* TODO: 자유롭게 바탕화면 시스템의 CSS를 만들어 보세요! */
+
+html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, img, i, ul, li, canvas {
+    margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+
+body {
+	line-height: 1;
+}
+
+.desktop {
+    width: 100vw;
+    height: 100vh;
+    background-image: url("http://www.techforkorea.com/wp-content/uploads/2014/10/unnamed1.png");
+    background-repeat: none;
+    background-size: cover;
+}
+
+.icon {
+    position: relative;
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    margin: 20px;
+    background-repeat: none;
+    background-size: cover;
+}
+
+.fileName {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+}
+
+.file {
+}
+
+.folder {
+
+}
+
+.window {
+    width: 50vw;
+    height: 50vh;
+    border: 2px solid #333;
+    border-radius: 10px;
+}
+
+.window-top {
+    height:50px;
+    background-color: #999;
+    display: flex;
+    border-radius: 10px 10px 0 0;
+}
