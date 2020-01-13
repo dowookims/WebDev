@@ -38,23 +38,38 @@ body {
     text-align: center;
 }
 
-.file {
-}
-
 .folder {
-
+    cursor: pointer;
 }
 
 .window {
+    position: absolute;
+    left: 25vw;
+    top: 25vh;
     width: 50vw;
     height: 50vh;
     border: 2px solid #333;
     border-radius: 10px;
+    background-color: #fff;
 }
 
 .window-top {
     height:50px;
     background-color: #999;
-    display: flex;
     border-radius: 10px 10px 0 0;
+    position: relative;
+}
+
+.window-name {
+    position: absolute;
+    left: 20px;
+    top: 15px;
+}
+
+.window-close-span {
+    position: absolute;
+    display: inline-block;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
 }

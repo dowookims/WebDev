@@ -4,7 +4,7 @@ class Desktop {
 		{type: "normal", name: "icon1"},
 		{type: "folder", name: "folder1"},
 		{type: "folder", name: "folder2"}
-	]){
+	]) {
 		if (!!Desktop.instance){
 			return Desktop.instance;
 		}
@@ -31,13 +31,18 @@ class Desktop {
 	}
 	drawData(){
 		const desktop = document.getElementsByClassName('desktop')[0]
+		let dataIdx = 0;
+		let folderIdx = 0;
 		this.files.forEach(file => {
 			file.icon.drawIcon(desktop);
+			if (file.type === 'folder'){
+				const folderElem = document.getElementsByClassName('folder')[folderIdx];
+				const that = this.files[dataIdx]
+				folderElem.addEventListener('click', this.files[dataIdx].handleFolderClick());
+				folderIdx++;
+			}
+			dataIdx++;
 		})
-		const folders = document.getElementsByClassName("folder");
-		for (let folder in folders){
-			folder.addEventListener("click", Folder.addDoubleClick())
-		}
 	}
 };
 
@@ -90,22 +95,15 @@ class Folder {
 	constructor(data){
 		this.name = data.name;
 		this.type = data.type;
-		this.open = false;
 		this.icon = new Icon(data);
 		this.Window = new Window();
 	}
 
-	handleOpen(){
-		this.open = !this.open
-		this.Window.handleOpen();
-		if (this.Window.open){
-			this.Window.drawWindow();
+	handleFolderClick(){
+		const self = this;
+		return function(){
+			self.Window.handleWindowOpen(self);
 		}
-	}
-
-	addDoubleClick(){
-		this.handleOpen();
-		this.Window.handleOpen();
 	}
 
 	
@@ -114,24 +112,56 @@ class Folder {
 class Window {
 	/* TODO: Window 클래스는 어떤 멤버함수와 멤버변수를 가져야 할까요? */
 	constructor(open = false){
-		this.open = open
+		this.open = open;
+		this.folderName = null;
+		this.folderDOM = null;
 	}
 
 	drawWindow(){
-		const Div = document.createElement('div');
-		const WindowTop = document.createElement('div');
-		const WindowCloseBox = document.createElement('div');
-		const WindowContent = document.createElement('div');
-		WindowTop.classList.add('window-top');
-		WindowContent.classList.add('window-content');
-		WindowCloseBox.classList.add('window-closebox');
-		WindowCloseBox.innerHTML = "x";
-		Div.appendChild(WindowTop);
-		Div.appendChild(WindowContent);
-		Div.classList.add("window")
+		if (!this.folderDOM && !this.open){
+			const Desktop = document.getElementsByClassName('desktop')[0];
+			const Div = document.createElement('div');
+			const WindowTop = document.createElement('div');
+			const WindowNameSpan = document.createElement('span');
+			const WindowCloseSpan = document.createElement('span');
+			const WindowContent = document.createElement('div');
+
+
+			WindowTop.classList.add('window-top');
+			WindowContent.classList.add('window-content');
+			WindowNameSpan.classList.add('window-name');
+			WindowCloseSpan.classList.add('window-close-span');
+
+			WindowNameSpan.innerHTML = this.folderName;
+			WindowCloseSpan.innerHTML = "&times";
+
+			WindowTop.appendChild(WindowNameSpan);
+			WindowTop.appendChild(WindowCloseSpan);
+			Div.appendChild(WindowTop);
+			Div.appendChild(WindowContent);
+			WindowCloseSpan.addEventListener('click', this.handleWindowClose());
+			this.folderDOM = Div
+			Div.classList.add("window");
+			Desktop.appendChild(Div);
+
+			this.open = !this.open;
+		} else if (!this.open) {
+			this.folderDOM.style.display = "";
+		}
 	}
 
-	handleOpen(){
-		this.open = !this.open
+	handleWindowOpen(folder){
+		if (!this.open){
+			this.folderName = folder.name;
+			this.drawWindow();
+		}
+	}
+
+	handleWindowClose(){
+		const self = this;
+		return function(){
+			self.open = !self.open;
+			self.folderDOM.style.display = "none";
+		}
 	}
 };
