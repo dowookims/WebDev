@@ -36,7 +36,7 @@ class Desktop {
 
 		this.data = data;
 		this.files = [];
-		this.desktopNum = Desktop.Len;
+		this.desktopNum = Desktop.len;
 		
 	}
 
@@ -70,9 +70,22 @@ class Desktop {
 		});	
 	};
 
+	/*
+		const btn = document.createElement('button');
+		const desktop = document.getElementsByClassName('desktop')[0];
+		btn.innerText = "click me!";
+		desktop.appendChild(btn);
+		btn.addEventListener('click', myDesktop.appendItem({name:'kakao', type:'folder', iconSize: {w:100, h:100}}));
+	*/ 
+	
 	appendItem(fileData){
 		this.addFile(fileData);
+		this.addData(fileData);
 		this.drawFile();
+	};
+
+	addData(fileData){
+		this.data.push(fileData);
 	};
 
 	addFile(fileData){
@@ -84,12 +97,14 @@ class Desktop {
 	}
 
 	drawFile(){
+		console.log("THIS", this);
 		const desktop = document.getElementsByClassName('desktop')[this.desktopNum];
-		const file = this.files[len(this.files)-1];
+		console.log("DRAW FILE", this.desktopNum);
+		const file = this.files[this.files.length-1];
 		file.icon.drawIcon(desktop);
 		if (file.type === 'folder'){
 			const folderElem = document.getElementsByClassName('folder')
-			folderElem[len(folderElem) -1].addEventListener('click', file.handleFolderClick());
+			folderElem[folderElem.length -1].addEventListener('click', file.handleFolderClick());
 		}
 	};
 
