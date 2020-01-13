@@ -6,14 +6,29 @@
 		<script src="./desktop.js"></script>
 	</head>
 	<body>
-		<section class="desktop">
-		</section>
+		<div class="app">
+		</div>
 
 		<script>
 			let myDesktop = new Desktop(
 				/* TODO: myDesktop 인스턴스의 생성자의 변수로 무엇이 들어가야 할까요? */
 			);
+			let youDesktop = new Desktop(
+				[
+					{
+						type: "normal",
+						name: "icon1",
+						iconSize: { h: 100, w: 100 }
+					},
+					{
+						type: "folder", 
+						name: "folder1", 
+						iconSize: { h: 100, w: 100 }
+					},
+				]
+			);
 			myDesktop._init();
+			youDesktop._init();
 		</script>
 	</body>
 </html>

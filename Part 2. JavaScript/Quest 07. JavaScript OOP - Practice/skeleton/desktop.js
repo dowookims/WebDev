@@ -1,6 +1,6 @@
 class Desktop {
 	/* TODO: Desktop 클래스는 어떤 멤버함수와 멤버변수를 가져야 할까요? */
-	constructor(data = [
+	constructor (data = [
 		{
 			type: "normal",
 			name: "icon1",
@@ -17,6 +17,8 @@ class Desktop {
 			iconSize: { h: 100, w: 100 }
 		}
 	]) {
+
+		/* Singleton Pattern
 		if (!!Desktop.instance){
 			return Desktop.instance;
 		}
@@ -25,6 +27,17 @@ class Desktop {
 		this.data = data;
 		this.files = []
 		return this;
+		*/
+		if (!Desktop.len){
+			Desktop.len = 0;
+		} else {
+			Desktop.len++;
+		}
+
+		this.data = data;
+		this.files = [];
+		this.desktopNum = Desktop.Len;
+		
 	}
 
 	_init(){
@@ -43,18 +56,28 @@ class Desktop {
 	}
 	
 	drawData(){
-		const desktop = document.getElementsByClassName('desktop')[0]
+		const app = document.getElementsByClassName('app')[0];
+		const desktop = document.createElement('section');
+		desktop.classList.add('desktop');
+		app.appendChild(desktop);
+		
 		let dataIdx = 0;
 		let folderIdx = 0;
 		this.files.forEach(file => {
 			file.icon.drawIcon(desktop);
 			if (file.type === 'folder'){
 				const folderElem = document.getElementsByClassName('folder')[folderIdx];
-				const that = this.files[dataIdx]
 				folderElem.addEventListener('click', this.files[dataIdx].handleFolderClick());
 				folderIdx++;
 			}
 			dataIdx++;
+		});
+		
+	}
+
+	changeAllIcon(url, w, h){
+		this.files.forEach(file => {
+			file.icon.changeIcon(url, w, h)
 		})
 	}
 };
@@ -102,8 +125,8 @@ class Icon {
 		Div.appendChild(P);
 
 		Div.style.backgroundImage = `url(${this.imageUrl})`;
-		Div.style.width = this.data.w + 'px';
-		Div.style.height = this.data.h + 'px';
+		Div.style.width = this.iconSize.w + 'px';
+		Div.style.height = this.iconSize.h + 'px';
 
 		this.iconDOM = Div;
 

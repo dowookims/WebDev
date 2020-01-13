@@ -13,9 +13,16 @@ body {
 	line-height: 1;
 }
 
-.desktop {
+.app {
     width: 100vw;
     height: 100vh;
+    display: flex;
+}
+
+.desktop {
+    width: 100%;
+    height: 100%;
+    display: block;
     background-image: url("http://www.techforkorea.com/wp-content/uploads/2014/10/unnamed1.png");
     background-repeat: none;
     background-size: cover;
