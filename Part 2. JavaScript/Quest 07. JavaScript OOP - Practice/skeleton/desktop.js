@@ -41,45 +41,66 @@ class Desktop {
 	}
 
 	_init(){
-		this.getData();
-		this.drawData();
+		this.getAllData();
+		this.drawAllData();
 	};
 
-	getData(){
+	getAllData(){
 		this.data.forEach(file => {
-			if (file.type === "normal"){
-				this.files.push(new File(file))
-			} else {
-				this.files.push(new Folder(file))
-			}
+			this.addFile(file);
 		})
 	}
 	
-	drawData(){
+	drawAllData(){
+		let folderIdx = 0;
+
 		const app = document.getElementsByClassName('app')[0];
 		const desktop = document.createElement('section');
+		
 		desktop.classList.add('desktop');
 		app.appendChild(desktop);
 		
-		let dataIdx = 0;
-		let folderIdx = 0;
-		this.files.forEach(file => {
+		this.files.forEach((file, dataIdx) => {
 			file.icon.drawIcon(desktop);
 			if (file.type === 'folder'){
 				const folderElem = document.getElementsByClassName('folder')[folderIdx];
 				folderElem.addEventListener('click', this.files[dataIdx].handleFolderClick());
 				folderIdx++;
 			}
-			dataIdx++;
-		});
-		
+		});	
+	};
+
+	appendItem(fileData){
+		this.addFile(fileData);
+		this.drawFile();
+	};
+
+	addFile(fileData){
+		if (fileData.type === "normal"){
+			this.files.push(new File(fileData))
+		} else {
+			this.files.push(new Folder(fileData))
+		}
 	}
 
-	changeAllIcon(url, w, h){
+	drawFile(){
+		const desktop = document.getElementsByClassName('desktop')[this.desktopNum];
+		const file = this.files[len(this.files)-1];
+		file.icon.drawIcon(desktop);
+		if (file.type === 'folder'){
+			const folderElem = document.getElementsByClassName('folder')
+			folderElem[len(folderElem) -1].addEventListener('click', file.handleFolderClick());
+		}
+	};
+
+	changeAllIcon(type, url, w, h){
 		this.files.forEach(file => {
-			file.icon.changeIcon(url, w, h)
-		})
-	}
+			if (file.type === type){
+				file.icon.changeIcon(url, w, h)
+			}
+		});
+	};
+
 };
 
 class File {
