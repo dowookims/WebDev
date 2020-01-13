@@ -1,9 +1,21 @@
 class Desktop {
 	/* TODO: Desktop 클래스는 어떤 멤버함수와 멤버변수를 가져야 할까요? */
 	constructor(data = [
-		{type: "normal", name: "icon1"},
-		{type: "folder", name: "folder1"},
-		{type: "folder", name: "folder2"}
+		{
+			type: "normal",
+			name: "icon1",
+			iconSize: { h: 100, w: 100 }
+		},
+		{
+			type: "folder", 
+			name: "folder1", 
+			iconSize: { h: 100, w: 100 }
+		},
+		{
+			type: "folder", 
+			name: "folder2", 
+			iconSize: { h: 100, w: 100 }
+		}
 	]) {
 		if (!!Desktop.instance){
 			return Desktop.instance;
@@ -29,6 +41,7 @@ class Desktop {
 			}
 		})
 	}
+	
 	drawData(){
 		const desktop = document.getElementsByClassName('desktop')[0]
 		let dataIdx = 0;
@@ -58,6 +71,8 @@ class File {
 class Icon {
 	/* TODO: Icon 클래스는 어떤 멤버함수와 멤버변수를 가져야 할까요? */
 	constructor(data){
+		this.iconDOM = null;
+		this.iconSize = data.iconSize;
 		this.name = data.name;
 		this.type = data.type;
 		this.imageUrl = (function(){
@@ -74,17 +89,34 @@ class Icon {
 	drawIcon(parent){
 		const Div = document.createElement('div');
 		const P = document.createElement('p');
+
 		Div.classList.add('icon');
 		if (this.type === "normal"){
 			Div.classList.add("file")
 		} else {
 			Div.classList.add("folder")
 		}
+
 		P.classList.add("fileName")
 		P.innerHTML = this.name;
 		Div.appendChild(P);
+
 		Div.style.backgroundImage = `url(${this.imageUrl})`;
+		Div.style.width = this.data.w + 'px';
+		Div.style.height = this.data.h + 'px';
+
+		this.iconDOM = Div;
+
 		parent.appendChild(Div);
+	};
+
+	changeIcon(url, w, h){
+		this.iconSize = { w, h };
+		this.imageUrl = url;
+
+		this.iconDOM.style.backgroundImage = `url(${url})`;
+		this.iconDOM.style.width = w + 'px';
+		this.iconDOM.style.height = h + 'px';
 	}
 };
 
@@ -104,9 +136,7 @@ class Folder {
 		return function(){
 			self.Window.handleWindowOpen(self);
 		}
-	}
-
-	
+	}	
 };
 
 class Window {
@@ -137,12 +167,13 @@ class Window {
 
 			WindowTop.appendChild(WindowNameSpan);
 			WindowTop.appendChild(WindowCloseSpan);
+			WindowCloseSpan.addEventListener('click', this.handleWindowClose());
 			Div.appendChild(WindowTop);
 			Div.appendChild(WindowContent);
-			WindowCloseSpan.addEventListener('click', this.handleWindowClose());
-			this.folderDOM = Div
 			Div.classList.add("window");
 			Desktop.appendChild(Div);
+			this.folderDOM = Div
+			
 
 			this.open = !this.open;
 		} else if (!this.open) {
