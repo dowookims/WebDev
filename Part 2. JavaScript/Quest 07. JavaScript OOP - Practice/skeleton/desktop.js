@@ -290,7 +290,7 @@ class Window {
 	handleWindowClose(){
 		const self = this;
 		return function(){
-			self.open = !self.open;
+			self.open = false;
 			self.folderDOM.style.display = "none";
 		}
 	}
