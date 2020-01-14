@@ -58,6 +58,7 @@ class Desktop {
 		const desktop = document.createElement('section');
 		
 		desktop.classList.add('desktop');
+		// desktop.addEventListener('mouseout', this.desktopMouseUp);
 		app.appendChild(desktop);
 		
 		this.files.forEach((file, dataIdx) => {
@@ -97,14 +98,12 @@ class Desktop {
 	}
 
 	drawFile(){
-		console.log("THIS", this);
 		const desktop = document.getElementsByClassName('desktop')[this.desktopNum];
-		console.log("DRAW FILE", this.desktopNum);
 		const file = this.files[this.files.length-1];
 		file.icon.drawIcon(desktop);
 		if (file.type === 'folder'){
 			const folderElem = document.getElementsByClassName('folder')
-			folderElem[folderElem.length -1].addEventListener('click', file.handleFolderClick());
+			folderElem[folderElem.length -1].addEventListener('dblclick', file.handleFolderClick());
 		}
 	};
 
@@ -115,7 +114,6 @@ class Desktop {
 			}
 		});
 	};
-
 };
 
 class File {
@@ -134,6 +132,7 @@ class Icon {
 		this.iconSize = data.iconSize;
 		this.name = data.name;
 		this.type = data.type;
+		this.draggable = false;
 		this.imageUrl = (function(){
 			const normalIconUrl = "https://pbs.twimg.com/profile_images/706869492098400257/B9sZcbmV_400x400.jpg";
 			const folderIconUrl = "https://www.vippng.com/png/detail/96-965935_transparent-images-pluspng-icon-white-folder-icon-transparent.png";
@@ -163,7 +162,10 @@ class Icon {
 		Div.style.backgroundImage = `url(${this.imageUrl})`;
 		Div.style.width = this.iconSize.w + 'px';
 		Div.style.height = this.iconSize.h + 'px';
-
+		Div.addEventListener('mousedown', this.handleMouseDown());
+		Div.addEventListener('mousemove', this.handleMouseMove());
+		Div.addEventListener('mouseup', this.handleMouseUp());
+		
 		this.iconDOM = Div;
 
 		parent.appendChild(Div);
@@ -176,6 +178,37 @@ class Icon {
 		this.iconDOM.style.backgroundImage = `url(${url})`;
 		this.iconDOM.style.width = w + 'px';
 		this.iconDOM.style.height = h + 'px';
+	}
+
+	handleMouseDown(e){
+		const self = this;
+		return function(e){
+			self.draggable = true;
+			this.style.position = 'absolute';
+			this.style.zIndex = 10;
+		}
+	};
+
+	handleMouseMove(){
+		const self = this;
+		return function(e){
+			if (self.draggable){
+				self.moveIcon(e.pageX, e.pageY, this);
+			}
+		}
+	};
+
+	moveIcon(pageX, pageY, target) {
+		target.style.left = pageX - target.offsetWidth / 2 + 'px';
+		target.style.top = pageY - target.offsetHeight / 2 + 'px';
+	};
+
+	handleMouseUp(){
+		const self = this;
+		return function(e){
+			e.stopPropagation();
+			self.draggable = false;
+		}
 	}
 };
 
@@ -204,6 +237,7 @@ class Window {
 		this.open = open;
 		this.folderName = null;
 		this.folderDOM = null;
+		this.draggable = false;
 	}
 
 	drawWindow(){
@@ -230,6 +264,11 @@ class Window {
 			Div.appendChild(WindowTop);
 			Div.appendChild(WindowContent);
 			Div.classList.add("window");
+
+			Div.addEventListener('mousedown', this.handleMouseDown());
+			Div.addEventListener('mousemove', this.handleMouseMove());
+			Div.addEventListener('mouseup', this.handleMouseUp());
+
 			Desktop.appendChild(Div);
 			this.folderDOM = Div
 			
@@ -252,6 +291,37 @@ class Window {
 		return function(){
 			self.open = !self.open;
 			self.folderDOM.style.display = "none";
+		}
+	}
+
+	handleMouseDown(){
+		const self = this;
+		return function(e){
+			self.draggable = true;
+			this.style.position = 'absolute';
+			this.style.zIndex = 12;
+		}
+	};
+
+	handleMouseMove(){
+		const self = this;
+		return function(e){
+			if (self.draggable){
+				self.moveIcon(e.pageX, e.pageY, this);
+			}
+		}
+	};
+
+	moveIcon(pageX, pageY, target) {
+		target.style.left = pageX - target.offsetWidth / 2 + 'px';
+		target.style.top = pageY - target.offsetHeight / 2 + 'px';
+	};
+
+	handleMouseUp(){
+		const self = this;
+		return function(e){
+			e.stopPropagation();
+			self.draggable = false;
 		}
 	}
 };
