@@ -145,6 +145,8 @@ class Icon {
 	};
 
 	drawIcon(parent){
+		document.querySelector('.window')
+
 		const Div = document.createElement('div');
 		const P = document.createElement('p');
 
@@ -268,7 +270,7 @@ class Window {
 
 			Div.addEventListener('mousedown', this.handleMouseDown());
 			Div.addEventListener('mousemove', this.handleMouseMove());
-			Div.addEventListener('mouseup', this.handleMouseUp());
+			Div.addEventListener('mouseup', this.handleMouseUp);
 
 			Desktop.appendChild(Div);
 			this.folderDOM = Div
@@ -321,8 +323,8 @@ class Window {
 
 	handleMouseUp(){
 		const self = this;
-		return function(){
-			self.draggable = false;
+		return () => {
+			this.draggable = false;
 		}
 	}
 };
