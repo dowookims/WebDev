@@ -180,9 +180,9 @@ class Icon {
 		this.iconDOM.style.height = h + 'px';
 	}
 
-	handleMouseDown(e){
+	handleMouseDown(){
 		const self = this;
-		return function(e){
+		return function(){
 			self.draggable = true;
 			this.style.position = 'absolute';
 			this.style.zIndex = 10;
@@ -205,8 +205,7 @@ class Icon {
 
 	handleMouseUp(){
 		const self = this;
-		return function(e){
-			e.stopPropagation();
+		return function(){
 			self.draggable = false;
 		}
 	}
@@ -322,7 +321,7 @@ class Window {
 
 	handleMouseUp(){
 		const self = this;
-		return function(e){
+		return function(){
 			self.draggable = false;
 		}
 	}
