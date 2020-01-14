@@ -238,6 +238,8 @@ class Window {
 		this.folderName = null;
 		this.folderDOM = null;
 		this.draggable = false;
+		this.shiftX = 0;
+		this.shiftY = 0;
 	}
 
 	drawWindow(){
@@ -297,8 +299,9 @@ class Window {
 	handleMouseDown(){
 		const self = this;
 		return function(e){
+			self.shiftX = e.clientX - this.getBoundingClientRect().left;
+			self.shiftY = e.clientY - this.getBoundingClientRect().top;
 			self.draggable = true;
-			this.style.position = 'absolute';
 			this.style.zIndex = 12;
 		}
 	};
@@ -307,20 +310,19 @@ class Window {
 		const self = this;
 		return function(e){
 			if (self.draggable){
-				self.moveIcon(e.pageX, e.pageY, this);
+				self.moveWindow(e.pageX, e.pageY, this, self);
 			}
 		}
 	};
 
-	moveIcon(pageX, pageY, target) {
-		target.style.left = pageX - target.offsetWidth / 2 + 'px';
-		target.style.top = pageY - target.offsetHeight / 2 + 'px';
+	moveWindow(pageX, pageY, target, self) {
+		target.style.left = pageX - self.shiftX + 'px';
+		target.style.top = pageY - self.shiftY + 'px';
 	};
 
 	handleMouseUp(){
 		const self = this;
 		return function(e){
-			e.stopPropagation();
 			self.draggable = false;
 		}
 	}
