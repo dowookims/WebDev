@@ -19,11 +19,7 @@ class Desktop {
             }
 		]
 	) {
-        if (!Desktop.len){
-            Desktop.len = 0;
-		} else {
-			Desktop.len++;
-		}
+		Desktop.len ? Desktop.len++ : Desktop.len = 0;
 
 		this.data = data;
 		this.files = [];
@@ -59,31 +55,25 @@ class Desktop {
 	addFile(fileData){
 		const desktop = document.getElementsByClassName('desktop')[this.desktopNum];
 
-		if (this.files.length >= 2) {
-			this.data.push(fileData)
-		};
+		this.files.length && this.data.push(fileData)
 
-		if (fileData.type === "normal"){
-			this.files.push(new File(fileData))
-		} else {
-			this.files.push(new Folder(fileData))
-		}
+		fileData.type === "normal" 
+		? this.files.push(new File(fileData)) 
+		: this.files.push(new Folder(fileData));
 
 		const file = this.files[this.files.length-1];
 		file.icon.drawIcon(desktop);
 
-		if (file.type === 'folder'){
+		file.type === 'folder' && (() => {
 			const folderElem = document.getElementsByClassName('folder');
 			folderElem[folderElem.length -1].addEventListener('dblclick', file.handleFolderClick());
-		}
+		})();
 	}
 
 
 	changeAllIcon(type, url, w, h){
 		this.files.forEach(file => {
-			if (file.type === type){
-				file.icon.changeIcon(url, w, h)
-			}
+			file.type === type &&file.icon.changeIcon(url, w, h);
 		});
 	};
 };
