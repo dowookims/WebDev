@@ -30,10 +30,10 @@ body {
 .icon {
     width: 100px;
     height: 100px;
-    margin: 20px;
     background-repeat: none;
     background-size: cover;
     cursor: pointer;
+    position: relative;
 }
 
 .fileName {
@@ -41,6 +41,7 @@ body {
     position: absolute;
     bottom: 0;
     text-align: center;
+    z-index: 3;
 }
 
 .window {

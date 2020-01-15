@@ -73,7 +73,7 @@ class Desktop {
 
 	changeAllIcon(type, url, w, h){
 		this.files.forEach(file => {
-			file.type === type &&file.icon.changeIcon(url, w, h);
+			file.type === type && file.icon.changeIcon(url, w, h);
 		});
 	};
 };
@@ -90,11 +90,13 @@ class File {
 class Icon {
 	/* TODO: Icon 클래스는 어떤 멤버함수와 멤버변수를 가져야 할까요? */
 	constructor(data){
-		this.iconDOM = null;
+		this.DOM = null;
 		this.iconSize = data.iconSize;
 		this.name = data.name;
 		this.type = data.type;
 		this.draggable = false;
+		this.shiftX = 0;
+		this.shiftY = 0;
 		this.imageUrl = (function(){
 			const normalIconUrl = "https://pbs.twimg.com/profile_images/706869492098400257/B9sZcbmV_400x400.jpg";
 			const folderIconUrl = "https://www.vippng.com/png/detail/96-965935_transparent-images-pluspng-icon-white-folder-icon-transparent.png";
@@ -120,12 +122,11 @@ class Icon {
 		Div.style.backgroundImage = `url(${this.imageUrl})`;
 		Div.style.width = this.iconSize.w + 'px';
 		Div.style.height = this.iconSize.h + 'px';
-		Div.addEventListener('mousedown', this.handleMouseDown());
-		Div.addEventListener('mousemove', this.handleMouseMove());
-		Div.addEventListener('mouseup', this.handleMouseUp());
+		Div.addEventListener('mousedown', DragDOM.handleMouseDown(this));
+		Div.addEventListener('mousemove', DragDOM.handleMouseMove(this));
+		Div.addEventListener('mouseup', DragDOM.handleMouseUp(this));
 		
-		this.iconDOM = Div;
-		console.log("DIVV", Desktop)
+		this.DOM = Div;
 		Desktop.appendChild(Div);
 	};
 
@@ -133,39 +134,9 @@ class Icon {
 		this.iconSize = { w, h };
 		this.imageUrl = url;
 
-		this.iconDOM.style.backgroundImage = `url(${url})`;
-		this.iconDOM.style.width = w + 'px';
-		this.iconDOM.style.height = h + 'px';
-	}
-
-	handleMouseDown(){
-		const self = this;
-		return function(){
-			self.draggable = true;
-			this.style.position = 'absolute';
-			this.style.zIndex = 10;
-		}
-	};
-
-	handleMouseMove(){
-		const self = this;
-		return function(e){
-			if (self.draggable){
-				self.moveIcon(e.pageX, e.pageY, this);
-			}
-		}
-	};
-
-	moveIcon(pageX, pageY, target) {
-		target.style.left = pageX - target.offsetWidth / 2 + 'px';
-		target.style.top = pageY - target.offsetHeight / 2 + 'px';
-	};
-
-	handleMouseUp(){
-		const self = this;
-		return function(){
-			self.draggable = false;
-		}
+		this.DOM.style.backgroundImage = `url(${url})`;
+		this.DOM.style.width = w + 'px';
+		this.DOM.style.height = h + 'px';
 	}
 };
 
@@ -181,10 +152,9 @@ class Folder {
 	}
 
 	handleFolderClick(){
-		const self = this;
-		return function(){
-			self.Window.handleWindowOpen(self);
-		}
+		return () => {
+			this.Window.handleWindowOpen(this.name)
+		};
 	}	
 };
 
@@ -193,16 +163,16 @@ class Window {
 	constructor(open = false){
 		this.open = open;
 		this.folderName = null;
-		this.windowDOM = null;
+		this.DOM = null;
 		this.draggable = false;
 		this.shiftX = 0;
 		this.shiftY = 0;
 	}
 
 	drawWindow(){
-		if (!this.windowDOM && !this.open){
+		if (!this.DOM && !this.open){
 			const Desktop = document.getElementsByClassName('desktop')[0];
-			const Div = document.createElement('div');
+			const Window = document.createElement('div');
 			const WindowTop = document.createElement('div');
 			const WindowNameSpan = document.createElement('span');
 			const WindowCloseSpan = document.createElement('span');
@@ -220,65 +190,61 @@ class Window {
 			WindowTop.appendChild(WindowNameSpan);
 			WindowTop.appendChild(WindowCloseSpan);
 			WindowCloseSpan.addEventListener('click', this.handleWindowClose());
-			Div.appendChild(WindowTop);
-			Div.appendChild(WindowContent);
-			Div.classList.add("window");
+			Window.appendChild(WindowTop);
+			Window.appendChild(WindowContent);
+			Window.classList.add("window");
 
-			Div.addEventListener('mousedown', this.handleMouseDown());
-			Div.addEventListener('mousemove', this.handleMouseMove());
-			Div.addEventListener('mouseup', this.handleMouseUp());
+			Window.addEventListener('mousedown', DragDOM.handleMouseDown(this));
+			Window.addEventListener('mousemove', DragDOM.handleMouseMove(this));
+			Window.addEventListener('mouseup', DragDOM.handleMouseUp(this));
 
-			Desktop.appendChild(Div);
-			this.windowDOM = Div
+			Desktop.appendChild(Window);
+			this.DOM = Window
 			
 
 			this.open = !this.open;
 		} else if (!this.open) {
-			this.windowDOM.style.display = "";
+			this.DOM.style.display = "";
 		}
 	}
 
-	handleWindowOpen(folder){
-		if (!this.open){
-			this.folderName = folder.name;
+	handleWindowOpen(folderName){
+		!this.open && (() => {
+			this.folderName = folderName;
 			this.drawWindow();
-		}
+		})();
 	}
 
 	handleWindowClose(){
 		return () => {
 			this.open = false;
-			this.windowDOM.style.display = "none";
+			this.DOM.style.display = "none";
 		}
-	}
-
-	handleMouseDown(){
-		return (e) => {
-			this.shiftX = e.clientX - this.windowDOM.getBoundingClientRect().left;
-			this.shiftY = e.clientY - this.windowDOM.getBoundingClientRect().top;
-			this.draggable = true;
-			this.windowDOM.style.zIndex = 12;
-		}
-	};
-
-	handleMouseMove(){
-		return (e) => {
-			if (this.draggable){
-				this.moveWindow(e.pageX, e.pageY, this.windowDOM, this);
-			}
-		}
-	};
-
-	moveWindow(pageX, pageY, target, self) {
-		target.style.left = pageX - self.shiftX + 'px';
-		target.style.top = pageY - self.shiftY + 'px';
-	};
-
-	handleMouseUp(){
-        return () => { this.draggable = false; };
 	}
 };
 
 class DragDOM {
 // 	static 
+	constructor(){}
+
+	static handleMouseDown(Obj) {
+		return (e) => {
+			Obj.shiftX = e.clientX - Obj.DOM.getBoundingClientRect().left;
+			Obj.shiftY = e.clientY - Obj.DOM.getBoundingClientRect().top;
+			Obj.draggable = true;
+			Obj.DOM.style.position = 'absolute';
+			Obj.DOM.style.zIndex = 10;
+		};
+	};
+
+	static handleMouseMove(Obj) {
+		return e =>  Obj.draggable && (() => {
+			Obj.DOM.style.left = e.pageX - Obj.shiftX + 'px';
+			Obj.DOM.style.top = e.pageY - Obj.shiftY + 'px';
+		})();
+	};
+
+	static handleMouseUp(Obj) {
+		return () => Obj.draggable = false;
+	};
 }
