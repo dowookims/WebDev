@@ -115,6 +115,7 @@ class Icon {
 		IconDiv.addEventListener('mousedown', DragDOM.handleMouseDown(this));
 		IconDiv.addEventListener('mousemove', DragDOM.handleMouseMove(this));
 		IconDiv.addEventListener('mouseup', DragDOM.handleMouseUp(this));
+		IconDiv.addEventListener('mouseout', DragDOM.handleMouseOut(this));
 		
 		this.DOM = IconDiv;
 		
@@ -177,6 +178,7 @@ class Window {
 			Window.addEventListener('mousedown', DragDOM.handleMouseDown(this));
 			Window.addEventListener('mousemove', DragDOM.handleMouseMove(this));
 			Window.addEventListener('mouseup', DragDOM.handleMouseUp(this));
+			Window.addEventListener('mouseout', DragDOM.handleMouseOut(this));
 
 			Desktop.appendChild(Window);
 			this.DOM = Window
@@ -224,4 +226,8 @@ class DragDOM {
 	static handleMouseUp(Obj) {
 		return () => Obj.draggable = false;
 	};
+
+	static handleMouseOut(Obj) {
+		return () => Obj.draggable = false;
+	}
 }
