@@ -27,30 +27,20 @@ class Desktop {
 		
 	}
 
-	_init(){
+	init(){
 		this.drawAllFiles();
 	};
 	
 	drawAllFiles() {
 		const app = document.getElementsByClassName('app')[0];
-		const desktop = document.createElement('section');
-		
-		desktop.classList.add('desktop');
+		const dt = document.getElementById('desktop');
+		const desktop = document.importNode(dt.content, true);
 		app.appendChild(desktop);
 		
 		this.data.forEach((file) => {
 			this.addFile(file);
 		});
 	};
-
-	/*
-		const btn = document.createElement('button');
-		const desktop = document.getElementsByClassName('desktop')[0];
-		btn.innerText = "click me!";
-		desktop.appendChild(btn);
-		btn.addEventListener('click', myDesktop.appendItem({name:'kakao', type:'folder', iconSize: {w:100, h:100}}));
-	*/ 
-	
 
 	addFile(fileData){
 		const desktop = document.getElementsByClassName('desktop')[this.desktopNum];
@@ -105,29 +95,29 @@ class Icon {
 	};
 
 	drawIcon(Desktop){
-		const Div = document.createElement('div');
-		const P = document.createElement('p');
+		const IconTemplate = document.getElementById('icon');
+		const IconTemplateClone = document.importNode(IconTemplate.content, true);
+		const IconDiv = IconTemplateClone.querySelector('.icon');
+		const IconName = IconTemplateClone.querySelector(".fileName");
 
-		Div.classList.add('icon');
 		if (this.type === "normal"){
-			Div.classList.add("file")
+			IconDiv.classList.add("file")
 		} else {
-			Div.classList.add("folder")
+			IconDiv.classList.add("folder")
 		}
 
-		P.classList.add("fileName")
-		P.innerHTML = this.name;
-		Div.appendChild(P);
+		IconName.innerHTML = this.name;
 
-		Div.style.backgroundImage = `url(${this.imageUrl})`;
-		Div.style.width = this.iconSize.w + 'px';
-		Div.style.height = this.iconSize.h + 'px';
-		Div.addEventListener('mousedown', DragDOM.handleMouseDown(this));
-		Div.addEventListener('mousemove', DragDOM.handleMouseMove(this));
-		Div.addEventListener('mouseup', DragDOM.handleMouseUp(this));
+		IconDiv.style.backgroundImage = `url(${this.imageUrl})`;
+		IconDiv.style.width = this.iconSize.w + 'px';
+		IconDiv.style.height = this.iconSize.h + 'px';
+		Desktop.appendChild(IconDiv);
+		IconDiv.addEventListener('mousedown', DragDOM.handleMouseDown(this));
+		IconDiv.addEventListener('mousemove', DragDOM.handleMouseMove(this));
+		IconDiv.addEventListener('mouseup', DragDOM.handleMouseUp(this));
 		
-		this.DOM = Div;
-		Desktop.appendChild(Div);
+		this.DOM = IconDiv;
+		
 	};
 
 	changeIcon(url, w, h){
@@ -160,8 +150,8 @@ class Folder {
 
 class Window {
 	/* TODO: Window 클래스는 어떤 멤버함수와 멤버변수를 가져야 할까요? */
-	constructor(open = false){
-		this.open = open;
+	constructor(){
+		this.open = false;
 		this.folderName = null;
 		this.DOM = null;
 		this.draggable = false;
@@ -172,27 +162,17 @@ class Window {
 	drawWindow(){
 		if (!this.DOM && !this.open){
 			const Desktop = document.getElementsByClassName('desktop')[0];
-			const Window = document.createElement('div');
-			const WindowTop = document.createElement('div');
-			const WindowNameSpan = document.createElement('span');
-			const WindowCloseSpan = document.createElement('span');
-			const WindowContent = document.createElement('div');
+			const WindowTemplate = document.getElementById('window');
+			const WindowClone = document.importNode(WindowTemplate.content, true);
+			const Window = WindowClone.querySelector('.window');
+			const WindowNameSpan = WindowClone.querySelector('.window-name');
+			const WindowCloseSpan = WindowClone.querySelector('.window-close-span');[0];
+			
 
-
-			WindowTop.classList.add('window-top');
-			WindowContent.classList.add('window-content');
-			WindowNameSpan.classList.add('window-name');
-			WindowCloseSpan.classList.add('window-close-span');
 
 			WindowNameSpan.innerHTML = this.folderName;
-			WindowCloseSpan.innerHTML = "&times";
 
-			WindowTop.appendChild(WindowNameSpan);
-			WindowTop.appendChild(WindowCloseSpan);
 			WindowCloseSpan.addEventListener('click', this.handleWindowClose());
-			Window.appendChild(WindowTop);
-			Window.appendChild(WindowContent);
-			Window.classList.add("window");
 
 			Window.addEventListener('mousedown', DragDOM.handleMouseDown(this));
 			Window.addEventListener('mousemove', DragDOM.handleMouseMove(this));
@@ -200,7 +180,6 @@ class Window {
 
 			Desktop.appendChild(Window);
 			this.DOM = Window
-			
 
 			this.open = !this.open;
 		} else if (!this.open) {
@@ -224,8 +203,6 @@ class Window {
 };
 
 class DragDOM {
-// 	static 
-	constructor(){}
 
 	static handleMouseDown(Obj) {
 		return (e) => {

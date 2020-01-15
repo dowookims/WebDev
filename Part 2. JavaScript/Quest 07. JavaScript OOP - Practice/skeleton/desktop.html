@@ -8,12 +8,29 @@
 	<body>
 		<div class="app">
 		</div>
-
-		<div style="display:none;">
-			<template class="window">
-				
+		<div class="template-shell">
+			<template id="desktop">
+				<section class="desktop"></section>
+			</template>
+			<template id="icon">
+				<div class="icon">
+					<p class="fileName"></p>
+				</div>
+			</template>
+			<template id="window">
+				<div class="window">
+					<div class="window-top">
+						<div>
+							<span class="window-name"></span>
+							<span class="window-close-span">&times;</span>
+						</div>
+					</div>
+					<div class="window-content">
+					</div>
+				</div>
 			</template>
 		</div>
+		
 
 		<script>
 			const myDesktop = new Desktop(
@@ -33,7 +50,7 @@
 					},
 				]
 			); */
-			myDesktop._init();
+			myDesktop.init();
 			// youDesktop._init(); 
 		</script>
 	</body>
