@@ -1,6 +1,6 @@
 /* TODO: 자유롭게 바탕화면 시스템의 CSS를 만들어 보세요! */
 
-html, body, div, span, h1, h2, h3, h4, h5, h6, p, a, img, i, ul, li, canvas {
+html, body, div, span, p, a, img {
     margin: 0;
 	padding: 0;
 	border: 0;
