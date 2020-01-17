@@ -26,9 +26,14 @@ class Month {
 
   drawMonth() {
     if (!this.monthDOM){
-      const calendarContent = document.querySelector('.calendar-content');
+      const yearSpan = document.querySelector('.year');
+      const monthSpan = document.querySelector('.month');
+      const numberContent = document.querySelector('.number-calendar');
       const weekDiv = document.getElementById('week');
       const dateDiv =document.getElementById("date");
+
+      yearSpan.innerText = this.year;
+      monthSpan.innerText = this.month + 1;
 
       for (let i=0; i < this.weeks; i++) {
           const weekClone = document.importNode(weekDiv.content, true);
@@ -54,8 +59,11 @@ class Month {
           weekDOM.appendChild(dateDOM);
         };
 
-        calendarContent.appendChild(weekDOM);
+        numberContent.appendChild(weekDOM);
       };
+      this.monthDOM = numberContent;
+    } else {
+      numberContent
     }
   }
 }
