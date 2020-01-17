@@ -33,7 +33,7 @@ class Calendar {
     const calendar = document.getElementById('calendar');
     const calendarClone = document.importNode(calendar.content, true);
     app.appendChild(calendarClone);
-    
+
     const month = new Month(this.year, this.month, [])
     month.drawMonth();
   };

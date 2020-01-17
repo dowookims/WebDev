@@ -1,0 +1,54 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#app {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+}
+
+.calendar {
+  width: 800px;
+  border: 1px solid #333;
+}
+
+.calendar-header {
+  height: 100px;
+}
+
+.calendar-content {
+
+}
+
+.days {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 40px;
+  background-color: #aaa;
+}
+
+.day-name {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 14.2857142857%;
+  border: 1px solid #333;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.week {
+  display: flex;
+}
+
+.date {
+  width: 14.2857142857%;
+  text-align: center;
+  height: 120px;
+}
