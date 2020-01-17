@@ -1,4 +1,4 @@
-class Date {
+class Day {
   constructor(date, todo){
     this.date = date;
     this.todo = todo;
@@ -9,4 +9,4 @@ class Date {
   updateTodo(id){};
 };
 
-module.exports = Date;
+// module.exports = Day;
