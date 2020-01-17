@@ -25,6 +25,7 @@ class Month {
   }
 
   drawMonth() {
+    
     if (!this.monthDOM){
       const yearSpan = document.querySelector('.year');
       const monthSpan = document.querySelector('.month');
@@ -40,7 +41,7 @@ class Month {
           const weekDOM = weekClone.querySelector('.week');
         
           console.log(i)
-        for (let j=0; j < 7; j++) {
+        for (let j=1; j < 8; j++) {
           const idx = i * 7 +  j;
           let date;
           if (this.firstDay >= idx){

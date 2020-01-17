@@ -19,6 +19,7 @@ class Calendar {
     this.month = date.getMonth();
     this.todoList = todoList;
     this.today = date;
+    this.todoList[this.year][this.month] = new Month(this.year, this.month, [])
   };
 
   addMonth(n){
@@ -38,8 +39,19 @@ class Calendar {
       } else {
         this.month += n;
       }
-      numberCalendar.innerHTML ='';
-      this.drawCalendar();
+
+      let month;
+      this.todoList[this.year][this.month] instanceof Month
+      ? month = this.todoList[this.year][this.month]
+      : month = new Month(this.year, this.month, [])
+      if (!this.todoList[this.year][this.month]) {
+        this.todoList[this.year][this.month] = month;
+      }
+      const weekElems = document.querySelectorAll('.week');
+      weekElems.forEach(weekElem => {
+        weekElem.parentNode.removeChild(weekElem);
+      })
+      month.drawMonth();
     }
   };
 
@@ -47,15 +59,10 @@ class Calendar {
     const app = document.getElementById('app');
     const calendar = document.getElementById('calendar');
     const calendarClone = document.importNode(calendar.content, true);
-    let month;
+
     app.appendChild(calendarClone);
-    this.todoList[this.year][this.month] instanceof Month
-    ? month = this.todoList[this.year][this.month]
-    : month = new Month(this.year, this.month, [])
-    if (!this.todoList[this.year][this.month]) {
-      this.data[this.year][this.month] = month;
-    }
-    month.drawMonth();
+    
+    this.todoList[this.year][this.month].drawMonth();
 
     const lastMonthBtn = document.querySelector('.lastMonth');
     const nextMonthBtn = document.querySelector('.nextMonth');
