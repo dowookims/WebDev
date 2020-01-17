@@ -7,6 +7,7 @@ class Calendar {
     if (data.toString === "Invalid Date") {
       throw Error("Invalid Date Object data");
     }
+    
     const date = data;
     this.year = date.getFullYear();
     this.month = date.getMonth();

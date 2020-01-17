@@ -5,3 +5,4 @@ class Todo {
     this.desc = desc;
   }
 }
+module.exports = Todo;
