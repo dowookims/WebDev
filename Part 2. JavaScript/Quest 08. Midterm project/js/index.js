@@ -1,3 +1,5 @@
 const c = new Calendar(new Date());
 
-console.log(c);
+const m = new Month(c.year, c.month, []);
+
+console.log(m);
