@@ -7,8 +7,6 @@ class Month {
     this.totalDate = null;
     this.firstDay = null;
     this.weeks = null;
-    this.monthDOM = null;
-    this.dates = [];
 
     (() => {
       const lastMonth = new Date(y, m, 0);
@@ -25,22 +23,16 @@ class Month {
   }
 
   drawMonth() {
-    if (!this.monthDOM){
-      for (let i=0; i < this.weeks; i++) {
-        for (let j=0; j < 7; j++) {
-          const idx = i * 7 +  j;
-          let date;
-          if (this.firstDay >= idx){
-            date = this.lastMonthDate - this.firstDay + idx;
-            
-          } else if(idx - this.firstDay > this.totalDate){
-            date = idx - this.firstDay - this.totalDate;
-          } else {
-            date = idx - this.firstDay;
-          }
-          this.dates.push(new Day(new Date(this.year, this.month -1, date), []) );
-        }
+    for (let i=1; i<=this.weeks * 7; i++) {
+      if (this.firstDay >= i){
+        console.log("asd", this.lastMonthDate - this.firstDay + i);
+      } else if(i - this.firstDay > this.totalDate){
+        console.log(i - this.firstDay - this.totalDate);
+      } else {
+        console.log(i - this.firstDay);
       }
     }
   }
 }
+
+module.exports = Month;

@@ -1,4 +1,4 @@
-const Calendar = require('../js/calendar');
+const Calendar = require('../t/calendar');
 
 describe("Calendar Initialize test", () => {
   const calendar = new Calendar(new Date());

@@ -28,8 +28,7 @@ class Calendar {
     }
   };
 
-  drawCalendar(){
-    const calendar = document.getElementById('calendar');
-    calendar.cloneNode
-  };
+  // drawCalendar(){};
 }
+
+module.exports = Calendar;
