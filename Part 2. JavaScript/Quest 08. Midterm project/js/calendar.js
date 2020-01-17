@@ -44,7 +44,7 @@ class Calendar {
       this.todoList[this.year][this.month] instanceof Month
       ? month = this.todoList[this.year][this.month]
       : month = new Month(this.year, this.month, [])
-      if (!this.todoList[this.year][this.month]) {
+      if (!(this.todoList[this.year][this.month] instanceof Month)) {
         this.todoList[this.year][this.month] = month;
       }
       const weekElems = document.querySelectorAll('.week');
@@ -52,6 +52,7 @@ class Calendar {
         weekElem.parentNode.removeChild(weekElem);
       })
       month.drawMonth();
+      console.log(this)
     }
   };
 

@@ -16,7 +16,36 @@
 }
 
 .calendar-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100px;
+}
+
+.lastMonth, .nextMonth {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.lastMonth:hover, .nextMonth:hover {
+  color: red;
+}
+
+.lastMonth {
+  margin-right: 20px;
+}
+
+.nextMonth {
+  margin-left: 20px;
+}
+
+.year, .month {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.sep {
+  margin: 10px;
 }
 
 .calendar-content {
