@@ -1,5 +1,13 @@
 class Calendar {
-  constructor(date, todoList = []){
+  constructor(data, todoList = []){
+    if (!data instanceof(Date)) {
+      data = new Date(data);
+      
+    }
+    if (data.toString === "Invalid Date") {
+      throw Error("Invalid Date Object data");
+    }
+    const date = data;
     this.year = date.getFullYear();
     this.month = date.getMonth();
     this.todoList = todoList;

@@ -20,6 +20,12 @@ describe("Calendar Initialize test", () => {
   test("same year", () => {
     expect(y).toBe(calendar.year);
   });
+
+  test("Invalid data", () => {
+    expect(() => {
+      new Calendar("kaka");
+    }).toThrow();
+  });
 });
 
 describe("Add month test", () => {
