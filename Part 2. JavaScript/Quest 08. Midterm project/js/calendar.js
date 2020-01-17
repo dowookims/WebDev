@@ -27,17 +27,18 @@ class Calendar {
     return () => {
       if (this.month === 11 && n === 1) {
         this.year++;
-        if (!this.todoList[this.year]){
-          this.todoList[this.year] = [
-            {0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},
-          ]
-        }
+        
         this.month = 0;
       } else if (this.month === 0 && n === -1) {
         this.year--;
         this.month = 11;
       } else {
         this.month += n;
+      }
+      if (!this.todoList[this.year]){
+        this.todoList[this.year] = [
+          {0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},
+        ]
       }
 
       let month;

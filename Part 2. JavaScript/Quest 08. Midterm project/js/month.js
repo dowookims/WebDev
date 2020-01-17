@@ -7,7 +7,6 @@ class Month {
     this.totalDate = null;
     this.firstDay = null;
     this.weeks = null;
-    this.monthDOM = null;
     this.dates = [];
 
     (() => {
@@ -26,15 +25,16 @@ class Month {
 
   drawMonth() {
     const numberContent = document.querySelector('.number-calendar');
-    if (!this.monthDOM){
-      const yearSpan = document.querySelector('.year');
-      const monthSpan = document.querySelector('.month');
+    const yearSpan = document.querySelector('.year');
+    const monthSpan = document.querySelector('.month');
+    const calendarNumberDiv = document.querySelector('.calendar-number-div');
+
+    yearSpan.innerText = this.year;
+    monthSpan.innerText = this.month + 1;
+
       
       const weekDiv = document.getElementById('week');
       const dateDiv =document.getElementById("date");
-
-      yearSpan.innerText = this.year;
-      monthSpan.innerText = this.month + 1;
 
       for (let i=0; i < this.weeks; i++) {
           const weekClone = document.importNode(weekDiv.content, true);
@@ -61,9 +61,6 @@ class Month {
 
         numberContent.appendChild(weekDOM);
       };
-      this.monthDOM = numberContent;
-    } else {
-      numberContent.appendChild(this.monthDOM);
-    }
+      calendarNumberDiv.appendChild(numberContent);
   }
 }
