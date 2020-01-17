@@ -26,7 +26,14 @@ class Month {
 
   drawMonth() {
     if (!this.monthDOM){
+      const calendarContent = document.querySelector('calendar-content');
+      console.log(calendarContent)
+
       for (let i=0; i < this.weeks; i++) {
+
+        const weekDiv = document.getElementById('week');
+        const weekClone = document.importNode(weekDiv, true);
+
         for (let j=0; j < 7; j++) {
           const idx = i * 7 +  j;
           let date;
@@ -39,8 +46,14 @@ class Month {
             date = idx - this.firstDay;
           }
           this.dates.push(new Day(new Date(this.year, this.month -1, date), []) );
-        }
-      }
+          const dateDiv =document.getElementById("date");
+          const dateClone = document.importNode(dateDiv, true);
+          dateClone.innerText = 'date';
+          weekClone.appendChild(dateClone);
+        };
+
+        calendarContent.appendChild(weekClone);
+      };
     }
   }
 }

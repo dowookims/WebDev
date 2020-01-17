@@ -29,7 +29,12 @@ class Calendar {
   };
 
   drawCalendar(){
+    const app = document.getElementById('app');
     const calendar = document.getElementById('calendar');
-    calendar.cloneNode
+    const calendarClone = document.importNode(calendar.content, true);
+    app.appendChild(calendarClone);
+    
+    const month = new Month(this.year, this.month, [])
+    month.drawMonth();
   };
 }
