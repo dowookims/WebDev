@@ -6,9 +6,19 @@ class Calendar {
     this.today = date;
   };
 
-  addMonth(n){};
+  addMonth(n){
+    if (this.month === 11 && n === 1) {
+      this.year++;
+      this.month = 0;
+    } else if (this.month === 0 && n === -1) {
+      this.year--;
+      this.month = 11;
+    } else {
+      this.month += n;
+    }
+  };
 
-  drawCalendar(){};
+  // drawCalendar(){};
 }
 
 module.exports = Calendar;
