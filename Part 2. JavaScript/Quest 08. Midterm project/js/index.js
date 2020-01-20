@@ -1,3 +1,3 @@
-const c = new Calendar(new Date(2020, 0, 1));
+const c = new Calendar(new Date());
 
 c.drawCalendar();
