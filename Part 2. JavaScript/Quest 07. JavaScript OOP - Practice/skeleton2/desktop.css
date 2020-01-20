@@ -1,0 +1,40 @@
+* {
+    outline: 1px dashed black;
+}
+
+html, body, div, span, p, a, img {
+    margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+
+.app {
+    position: relative;
+    width: 800px;
+    height: 600px;
+}
+
+.icon {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background-repeat: none;
+    background-size: cover;
+    background-image: url('https://pbs.twimg.com/profile_images/706869492098400257/B9sZcbmV_400x400.jpg');
+    cursor: pointer;
+}
+
+.icon.folder {
+    background-image: url('https://www.vippng.com/png/detail/96-965935_transparent-images-pluspng-icon-white-folder-icon-transparent.png');
+}
+
+.fileName {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+    z-index: 3;
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="./desktop.css">
+		<script src="./desktop.js"></script>
+	</head>
+	<body>
+		<div class="app">
+		</div>
+		<div class="template-shell">
+			<template id="icon">
+				<div class="icon">
+					<p class="fileName"></p>
+				</div>
+			</template>
+			<template id="window">
+				<div class="window">
+					<div class="window-top">
+						<div>
+							<span class="window-name"></span>
+							<span class="window-close-span">&times;</span>
+						</div>
+					</div>
+					<div class="window-content">
+					</div>
+				</div>
+			</template>
+		</div>
+		
+
+		<script>
+			const myDesktop = new Desktop(
+				document.querySelector('.app'),
+				[
+					new Icon('icon1'),
+					new Icon('icon2'),
+					new Folder('folder1'),
+					new Folder('folder2')
+				]
+			);
+		</script>
+	</body>
+</html>
