@@ -33,7 +33,6 @@ class Calendar {
     return () => {
       if (this.month === 11 && n === 1) {
         this.year++;
-        
         this.month = 0;
       } else if (this.month === 0 && n === -1) {
         this.year--;

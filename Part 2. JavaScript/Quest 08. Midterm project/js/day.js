@@ -9,6 +9,8 @@ class Day {
       id, date, title, desc
     });
   };
+
   removeTodo(id){};
+  
   updateTodo(id){};
 };

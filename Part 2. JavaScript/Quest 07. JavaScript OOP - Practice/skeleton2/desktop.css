@@ -38,3 +38,35 @@ html, body, div, span, p, a, img {
     text-align: center;
     z-index: 3;
 }
+
+.window {
+    position: absolute;
+    width: 50vw;
+    height: 50vh;
+    left: 400px;
+    border: 2px solid #333;
+    border-radius: 10px;
+    background-color: #fff;
+}
+
+.window-top {
+    height:50px;
+    background-color: #999;
+    border-radius: 10px 10px 0 0;
+    position: relative;
+}
+
+
+.window-name {
+    position: absolute;
+    left: 20px;
+    top: 15px;
+}
+
+.window-close-span {
+    position: absolute;
+    display: inline-block;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+}
