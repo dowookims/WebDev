@@ -69,7 +69,6 @@ class Desktop {
 };
 
 class File {
-	/* 파일들을 관리하는 클래스 */ 
 	constructor(data){
 		this.name = data.name;
 		this.type = data.type;
@@ -100,11 +99,9 @@ class Icon {
 		const IconDiv = IconTemplateClone.querySelector('.icon');
 		const IconName = IconTemplateClone.querySelector(".fileName");
 
-		if (this.type === "normal"){
-			IconDiv.classList.add("file")
-		} else {
-			IconDiv.classList.add("folder")
-		}
+		this.type === "normal" 
+		? IconDiv.classList.add("file")
+		: IconDiv.classList.add("folder")
 
 		IconName.innerHTML = this.name;
 
@@ -127,8 +124,6 @@ class Icon {
 		this.DOM.style.height = h + 'px';
 	}
 };
-
-
 
 class Folder {
 	/* TODO: Folder 클래스는 어떤 멤버함수와 멤버변수를 가져야 할까요? */
@@ -166,8 +161,6 @@ class Window {
 			const WindowNameSpan = WindowClone.querySelector('.window-name');
 			const WindowCloseSpan = WindowClone.querySelector('.window-close-span');[0];
 			
-
-
 			WindowNameSpan.innerHTML = this.folderName;
 
 			WindowCloseSpan.addEventListener('click', this.handleWindowClose());
@@ -204,6 +197,7 @@ class DragDOM {
 		DOM.addEventListener('mouseup', DragDOM.handleMouseUp(Obj));
 		DOM.addEventListener('mouseout', DragDOM.handleMouseOut(Obj));
 	}
+
 	static handleMouseDown(Obj) {
 		return (e) => {
 			Obj.shiftX = e.clientX - Obj.DOM.getBoundingClientRect().left;
