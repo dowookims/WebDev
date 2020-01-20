@@ -112,10 +112,7 @@ class Icon {
 		IconDiv.style.width = this.iconSize.w + 'px';
 		IconDiv.style.height = this.iconSize.h + 'px';
 		Desktop.appendChild(IconDiv);
-		IconDiv.addEventListener('mousedown', DragDOM.handleMouseDown(this));
-		IconDiv.addEventListener('mousemove', DragDOM.handleMouseMove(this));
-		IconDiv.addEventListener('mouseup', DragDOM.handleMouseUp(this));
-		IconDiv.addEventListener('mouseout', DragDOM.handleMouseOut(this));
+		DragDOM.handleDnD(IconDiv, this);
 		
 		this.DOM = IconDiv;
 		
@@ -174,11 +171,7 @@ class Window {
 			WindowNameSpan.innerHTML = this.folderName;
 
 			WindowCloseSpan.addEventListener('click', this.handleWindowClose());
-
-			Window.addEventListener('mousedown', DragDOM.handleMouseDown(this));
-			Window.addEventListener('mousemove', DragDOM.handleMouseMove(this));
-			Window.addEventListener('mouseup', DragDOM.handleMouseUp(this));
-			Window.addEventListener('mouseout', DragDOM.handleMouseOut(this));
+			DragDOM.handleDnD(Window, this)
 
 			Desktop.appendChild(Window);
 			this.DOM = Window
@@ -205,7 +198,12 @@ class Window {
 };
 
 class DragDOM {
-
+	static handleDnD(DOM, Obj) {
+		DOM.addEventListener('mousedown', DragDOM.handleMouseDown(Obj));
+		DOM.addEventListener('mousemove', DragDOM.handleMouseMove(Obj));
+		DOM.addEventListener('mouseup', DragDOM.handleMouseUp(Obj));
+		DOM.addEventListener('mouseout', DragDOM.handleMouseOut(Obj));
+	}
 	static handleMouseDown(Obj) {
 		return (e) => {
 			Obj.shiftX = e.clientX - Obj.DOM.getBoundingClientRect().left;
