@@ -11,29 +11,34 @@ class SideDrawer {
         const todoItemDiv = document.getElementById('todo-item');
         const todoDivClone = document.importNode(todoDiv.content, true);
         const todoDivBox = todoDivClone.querySelector('.todo');
-        const todoContent = todoDivClone.querySelector('.todo-content');
         const todoMonth = todoDivClone.querySelector('.todo-month');
         const todoDate = todoDivClone.querySelector('.todo-date');
         const todoItems = document.querySelectorAll('.todo-item');
-
+        let todoContent = todoDivClone.querySelector('.todo-content');
+        
         if (todoItems.length >= 1) {
             todoItems.forEach(elem => {
                 elem.parentNode.removeChild(elem);
             });
         };
 
-        todoMonth.innerHTML = `${this.month + 1}월 `;
-        todoDate.innerHTML = `${this.date} 일 `;
+        const dTodoMonth = document.querySelector('.todo-month');
+        const dTodoDate = document.querySelector('.todo-date');
+        if (dTodoMonth) {
+            dTodoMonth.innerHTML = `${this.month + 1}월 `;
+            dTodoDate.innerHTML = `${this.date} 일 `;
+        } else {
+            todoMonth.innerHTML = `${this.month + 1}월 `;
+            todoDate.innerHTML = `${this.date} 일 `;
+        }
 
         this.todos && this.todos.forEach(todo => {
+            if (this.dom) todoContent = document.querySelector('.todo-content');
             const todoItemDivClone = document.importNode(todoItemDiv.content, true);
             const todoItem = todoItemDivClone.querySelector('.todo-item');
             todoItem.innerText = `${todo.title} : ${todo.desc}`;
             todoContent.appendChild(todoItem);   
         });
-        // todoDiv.append(todoContent);
-        console.log("TODOS?", this.todos)
-
         this.dom = todoDivBox;
     }
 }

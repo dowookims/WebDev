@@ -52,7 +52,7 @@ class Month {
             let year = this.year;
             let month = this.month;
             let date;
-            // 아마 여기서 문제가 발생한듯 함.
+            
             if (this.firstDay >= idx) {
               date = this.lastMonthDate - this.firstDay + idx;
               month--;
