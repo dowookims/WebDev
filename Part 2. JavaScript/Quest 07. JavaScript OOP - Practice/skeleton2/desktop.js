@@ -128,7 +128,7 @@ class DndHandler {
     }
 
     _refreshCoords (e) {
-            this.xCoord = e.clientX;
-            this.yCoord = e.clientY;
+        this.xCoord = e.clientX;
+        this.yCoord = e.clientY;
     }
 }
