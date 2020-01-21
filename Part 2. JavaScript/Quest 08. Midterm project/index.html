@@ -8,70 +8,116 @@
   <link rel="stylesheet" href="./css/reset.css">
 </head>
 <body>
-  <div id="app">
+  <div id="app"></div>
 
-  </div>
-  <template id="calendar">
-    <div class="calendar">
-        <div class="calendar-header">
-            <span class="lastMonth"><</span>
-            <span class="year"></span>
-            <span class="sep">.</span>
-            <span class="month"></span>
-            <span class="nextMonth">></span>
-          </div>
-          <div class="calendar-content">
-            <div class="days">
-              <div class="day-name">
-                <span>SUN</span>
+  <div style="display: none;">
+    <template id="calendar">
+      <div class="calendar">
+          <div class="calendar-header">
+              <span class="lastMonth"><</span>
+              <span class="year"></span>
+              <span class="sep">.</span>
+              <span class="month"></span>
+              <span class="nextMonth">></span>
+            </div>
+            <div class="calendar-content">
+              <div class="days">
+                <div class="day-name">
+                  <span>SUN</span>
+                </div>
+                <div class="day-name">
+                  <span>MON</span>
+                </div>
+                <div class="day-name">
+                  <span>TUE</span>
+                </div>
+                <div class="day-name">
+                  <span>WED</span>
+                </div>
+                <div class="day-name">
+                  <span>THU</span>
+                </div>
+                <div class="day-name">
+                  <span>FRI</span>
+                </div>
+                <div class="day-name">
+                  <span>SAT</span>
+                </div>
               </div>
-              <div class="day-name">
-                <span>MON</span>
-              </div>
-              <div class="day-name">
-                <span>TUE</span>
-              </div>
-              <div class="day-name">
-                <span>WED</span>
-              </div>
-              <div class="day-name">
-                <span>THU</span>
-              </div>
-              <div class="day-name">
-                <span>FRI</span>
-              </div>
-              <div class="day-name">
-                <span>SAT</span>
+              <div class="calendar-number-div">
+                <div class="number-calendar">
+
+                </div>
               </div>
             </div>
-            <div class="calendar-number-div">
-              <div class="number-calendar">
+      </div>
+    </template>
+    
 
-              </div>
+    <template id="week">
+      <div class="week"></div>
+    </template>
+
+    <template id="date">
+      <div class="date">
+        <span class="date-span"></span>
+      </div>
+    </template>
+
+    <template id="todo">
+      <div class="todo">
+        <div class="todo-header">
+          <span class="todo-month"></span>
+          <span class="todo-date"></span>
+          <span>의 할 일</span>
+        </div>
+        <div class="todo-content"></div>      
+        </div>
+      </div>
+    </template>
+
+    <template id="todo-item">
+        <div class="todo-item">
+          
+        </div>
+    </template>
+
+    <template id="modal">
+      <div class="modal">
+        <div class="modal-content">
+          <div class="modal-content-header">
+            <span class="modal-header-text">dhsmfdmlgkfdlf</span>
+            <span class="modal-close-btn">&times;</span>
+          </div>
+          <div class="modal-content-body">
+            <div class="modal-date-div">
+              <label for="todo-date" >일자</label>
+              <input id="todo-date"type="date" />
+            </div>
+            <div class="modal-title-div">
+              <label for="todo-title">제목</label>
+              <input id="todo-title" type="text" />
+            </div>
+            <div class="modal-desc-div">
+              <label for="todo-desc">세부 내용</label>
+              <input id="todo-desc" type="text" />
             </div>
           </div>
-    </div>
-  </template>
-  
+          <div class="modal-content-footer">
+            <button class="submit-btn">작성</button>
+          </div>
+        </div>
+      </div>
+    </template>
 
-  <template id="week">
-    <div class="week"></div>
-  </template>
-
-  <template id="date">
-    <div class="date"></div>
-  </template>
-
-  <template id="todo">
-    <div class="todo">
-
-    </div>
-  </template>
-
+</div>
   <script src="./js/calendar.js"></script>
+  <script src="./js/modal.js"></script>
+  <script src="./js/sideDrawer.js"></script>
   <script src="./js/month.js"></script>
   <script src="./js/day.js"></script>
-  <script src="./js/todo.js"></script>
+  <script src="./js/todoList.js"></script>
+  <script src="./js/todos.js"></script>
   <script src="./js/index.js"></script>
 </body>
 </html>

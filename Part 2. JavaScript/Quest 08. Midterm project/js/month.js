@@ -1,13 +1,15 @@
 class Month {
-  constructor(y, m, todos){
+  constructor(y, m, today, todos){
     this.year = y;
     this.month = m;
     this.todos = todos;
+    this.today = today;
     this.lastMonthDate = null;
     this.totalDate = null;
     this.firstDay = null;
     this.weeks = null;
     this.dates = [];
+    this.dom = null;
 
     (() => {
       const lastMonth = new Date(y, m, 0);
@@ -23,44 +25,67 @@ class Month {
     })();
   }
 
-  drawMonth() {
+  _prepareDOM () {
+    const weekElems = document.querySelectorAll('.week');
+    
+    weekElems.length && weekElems.forEach(weekElem => {
+        weekElem.parentNode.removeChild(weekElem);
+    });
+
+
     const numberContent = document.querySelector('.number-calendar');
     const yearSpan = document.querySelector('.year');
     const monthSpan = document.querySelector('.month');
     const calendarNumberDiv = document.querySelector('.calendar-number-div');
+    const weekDiv = document.getElementById('week');
 
     yearSpan.innerText = this.year;
     monthSpan.innerText = this.month + 1;
-
-      
-      const weekDiv = document.getElementById('week');
-      const dateDiv =document.getElementById("date");
-
-      for (let i=0; i < this.weeks; i++) {
-          const weekClone = document.importNode(weekDiv.content, true);
-          const weekDOM = weekClone.querySelector('.week');
-
+        // 주별
+    for (let i=0; i < this.weeks; i++) {
+        const weekClone = document.importNode(weekDiv.content, true);
+        const weekDOM = weekClone.querySelector('.week');
+  
+          // 일별
         for (let j=1; j < 8; j++) {
-          const idx = i * 7 +  j;
-          let date;
-          if (this.firstDay >= idx){
-            date = this.lastMonthDate - this.firstDay + idx;
+            const idx = i * 7 +  j;
+            let year = this.year;
+            let month = this.month;
+            let date;
             
-          } else if(idx - this.firstDay > this.totalDate){
-            date = idx - this.firstDay - this.totalDate;
-          } else {
-            date = idx - this.firstDay;
-          }
-          this.dates.push(new Day(new Date(this.year, this.month -1, date), []) );
-          
-          const dateClone = document.importNode(dateDiv.content, true);
-          const dateDOM = dateClone.querySelector('.date');
-          dateDOM.innerText = date;
-          weekDOM.appendChild(dateDOM);
-        };
+            if (this.firstDay >= idx) {
+              date = this.lastMonthDate - this.firstDay + idx;
+              month--;
+              if (month === -1) { year--; month = 11;};
+            } else if ( idx - this.firstDay > this.totalDate ) {
+              date = idx - this.firstDay - this.totalDate;
+              month++;
+              if (month === 12) { year++; month = 0;};
+            } else {
+              date = idx - this.firstDay;
+            }
 
-        numberContent.appendChild(weekDOM);
-      };
-      calendarNumberDiv.appendChild(numberContent);
-  }
+            let dayInstance = null;
+            if (month === this.month 
+                && date >= 1 
+                && date <= this.totalDate) {
+                this.dates.push(new Day(year, month, date, this.todos[date]));
+                dayInstance = this.dates[date - 1];
+            } else {
+              dayInstance = new Day(year, month, date, [])
+            };
+            
+            if (this.today.getFullYear() === dayInstance.year
+                && this.today.getMonth() === dayInstance.month 
+                && this.today.getDate() === dayInstance.date) {
+                    dayInstance.dom.lastChild.classList.add("today");
+            }
+
+            weekDOM.appendChild(dayInstance.dom);
+        };
+            numberContent.appendChild(weekDOM);
+        };
+        this.dom = numberContent;
+        calendarNumberDiv.appendChild(numberContent);
+    }
 }

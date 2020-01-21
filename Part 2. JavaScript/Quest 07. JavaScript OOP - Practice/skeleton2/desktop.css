@@ -43,7 +43,6 @@ html, body, div, span, p, a, img {
     position: absolute;
     width: 50vw;
     height: 50vh;
-    left: 400px;
     border: 2px solid #333;
     border-radius: 10px;
     background-color: #fff;

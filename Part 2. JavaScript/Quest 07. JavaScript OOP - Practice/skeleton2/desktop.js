@@ -39,17 +39,15 @@ class Icon {
 class Folder {
     constructor (name) {
         this.name = name;
-        this.window = null;
         this._prepareDom();
         this.dndHandler = new DndHandler(this.dom);
+        this.window = null;
     }
 
     _prepareDom () {
-		const iconTemplate = document.getElementById('icon');
-        const iconTemplateClone = document.importNode(iconTemplate.content, true);
-        iconTemplateClone.querySelector('.icon').classList.add('folder');
-        iconTemplateClone.querySelector('.fileName').innerHTML = this.name;
-        this.dom = iconTemplateClone.querySelector('.icon');
+        Icon.prototype._prepareDom.call(this);
+        this.dom.classList.add('folder');
+        
         this._openWindow();
     }
 
@@ -63,10 +61,9 @@ class Folder {
             else this.window.dom.style.display = "block";
         })
     }
-
+    
     adjustPosition (x, y) {
-        this.dom.style.left = `${x}px`;
-        this.dom.style.top = `${y}px`;
+        Icon.prototype.adjustPosition.call(this, ...arguments);
     }
 }
 
@@ -75,12 +72,11 @@ class Window {
         this.name = name;
         this.dom = null;
         this._prepareDOM();
-        this.dndHandler = new DndHandler(this.dom);
+        this.dndHandler = new DndHandler(this.dom, 400, 0);
     }
 
     adjustPosition (x, y) {
-        this.dom.style.left = `${x}px`;
-        this.dom.style.top = `${y}px`;
+        Icon.prototype.adjustPosition.call(this, ...arguments);
     }
 
     _prepareDOM () {
@@ -90,7 +86,6 @@ class Window {
         windowClone.querySelector('.window-name').innerHTML = this.name;
         windowClone.querySelector('.window-close-span').addEventListener('click', () => { 
             this.dom.style.display = 'none';
-            this.adjustPosition(400, 0);
         })
         this.dom = windowDiv;
     }
