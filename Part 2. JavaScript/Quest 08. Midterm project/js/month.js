@@ -1,13 +1,15 @@
 class Month {
-  constructor(y, m, todos){
+  constructor(y, m, today, todos){
     this.year = y;
     this.month = m;
     this.todos = todos;
+    this.today = today;
     this.lastMonthDate = null;
     this.totalDate = null;
     this.firstDay = null;
     this.weeks = null;
     this.dates = [];
+    this.dom = null;
 
     (() => {
       const lastMonth = new Date(y, m, 0);
@@ -23,64 +25,57 @@ class Month {
     })();
   }
 
-  drawMonth() {
-    const App = document.getElementById('app');
-    const modal = document.getElementById('modal');
-    const ModalClone = document.importNode(modal.content, true);
+  _prepareDOM () {
+    const weekElems = document.querySelectorAll('.week');
+
+    weekElems.forEach(weekElem => {
+        weekElem.parentNode.removeChild(weekElem);
+    });
+
     const numberContent = document.querySelector('.number-calendar');
     const yearSpan = document.querySelector('.year');
     const monthSpan = document.querySelector('.month');
     const calendarNumberDiv = document.querySelector('.calendar-number-div');
-    const ModalDiv = ModalClone.querySelector('.modal');
-    const today = new Date();
+    const weekDiv = document.getElementById('week');
 
     yearSpan.innerText = this.year;
     monthSpan.innerText = this.month + 1;
-
-    const weekDiv = document.getElementById('week');
-    const dateDiv = document.getElementById("date");
-    /* 
-      Week 이랑 Day로 컨텐츠를 줄여서 만들어 리팩토링 해도 괜찮지 않을까?
-    */
-      // 주별
-      for (let i=0; i < this.weeks; i++) {
-          const weekClone = document.importNode(weekDiv.content, true);
-          const weekDOM = weekClone.querySelector('.week');
-
-        // 일별
+      
+        // 주별
+    for (let i=0; i < this.weeks; i++) {
+        const weekClone = document.importNode(weekDiv.content, true);
+        const weekDOM = weekClone.querySelector('.week');
+  
+          // 일별
         for (let j=1; j < 8; j++) {
-          const idx = i * 7 +  j;
-          let date;
-          if (this.firstDay >= idx){
-            date = this.lastMonthDate - this.firstDay + idx;
+            const idx = i * 7 +  j;
+            let date;
+            if (this.firstDay >= idx) {
+              date = this.lastMonthDate - this.firstDay + idx;
+              
+            } else if ( idx - this.firstDay > this.totalDate ) {
+              date = idx - this.firstDay - this.totalDate;
+            } else {
+              date = idx - this.firstDay;
+            }
+
+            this.dates.push(new Day(this.year, this.month, date, []) );
+
+            const dayInstance = this.dates[idx-1];
             
-          } else if(idx - this.firstDay > this.totalDate){
-            date = idx - this.firstDay - this.totalDate;
-          } else {
-            date = idx - this.firstDay;
-          }
-          this.dates.push(new Day(new Date(this.year, this.month -1, date), []) );
-          
-          const dateClone = document.importNode(dateDiv.content, true);
-          const dateDOM = dateClone.querySelector('.date');
-          const dateSpan = dateClone.querySelector('.date-span');
-          
-          dateSpan.innerText = date;
-          if (today.getFullYear() === this.year && today.getMonth() === this.month && today.getDate() === date) {
-            dateSpan.classList.add("today");
-          }
+            if (this.today.getFullYear() === dayInstance.year
+                && this.today.getMonth() === dayInstance.month 
+                && this.today.getDate() === dayInstance.date) {
+                    dayInstance.dom.lastChild.classList.add("today");
+            }
 
-          dateSpan.addEventListener('click', () => { console.log("KKK"); ModalDiv.style.visibility = 'visible'})
-          const ModalSubmitBtn = ModalClone.querySelector('.submit-btn');
-          ModalSubmitBtn.addEventListener('click', Modal.submitTodo)
-
-          dateDOM.appendChild(dateSpan);
-          weekDOM.appendChild(dateDOM);
+            weekDOM.appendChild(this.dates[idx-1].dom);
         };
 
-        numberContent.appendChild(weekDOM);
-      };
-      calendarNumberDiv.appendChild(numberContent);
-      App.appendChild(ModalDiv)
-  }
+            numberContent.appendChild(weekDOM);
+        };
+
+        this.dom = numberContent;
+        calendarNumberDiv.appendChild(numberContent);
+    }
 }

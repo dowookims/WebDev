@@ -1,0 +1,21 @@
+class TodoList {
+    constructor (todoList, y, m, t) {
+        this.data = todoList;
+        this.dom = null;
+        this.year = y;
+        this.month = m;
+        this.today = t;
+        this.side = new SideDrawer(
+            this.data[this.year][this.month][this.today.getDate()]
+            , this.month
+            , this.today.getDate()
+        );
+        this._prepareDOM();
+        
+    }
+
+    _prepareDOM () {
+        this.data[this.year][this.month] = new Month(this.year, this.month, this.today, this.data[this.year][this.month]);
+        this.side._paintDOM();
+    }
+}
