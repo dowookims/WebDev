@@ -5,7 +5,7 @@ class Day {
         this.date = d;
         this.todo = todo;
         this.dom = null;
-        this.side = new SideDrawer(todo, m, d)
+        this.side = new SideDrawer(this.todo, m, d);
         this._prepareDOM();
     };
 
@@ -14,25 +14,13 @@ class Day {
       const dateClone = document.importNode(dateDiv.content, true);
       const dateDOM = dateClone.querySelector('.date');
       const dateSpan = dateClone.querySelector('.date-span');
-
       dateSpan.innerText = this.date;
-
-      dateDOM.addEventListener('click', this.addTodo);
-      dateSpan.addEventListener('click', (e) => {
-          e.stopPropagation();
-      }
-      )
       dateDOM.appendChild(dateSpan);
       this.dom = dateDOM;
+      this.dom.addEventListener('click', () => {
+        this.side._paintDOM();
+    })
   }
-
-  addTodo(){
-    this.side._paintDOM();
-    // this.todo.push({
-    //   id, date, title, desc
-    // });
-  };
-
   removeTodo(id){};
   
   updateTodo(id){};

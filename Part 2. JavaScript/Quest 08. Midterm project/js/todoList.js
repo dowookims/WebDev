@@ -6,9 +6,9 @@ class TodoList {
         this.month = m;
         this.today = t;
         this.side = new SideDrawer(
-            this.data[this.year][this.month][this.today.getDate()]
-            , this.month
-            , this.today.getDate()
+            this.data[y][m][t.getDate()]
+            , m
+            , t.getDate()
         );
         this._prepareDOM();
         
@@ -16,6 +16,7 @@ class TodoList {
 
     _prepareDOM () {
         this.data[this.year][this.month] = new Month(this.year, this.month, this.today, this.data[this.year][this.month]);
+        console.log("TODO LIST", this)
         this.side._paintDOM();
     }
 }

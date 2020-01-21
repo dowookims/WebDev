@@ -27,10 +27,11 @@ class Month {
 
   _prepareDOM () {
     const weekElems = document.querySelectorAll('.week');
-
-    weekElems.forEach(weekElem => {
+    
+    weekElems.length && weekElems.forEach(weekElem => {
         weekElem.parentNode.removeChild(weekElem);
     });
+
 
     const numberContent = document.querySelector('.number-calendar');
     const yearSpan = document.querySelector('.year');
@@ -40,7 +41,6 @@ class Month {
 
     yearSpan.innerText = this.year;
     monthSpan.innerText = this.month + 1;
-      
         // 주별
     for (let i=0; i < this.weeks; i++) {
         const weekClone = document.importNode(weekDiv.content, true);
@@ -49,19 +49,31 @@ class Month {
           // 일별
         for (let j=1; j < 8; j++) {
             const idx = i * 7 +  j;
+            let year = this.year;
+            let month = this.month;
             let date;
+            // 아마 여기서 문제가 발생한듯 함.
             if (this.firstDay >= idx) {
               date = this.lastMonthDate - this.firstDay + idx;
-              
+              month--;
+              if (month === -1) { year--; month = 11;};
             } else if ( idx - this.firstDay > this.totalDate ) {
               date = idx - this.firstDay - this.totalDate;
+              month++;
+              if (month === 12) { year++; month = 0;};
             } else {
               date = idx - this.firstDay;
             }
 
-            this.dates.push(new Day(this.year, this.month, date, []) );
-
-            const dayInstance = this.dates[idx-1];
+            let dayInstance = null;
+            if (month === this.month 
+                && date >= 1 
+                && date <= this.totalDate) {
+                this.dates.push(new Day(year, month, date, this.todos[date]));
+                dayInstance = this.dates[date - 1];
+            } else {
+              dayInstance = new Day(year, month, date, [])
+            };
             
             if (this.today.getFullYear() === dayInstance.year
                 && this.today.getMonth() === dayInstance.month 
@@ -69,12 +81,10 @@ class Month {
                     dayInstance.dom.lastChild.classList.add("today");
             }
 
-            weekDOM.appendChild(this.dates[idx-1].dom);
+            weekDOM.appendChild(dayInstance.dom);
         };
-
             numberContent.appendChild(weekDOM);
         };
-
         this.dom = numberContent;
         calendarNumberDiv.appendChild(numberContent);
     }

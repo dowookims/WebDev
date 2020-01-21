@@ -14,19 +14,26 @@ class SideDrawer {
         const todoContent = todoDivClone.querySelector('.todo-content');
         const todoMonth = todoDivClone.querySelector('.todo-month');
         const todoDate = todoDivClone.querySelector('.todo-date');
+        const todoItems = document.querySelectorAll('.todo-item');
 
-        todoMonth.innerText = `${this.month + 1}월 `;
-        todoDate.innerText = `${this.date} 일 `;
+        if (todoItems.length >= 1) {
+            todoItems.forEach(elem => {
+                elem.parentNode.removeChild(elem);
+            });
+        };
 
-        this.todos.forEach( todo => {
+        todoMonth.innerHTML = `${this.month + 1}월 `;
+        todoDate.innerHTML = `${this.date} 일 `;
+
+        this.todos && this.todos.forEach(todo => {
             const todoItemDivClone = document.importNode(todoItemDiv.content, true);
             const todoItem = todoItemDivClone.querySelector('.todo-item');
             todoItem.innerText = `${todo.title} : ${todo.desc}`;
-            todoContent.appendChild(todoItem);
-          }
-        );
+            todoContent.appendChild(todoItem);   
+        });
+        // todoDiv.append(todoContent);
+        console.log("TODOS?", this.todos)
 
-        todoDivBox.append(todoContent);
         this.dom = todoDivBox;
     }
 }
