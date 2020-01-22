@@ -1,4 +1,5 @@
 class Desktop {
+
     constructor (targetDom, icons) {
         this.dom = targetDom;
         this.icons = icons;
@@ -16,6 +17,7 @@ class Desktop {
 }
 
 class Icon {
+
     constructor (name) {
         this.name = name;
         this._prepareDom();
@@ -36,6 +38,7 @@ class Icon {
 }
 
 class Folder {
+    
     constructor (name) {
         this.name = name;
         this._prepareDom();
@@ -69,6 +72,7 @@ class Folder {
 
 //  Event로 값 전달하는 방식으로 한번 만들어보기
 class Window {
+
     constructor (name) {
         this.name = name;
         this.dom = null;
@@ -98,6 +102,7 @@ class Window {
 
 }
 class DndHandler {
+    
     constructor (targetDom) {
         this.targetDom = targetDom;
         this.xCoord = 0;
