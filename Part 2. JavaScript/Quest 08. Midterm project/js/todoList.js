@@ -16,7 +16,6 @@ class TodoList {
 
     _prepareDOM () {
         this.data[this.year][this.month] = new Month(this.year, this.month, this.today, this.data[this.year][this.month]);
-        console.log("TODO LIST", this)
         this.side._paintDOM();
     }
 }

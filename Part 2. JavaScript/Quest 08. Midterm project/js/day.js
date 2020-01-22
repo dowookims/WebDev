@@ -15,6 +15,10 @@ class Day {
       const dateDOM = dateClone.querySelector('.date');
       const dateSpan = dateClone.querySelector('.date-span');
       dateSpan.innerText = this.date;
+      dateSpan.addEventListener('click', (e) => {
+          e.stopPropagation();
+          console.log(e)
+      })
       dateDOM.appendChild(dateSpan);
       this.dom = dateDOM;
       this.dom.addEventListener('click', () => {

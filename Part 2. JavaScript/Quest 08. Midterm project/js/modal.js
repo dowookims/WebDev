@@ -1,7 +1,14 @@
 class Modal {
     constructor(
 
-    ){ ; }
+    ){ ; };
+
+    _prepareDOM() {
+
+    }
+    openModal() {
+        console.log()
+    };
 
     static submitTodo() {
         const dateData = document.getElementById("todo-date");
