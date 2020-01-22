@@ -22,9 +22,11 @@ class Calendar {
     const app = document.getElementById('app');
     const calendar = document.getElementById('calendar');
     const calendarClone = document.importNode(calendar.content, true);
+    const modal = new Modal();
 
     app.appendChild(calendarClone);
     app.appendChild(this.todoList.side.dom);
+    app.appendChild(modal.dom);
     
     this.todoList.data[this.year][this.month]._prepareDOM();
     const lastMonthBtn = document.querySelector('.lastMonth');
@@ -46,22 +48,18 @@ class Calendar {
         this.month += n;
       }
 
-      if (!this.todoList[this.year]){
-        this.todoList[this.year] = [
-          {0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},
-        ]
-      }
-
-      let month = null;
-      this.todoList[this.year][this.month] instanceof Month
-      ? month = this.todoList[this.year][this.month]
-      : month = new Month(this.year, this.month, this.today, [])
-
-      if (!(this.todoList[this.year][this.month] instanceof Month)) {
-        this.todoList[this.year][this.month] = month;
+      if (!this.todoList.data[this.year]){
+        for (let i=0; i<12; i++) {
+          this.todoList.data[this.year].push({0: {}});
+        };
       };
-
+    
+      let month = null;
+      this.todoList.data[this.year][this.month] instanceof Month
+      ? month = this.todoList.data[this.year][this.month]
+      : month = new Month(this.year, this.month, this.today, []);
+      this.todoList.data[this.year][this.month] = month;
       month._prepareDOM();
-    }
+    };
   };
-}
+};
