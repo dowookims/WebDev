@@ -22,9 +22,11 @@ class Calendar {
     const app = document.getElementById('app');
     const calendar = document.getElementById('calendar');
     const calendarClone = document.importNode(calendar.content, true);
+    const modal = new Modal(this.todoList);
 
     app.appendChild(calendarClone);
     app.appendChild(this.todoList.side.dom);
+    app.appendChild(modal.dom);
     
     this.todoList.data[this.year][this.month]._prepareDOM();
     const lastMonthBtn = document.querySelector('.lastMonth');
@@ -46,7 +48,7 @@ class Calendar {
         this.month += n;
       }
 
-      if (!this.todoList[this.year]){
+      if (!this.todoList[this.year] ){
         this.todoList[this.year] = [
           {0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},{0:{},},
         ]

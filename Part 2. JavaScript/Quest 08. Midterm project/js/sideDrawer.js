@@ -1,12 +1,11 @@
 class SideDrawer {
-    constructor (todos, m, d) {
-        this.todos = todos;
+    constructor (m, d) {
         this.month = m;
         this.date = d;
         this.dom = null;
     }
 
-    _paintDOM () {
+    _paintDOM (todos) {
         const todoDiv = document.getElementById('todo');
         const todoItemDiv = document.getElementById('todo-item');
         const todoDivClone = document.importNode(todoDiv.content, true);
@@ -31,8 +30,7 @@ class SideDrawer {
             todoMonth.innerHTML = `${this.month + 1}월 `;
             todoDate.innerHTML = `${this.date} 일 `;
         }
-
-        this.todos && this.todos.forEach(todo => {
+        todos && todos.forEach(todo => {
             if (this.dom) todoContent = document.querySelector('.todo-content');
             const todoItemDivClone = document.importNode(todoItemDiv.content, true);
             const todoItem = todoItemDivClone.querySelector('.todo-item');
