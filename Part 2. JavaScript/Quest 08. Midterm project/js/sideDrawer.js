@@ -30,8 +30,10 @@ class SideDrawer {
             todoMonth.innerHTML = `${this.month + 1}월 `;
             todoDate.innerHTML = `${this.date} 일 `;
         }
+
         todos && todos.forEach(todo => {
-            if (this.dom) todoContent = document.querySelector('.todo-content');
+            const dTodoContent = document.querySelector('.todo-content');
+            if ( dTodoContent ) { todoContent = dTodoContent };
             const todoItemDivClone = document.importNode(todoItemDiv.content, true);
             const todoItem = todoItemDivClone.querySelector('.todo-item');
             todoItem.innerText = `${todo.title} : ${todo.desc}`;

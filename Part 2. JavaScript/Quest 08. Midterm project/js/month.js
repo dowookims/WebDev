@@ -52,7 +52,8 @@ class Month {
               date = idx - this.firstDay - this.totalDate;
               month++;
               if (month === 12) {
-                  year++; month = 0;
+                  year++;
+                  month = 0;
               };
             } else {
               date = idx - this.firstDay;

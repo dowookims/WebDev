@@ -1,5 +1,7 @@
 class TodoList {
     constructor (todoList, y, m, t) {
+        if (!!TodoList.instance) return TodoList.instance;
+        TodoList.instance = this;
         this.data = todoList;
         this.year = y;
         this.month = m;

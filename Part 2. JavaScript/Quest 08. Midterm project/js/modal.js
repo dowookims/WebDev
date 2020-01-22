@@ -6,7 +6,6 @@ class Modal {
         this.dom = null;
         this.isModalOpen = false;
         this._prepareDOM();
-        this.todoList = todoList;
     };
     
     _prepareDOM () {
@@ -25,18 +24,18 @@ class Modal {
         const dateData = document.getElementById('todo-date');
         const titleData = document.getElementById('todo-title');
         const descData = document.getElementById('todo-desc');
+        const todoList = new TodoList();
         let [ y, m, d ] = dateData.value.split("-")
-        console.log("modal todo list", Modal.instance.todoList);
         m = m[0] === '0' ? parseInt(m[1]) - 1 : parseInt(m) -1;
         d = d[0] === '0' ? d[1] : d;
-        d = parseInt(d) -1 ;
-        console.log(y, m, d)
-        Modal.instance.todoList.data[y][m].dates[d].addTodo(
+        d = parseInt(d) -1;
+        
+        todoList.data[y][m].dates[d].addTodo(
             titleData.value, descData.value 
         );
         titleData.value = '';
         descData.value = '';
-        console.log(Modal.instance.todoList.data[y][m].dates[d]);
+        console.log(todoList);
     }
 
     static closeModal() {
