@@ -13,6 +13,6 @@ class TodoList {
 
     _prepareDOM () {
         this.data[this.year][this.month] = new Month(this.year, this.month, this.today, this.data[this.year][this.month]);
-        this.side._paintDOM(this.data[this.year][this.month].todos[this.today.getDate()]);
+        this.side.paintDOM(this.data[this.year][this.month].todos[this.today.getDate()]);
     }
 }

@@ -5,7 +5,7 @@ class SideDrawer {
         this.dom = null;
     }
 
-    _paintDOM (todos) {
+    paintDOM (todos) {
         const todoDiv = document.getElementById('todo');
         const todoItemDiv = document.getElementById('todo-item');
         const todoDivClone = document.importNode(todoDiv.content, true);

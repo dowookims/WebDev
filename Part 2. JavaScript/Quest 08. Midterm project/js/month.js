@@ -59,15 +59,24 @@ class Month {
               date = idx - this.firstDay;
               this.dates.push(new Day(year, month, date, this.todos[date]));
               dayInstance = this.dates[date - 1];
+
+              if (j === 7) {
+                  dayInstance.dom.lastChild.classList.add('sat');
+              } else if (j === 1) {
+                  dayInstance.dom.lastChild.classList.add('sun');
+              }
             }
 
-            if (!dayInstance) dayInstance = new Day(year, month, date, []);
+            if (!dayInstance) { 
+              dayInstance = new Day(year, month, date, []);
+              dayInstance.dom.classList.add('notThisMonth');
+            };
             
             if (this.today.getFullYear() === dayInstance.year
                 && this.today.getMonth() === dayInstance.month 
                 && this.today.getDate() === dayInstance.date) {
                     dayInstance.dom.lastChild.classList.add("today");
-            }
+            };
 
             weekDOM.appendChild(dayInstance.dom);
         };

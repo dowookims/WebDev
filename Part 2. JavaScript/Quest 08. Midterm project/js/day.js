@@ -23,7 +23,7 @@ class Day {
         dateDOM.appendChild(dateSpan);
         this.dom = dateDOM;
         this.dom.addEventListener('click', () => {
-            this.side._paintDOM(this.todo);
+            this.side.paintDOM(this.todo);
         });
     };
 
@@ -40,7 +40,7 @@ class Day {
           title,
           desc,
         });
-        this.side._paintDOM(this.todo);
+        this.side.paintDOM(this.todo);
     }
 
   removeTodo(id){};

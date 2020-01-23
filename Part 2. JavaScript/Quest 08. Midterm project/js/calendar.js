@@ -1,4 +1,3 @@
-// 코드를 컴포넌트 단위로 쪼개볼 것
 
 class Calendar {
   constructor(data, todoList) {
@@ -49,8 +48,9 @@ class Calendar {
       }
 
       if (!this.todoList.data[this.year]){
+        this.todoList.data[this.year] = [];
         for (let i=0; i<12; i++) {
-          this.todoList.data[this.year].push({0: {}});
+          this.todoList.data[this.year].push({0: []});
         };
       };
     

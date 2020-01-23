@@ -1,6 +1,6 @@
 class Modal {
 
-    constructor(todoList) {
+    constructor() {
         if (!!Modal.instance)  return Modal.instance;
         Modal.instance = this;
         this.dom = null;
@@ -35,7 +35,6 @@ class Modal {
         );
         titleData.value = '';
         descData.value = '';
-        console.log(todoList);
     }
 
     static closeModal() {
