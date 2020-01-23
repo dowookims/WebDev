@@ -22,12 +22,13 @@ class Calendar {
     const calendar = document.getElementById('calendar');
     const calendarClone = document.importNode(calendar.content, true);
     const modal = new Modal();
+    const month = new Month(this.year, this.month, this.today, this.todoList.data[this.year][this.month]);
 
     app.appendChild(calendarClone);
     app.appendChild(this.todoList.side.dom);
     app.appendChild(modal.dom);
     
-    this.todoList.data[this.year][this.month]._prepareDOM();
+    month.paintDOM();
     const lastMonthBtn = document.querySelector('.lastMonth');
     const nextMonthBtn = document.querySelector('.nextMonth');
 
@@ -48,18 +49,15 @@ class Calendar {
       }
 
       if (!this.todoList.data[this.year]){
-        this.todoList.data[this.year] = [];
-        for (let i=0; i<12; i++) {
-          this.todoList.data[this.year].push({0: []});
-        };
+          this.todoList.insertYear(this.year);
       };
     
       let month = null;
       this.todoList.data[this.year][this.month] instanceof Month
       ? month = this.todoList.data[this.year][this.month]
-      : month = new Month(this.year, this.month, this.today, []);
+      : month = new Month(this.year, this.month, this.today, this.todoList.data[this.year][this.month]);
       this.todoList.data[this.year][this.month] = month;
-      month._prepareDOM();
+      month.paintDOM();
     };
   };
 };

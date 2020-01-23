@@ -253,3 +253,9 @@
 .submit-btn:hover {
     background-color: #333;
 }
+
+.submit-btn:disabled,
+.submit-btn[disabled] {
+  background-color: #ccc;
+  color: #666;
+}
