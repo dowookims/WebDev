@@ -41,7 +41,7 @@ class Modal {
                 desc: descData.value
             }];
         };
-
+        console.log("ASD")
         titleData.value = '';
         descData.value = '';
     }
