@@ -5,14 +5,14 @@ class SideDrawer {
         this.dom = null;
     }
 
-    _paintDOM (todos) {
+    paintDOM (todos) {
         const todoDiv = document.getElementById('todo');
         const todoItemDiv = document.getElementById('todo-item');
         const todoDivClone = document.importNode(todoDiv.content, true);
+        const todoItems = document.querySelectorAll('.todo-item');
         const todoDivBox = todoDivClone.querySelector('.todo');
         const todoMonth = todoDivClone.querySelector('.todo-month');
         const todoDate = todoDivClone.querySelector('.todo-date');
-        const todoItems = document.querySelectorAll('.todo-item');
         let todoContent = todoDivClone.querySelector('.todo-content');
         
         if (todoItems.length >= 1) {

@@ -1,6 +1,6 @@
 class Modal {
 
-    constructor(todoList) {
+    constructor() {
         if (!!Modal.instance)  return Modal.instance;
         Modal.instance = this;
         this.dom = null;
@@ -17,7 +17,9 @@ class Modal {
         submitBtn.addEventListener('click', () => {
             Modal.submitTodo();
         });
+
         this.dom = modalDiv;
+        
     };
 
     static submitTodo () {
@@ -30,12 +32,18 @@ class Modal {
         d = d[0] === '0' ? d[1] : d;
         d = parseInt(d) -1;
         
-        todoList.data[y][m].dates[d].addTodo(
-            titleData.value, descData.value 
-        );
+        if (!todoList.data[y]) {
+            todoList.insertYear(y);
+            todoList.data[y][m][d] = [{
+                id: 1,
+                date: `${y-m-d}`,
+                title: titleData.value,
+                desc: descData.value
+            }];
+        };
+        console.log("ASD")
         titleData.value = '';
         descData.value = '';
-        console.log(todoList);
     }
 
     static closeModal() {

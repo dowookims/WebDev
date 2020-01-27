@@ -1,4 +1,3 @@
-// 코드를 컴포넌트 단위로 쪼개볼 것
 
 class Calendar {
   constructor(data, todoList) {
@@ -27,8 +26,8 @@ class Calendar {
     app.appendChild(calendarClone);
     app.appendChild(this.todoList.side.dom);
     app.appendChild(modal.dom);
-    
-    this.todoList.data[this.year][this.month]._prepareDOM();
+    this.todoList.data[this.year][this.month].paintDOM();
+
     const lastMonthBtn = document.querySelector('.lastMonth');
     const nextMonthBtn = document.querySelector('.nextMonth');
 
@@ -49,17 +48,11 @@ class Calendar {
       }
 
       if (!this.todoList.data[this.year]){
-        for (let i=0; i<12; i++) {
-          this.todoList.data[this.year].push({0: {}});
-        };
+          this.todoList.insertYear(this.year);
       };
     
-      let month = null;
-      this.todoList.data[this.year][this.month] instanceof Month
-      ? month = this.todoList.data[this.year][this.month]
-      : month = new Month(this.year, this.month, this.today, []);
-      this.todoList.data[this.year][this.month] = month;
-      month._prepareDOM();
+      let month = this.todoList.insertMonth(this.year, this.month, this.today);
+      month.paintDOM();
     };
   };
 };

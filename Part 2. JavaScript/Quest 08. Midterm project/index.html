@@ -6,6 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>CalendarTodo</title>
   <link rel="stylesheet" href="./css/reset.css">
+  <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap&subset=korean" rel="stylesheet">
 </head>
 <body>
   <div id="app"></div>
@@ -86,21 +87,21 @@
       <div class="modal">
         <div class="modal-content">
           <div class="modal-content-header">
-            <span class="modal-header-text">dhsmfdmlgkfdlf</span>
+            <span class="modal-header-text">오늘은뭐하지</span>
             <span class="modal-close-btn">&times;</span>
           </div>
           <div class="modal-content-body">
-            <div class="modal-date-div">
-              <label for="todo-date" >일자</label>
-              <input id="todo-date"type="date" />
+            <div class="modal-date-div modal-input">
+              <label for="todo-date" class="input-label">일자</label>
+              <input id="todo-date" class="modal-input-tag" type="date" />
             </div>
-            <div class="modal-title-div">
-              <label for="todo-title">제목</label>
-              <input id="todo-title" type="text" />
+            <div class="modal-title-div modal-input">
+              <label for="todo-title" class="input-label">제목</label>
+              <input id="todo-title" class="modal-input-tag" type="text" />
             </div>
-            <div class="modal-desc-div">
-              <label for="todo-desc">세부 내용</label>
-              <input id="todo-desc" type="text" />
+            <div class="modal-desc-div modal-input">
+              <label for="todo-desc" class="input-label">세부 내용</label>
+              <input id="todo-desc" class="modal-input-tag" type="text" />
             </div>
           </div>
           <div class="modal-content-footer">

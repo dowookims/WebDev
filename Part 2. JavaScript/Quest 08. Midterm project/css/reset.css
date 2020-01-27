@@ -2,6 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Do Hyeon', sans-serif;
 }
 
 #app {
@@ -29,8 +30,21 @@
   font-weight: 700;
 }
 
-.lastMonth:hover, .nextMonth:hover {
+.notThisMonth {
+  background-color: #f0f0f0;
+  color: #999;
+}
+
+.sat {
+  color: blue;
+}
+
+.sun {
   color: red;
+}
+
+.lastMonth:hover, .nextMonth:hover {
+  color: #4CD579;
 }
 
 .lastMonth {
@@ -54,13 +68,15 @@
   width: 100%;
 }
 
+.number-calendar {}
+
 .days {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   height: 40px;
-  background-color: #aaa;
+  background-color: #4CD579;
 }
 
 .day-name {
@@ -71,6 +87,7 @@
   width: 14.2857142857%;
   font-size: 20px;
   font-weight: 500;
+  color: #fff;
 }
 
 .week {
@@ -100,7 +117,7 @@
   text-align: center;
   padding: 5px;
   border-radius: 50%;
-  background-color: rgba(88, 123, 233, 1);
+  background-color: #4CD579;
   color: #fff;
 }
 
@@ -118,6 +135,11 @@
   width: 100%;
   height: 100px;
   margin-top: 80px;
+  font-size: 20px;
+}
+
+.todo-month {
+  margin-right: 8px;
 }
 
 .todo-content {
@@ -125,8 +147,13 @@
 }
 
 .todo-item {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 3px solid #4cd579;
+  color: #4cd579;
 }
+
 
 .modal {
   position: absolute;
@@ -142,21 +169,93 @@
 
 .modal-content {
   width: 50vh;
-  height: 50vh;
+  height: 300px;
   background-color: #fff;
-};
+  border-radius: 5px;
+}
 
-.modal-content-header {}
+.modal-content-header {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-bottom: 3px solid #4cd579;
+}
 
 .modal-header-text {
   display: inline-block;
   width: 90%;
   text-align: center;
-  margin-top: 15px;
+  font-size: 30px;
+  letter-spacing: 2px;
+  color: #4CD579;
 }
 
 .modal-close-btn {
   display: inline-block;
   cursor: pointer;
   text-align: right;
+  font-size: 40px;
+}
+
+.modal-content-body {
+    padding: 25px;
+}
+
+.modal-input {
+  margin-bottom: 10px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+}
+
+.input-label {
+  display: inline-block;
+  text-align: justify;
+  width: 80px;
+  font-size: 20px;
+}
+
+.modal-input-tag {
+    width: 200px;
+    margin-left: 20px;
+    border: none;
+    border-bottom: 1px solid #333;
+    font-size: 20px;
+}
+
+.modal-input-tag:focus {
+    outline: 2px solid #4cd579;
+    padding: 5px;
+    font-size: 14px;
+}
+
+#todo-date {
+    border: none;
+    
+}
+
+.modal-content-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.submit-btn { 
+    background-color: #4CD579;
+    color: #fff;
+    font-size: 18px;
+    padding: 6px 20px;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background-color: #333;
+}
+
+.submit-btn:disabled,
+.submit-btn[disabled] {
+  background-color: #ccc;
+  color: #666;
 }

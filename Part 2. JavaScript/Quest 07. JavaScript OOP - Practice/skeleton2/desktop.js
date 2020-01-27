@@ -98,11 +98,10 @@ class Window {
 
         this.dom = windowDiv;
         
-    }
-
-}
+    };
+};
 class DndHandler {
-    
+
     constructor (targetDom) {
         this.targetDom = targetDom;
         this.xCoord = 0;
