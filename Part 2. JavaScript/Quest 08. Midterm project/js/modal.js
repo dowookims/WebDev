@@ -30,20 +30,17 @@ class Modal {
         let [ y, m, d ] = dateData.value.split("-")
         m = m[0] === '0' ? parseInt(m[1]) - 1 : parseInt(m) -1;
         d = d[0] === '0' ? d[1] : d;
-        d = parseInt(d) -1;
+        d = parseInt(d);
         
         if (!todoList.data[y]) {
             todoList.insertYear(y);
-            todoList.data[y][m][d] = [{
-                id: 1,
-                date: `${y-m-d}`,
-                title: titleData.value,
-                desc: descData.value
-            }];
         };
-        console.log("ASD")
+
+        if (!(todoList.data[y][m] instanceof Month)) todoList.insertMonth(y, m, todoList.today);
+        todoList.data[y][m].dates[d].addTodo(titleData.value, descData.value);
         titleData.value = '';
         descData.value = '';
+        console.log(y, m, d);
     }
 
     static closeModal() {

@@ -4,6 +4,7 @@ class TodoList {
         TodoList.instance = this;
         this.data = todoList;
         this.side = new SideDrawer(m, t.getDate());
+        this.today = t;
         this._prepareInitialData(y, m, t);
         this._prepareDOM(y, m, t);
     }
@@ -23,14 +24,13 @@ class TodoList {
         const year = parseInt(y);
         this.data[year] = [];
         for (let i=0; i<12; i++) {
-          this.data[year][i] = {}
+            this.data[year][i] = {};
         };
     };
 
     insertMonth (y, m, t) {
-        if (this.data[y][m] instanceof Month) return this.data[y][m];
+        if (this.data[y][m] instanceof Month) return;
         const month = new Month(y, m, t, this.data[y][m]);
         this.data[y][m] = month;
-        return month;
     }
 }

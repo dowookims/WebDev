@@ -33,7 +33,7 @@ class Month {
         for (let i=0; i < this.weeks; i++) {
             const weekClone = document.importNode(weekDiv.content, true);
             const weekDOM = weekClone.querySelector('.week');
-      
+
             for (let j=1; j < 8; j++) {
                 const idx = i * 7 +  j;
                 let year = this.year;
@@ -72,7 +72,7 @@ class Month {
                     }
                 }
                 // 일자 게산 끝
-                 
+                
                 if (!dayInstance) {
                     dayInstance = new Day(year, month, date, []);
                     dayInstance.prepareDOM();
@@ -82,19 +82,20 @@ class Month {
                 if (this.today.getFullYear() === dayInstance.year
                     && this.today.getMonth() === dayInstance.month 
                     && this.today.getDate() === dayInstance.date) {
-                      dayInstance.dom.lastChild.classList.add("today");
+                        dayInstance.dom.lastChild.classList.add("today");
                 };
-
                 if (!todoList.data[year]) todoList.insertYear(year);
-                if (!todoList.data[year][month]) todoList.insertMonth(year, month, this.today);
+                
+                if (!(todoList.data[year][month] instanceof Month)) todoList.insertMonth(year, month, this.today);
+                
                 todoList.data[year][month].dates[date] = dayInstance;
 
                 weekDOM.appendChild(dayInstance.dom);
             };
                 numberContent.appendChild(weekDOM);
-          };
-          this.dom = numberContent;
-          calendarNumberDiv.appendChild(numberContent);
+        };
+        this.dom = numberContent;
+        calendarNumberDiv.appendChild(numberContent);
     };
 
     _calculateMonthDates () {

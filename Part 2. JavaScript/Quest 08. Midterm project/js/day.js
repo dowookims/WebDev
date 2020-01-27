@@ -34,7 +34,7 @@ class Day {
 
     addTodo(title, desc) {
         if (!this.todos) this.todos = [];
-        this.todo.push({
+        this.todos.push({
             id: 1,
             title,
             desc,
