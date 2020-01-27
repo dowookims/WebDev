@@ -44,6 +44,6 @@ class Day {
     }
 
     removeTodo(id){};
-  
+    
     updateTodo(id){};
 };

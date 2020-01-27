@@ -15,17 +15,17 @@ class Month {
 
   _prepareDOM () {
     const weekElems = document.querySelectorAll('.week');
-    
-    weekElems.length && weekElems.forEach(weekElem => {
-        weekElem.parentNode.removeChild(weekElem);
-    });
-
     const numberContent = document.querySelector('.number-calendar');
     const yearSpan = document.querySelector('.year');
     const monthSpan = document.querySelector('.month');
     const calendarNumberDiv = document.querySelector('.calendar-number-div');
     const weekDiv = document.getElementById('week');
+    
+    weekElems.length && weekElems.forEach(weekElem => {
+        weekElem.parentNode.removeChild(weekElem);
+    });
 
+    
     yearSpan.innerText = this.year;
     monthSpan.innerText = this.month + 1;
 
