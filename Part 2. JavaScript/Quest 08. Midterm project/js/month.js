@@ -65,6 +65,7 @@ class Month {
                     };
                     
                     dayInstance.prepareDOM();
+
                     if (j === 7) {
                         dayInstance.dom.lastChild.classList.add('sat');
                     } else if (j === 1) {
@@ -84,6 +85,7 @@ class Month {
                     && this.today.getDate() === dayInstance.date) {
                         dayInstance.dom.lastChild.classList.add("today");
                 };
+
                 if (!todoList.data[year]) todoList.insertYear(year);
                 
                 if (!(todoList.data[year][month] instanceof Month)) todoList.insertMonth(year, month, this.today);
@@ -94,6 +96,7 @@ class Month {
             };
                 numberContent.appendChild(weekDOM);
         };
+        
         this.dom = numberContent;
         calendarNumberDiv.appendChild(numberContent);
     };

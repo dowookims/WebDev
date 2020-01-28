@@ -34,11 +34,7 @@ class Day {
 
     addTodo(title, desc) {
         if (!this.todos) this.todos = [];
-        this.todos.push({
-            id: 1,
-            title,
-            desc,
-        });
+        this.todos.push(new Todo(1, title, desc,));
         this.side.paintDOM(this.todos);
     }
 

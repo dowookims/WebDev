@@ -1,6 +1,6 @@
 
 class Calendar {
-  constructor(data, todoList) {
+  constructor(data, todoList = {}) {
     if (!data instanceof(Date)) {
       data = new Date(data);
     }
@@ -10,14 +10,30 @@ class Calendar {
     }
 
     const date = data;
-    this.year = date.getFullYear();
+    const year = date.getFullYear(); 
+    this.year = year
     this.month = date.getMonth();
     this.today = date;
+
+    if (this._setTodoList(todoList)) {
+        todoList[year] = [];
+        for (let i = 0; i < 12; i++ ) {
+            todoList[year].push({0: []});
+        };
+    };
+
     this.todoList = new TodoList(todoList, this.year, this.month, this.today);
     this._prepareDOM();
   };
 
-  _prepareDOM (){
+  _setTodoList (todoList) {
+      for (let item in todoList) {
+          return false;
+      };
+      return true
+  };
+
+  _prepareDOM () {
     const app = document.getElementById('app');
     const calendar = document.getElementById('calendar');
     const calendarClone = document.importNode(calendar.content, true);
