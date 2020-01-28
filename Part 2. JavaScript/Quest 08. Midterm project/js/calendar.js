@@ -46,33 +46,26 @@ class Calendar {
 
       const lastMonthBtn = document.querySelector('.lastMonth');
       const nextMonthBtn = document.querySelector('.nextMonth');
+      const addMonth = (n) => {
+        return () => {
+            this.month += n;
+            if (this.month === 12) {
+                this.year++;
+                this.month = 0;
+            } else if (this.month === -1) {
+                this.year--;
+                this.month = 11;
+            } 
+  
+            if (!this.todoList.data[this.year]) this.todoList.insertYear(this.year);
+            
+            if (!this.todoList.isMonth(this.year, this.month)) this.todoList.insertMonth(this.year, this.month, this.today);
 
-      lastMonthBtn.addEventListener('click', this.addMonth(-1));
-      nextMonthBtn.addEventListener('click', this.addMonth(1));
+            this.todoList.data[this.year][this.month].paintDOM();
+        };
+    };
+  
+      lastMonthBtn.addEventListener('click', addMonth(-1));
+      nextMonthBtn.addEventListener('click', addMonth(1));
   };
-
-  addMonth(n){
-      return () => {
-          if (this.month === 11 && n === 1) {
-              this.year++;
-              this.month = 0;
-          } else if (this.month === 0 && n === -1) {
-              this.year--;
-              this.month = 11;
-          } else {
-              this.month += n;
-          }
-
-          if (!this.todoList.data[this.year]){
-              this.todoList.insertYear(this.year);
-          };
-          
-          if (!this.todoList.isMonth(this.year, this.month)) {
-              this.todoList.insertMonth(this.year, this.month, this.today);
-          };
-
-          this.todoList.data[this.year][this.month].paintDOM();
-      };
-  };
-
 };

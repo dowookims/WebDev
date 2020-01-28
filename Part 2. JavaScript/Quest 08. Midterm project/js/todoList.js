@@ -1,4 +1,13 @@
 class TodoList {
+
+    /* 
+    TodoList = {
+        year : [...months, month : {
+            dates : [ todo]
+        }]
+    }
+    */
+   
     constructor (todoList, y, m, t) {
         if (!!TodoList.instance) return TodoList.instance;
         TodoList.instance = this;
