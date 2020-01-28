@@ -5,7 +5,7 @@ class Day {
         this.date = d;
         this.todos = [];
         this.dom = null;
-        this.side = new SideDrawer(m, d);
+        this.side = new Side(m, d);
         this._prepareTodo(todos, d);
     };
     

@@ -13,7 +13,7 @@ class TodoList {
         if (!!TodoList.instance) return TodoList.instance;
         TodoList.instance = this;
         this.data = todoList;
-        this.side = new SideDrawer(m, t.getDate());
+        this.side = new Side(m, t.getDate());
         this.today = t;
         this._prepareInitialData(y, m, t);
         this._prepareDOM(y, m, t);

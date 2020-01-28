@@ -1,4 +1,4 @@
-class SideDrawer {
+class Side {
     constructor (m, d) {
         this.month = m;
         this.date = d;
@@ -28,7 +28,7 @@ class SideDrawer {
         } else {
             todoMonth.innerHTML = `${this.month + 1}월 `;
             todoDate.innerHTML = `${this.date} 일 `;
-        }
+        };
 
         if (todos) {
             todos.forEach( todo => {
@@ -38,5 +38,5 @@ class SideDrawer {
             });
         };
         this.dom = todoDivBox;
-    }
-}
+    };
+};
