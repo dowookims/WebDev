@@ -29,8 +29,16 @@ class TodoList {
     };
 
     insertMonth (y, m, t) {
-        if (this.data[y][m] instanceof Month) return;
+        if (this.isMonth(y, m)) return;
         const month = new Month(y, m, t, this.data[y][m]);
         this.data[y][m] = month;
+    }
+
+    hasYear(y) {
+        return this.data[y] ? true : false;
+    }
+
+    isMonth (y, m) {
+        return this.data[y][m] instanceof Month;
     }
 }

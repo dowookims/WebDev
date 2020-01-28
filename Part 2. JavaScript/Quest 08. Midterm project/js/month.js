@@ -97,9 +97,9 @@ class Month {
                 // 일자 게산 끝
                 
                 if (!dayInstance) {
-                    if (todoList.data[year] 
-                        && todoList.data[year][month].dates 
-                        ) {
+                    if (todoList.hasYear()
+                        && todoList.isMonth(year, month)
+                    ) {
                         dayInstance = todoList.data[year][month].dates[date];
                     } else {
                         dayInstance = new Day(year, month, date, [])
@@ -114,9 +114,9 @@ class Month {
                         dayInstance.dom.lastChild.classList.add("today");
                 };
 
-                if (!todoList.data[year]) todoList.insertYear(year);
+                if (!todoList.hasYear(year)) todoList.insertYear(year);
                 
-                if (!(todoList.data[year][month] instanceof Month)) todoList.insertMonth(year, month, this.today);
+                if (!todoList.isMonth(year, month)) todoList.insertMonth(year, month, this.today);
                 
                 todoList.data[year][month].dates[date] = dayInstance;
 

@@ -36,7 +36,6 @@ class Day {
         if (!this.todos[date]) {
             this.todos[date] = [];
         };
-        console.log("THIS.todos", this.todos);
         this.todos[date].push(new Todo(id, title, desc));
         this.side.paintDOM(this.todos);
         console.log(this.todos);

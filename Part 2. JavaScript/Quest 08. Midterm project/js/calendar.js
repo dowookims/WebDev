@@ -67,10 +67,9 @@ class Calendar {
           this.todoList.insertYear(this.year);
       };
       
-      if (!this.todoList.data[this.year][this.month]) {
+      if (!this.todoList.isMonth(this.year, this.month)) {
           this.todoList.insertMonth(this.year, this.month, this.today);
       };
-
       this.todoList.data[this.year][this.month].paintDOM();
     };
   };
