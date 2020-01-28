@@ -7,7 +7,6 @@ class SideDrawer {
 
     paintDOM (todos) {
         const todoDiv = document.getElementById('todo');
-        const todoItemDiv = document.getElementById('todo-item');
         const todoDivClone = document.importNode(todoDiv.content, true);
         const todoItems = document.querySelectorAll('.todo-item');
         const todoDivBox = todoDivClone.querySelector('.todo');
@@ -35,10 +34,7 @@ class SideDrawer {
             todos.forEach( todo => {
                 const dTodoContent = document.querySelector('.todo-content');
                 if ( dTodoContent ) { todoContent = dTodoContent };
-                const todoItemDivClone = document.importNode(todoItemDiv.content, true);
-                const todoItem = todoItemDivClone.querySelector('.todo-item');
-                todoItem.innerText = `${todo.title} : ${todo.desc}`;
-                todoContent.appendChild(todoItem);   
+                todoContent.appendChild(todo.dom);   
             });
         };
         this.dom = todoDivBox;

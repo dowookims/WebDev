@@ -11,7 +11,7 @@ class Todo {
         const todoItemDiv = document.getElementById('todo-item');
         const todoItemDivClone = document.importNode(todoItemDiv.content, true);
         const todoItem = todoItemDivClone.querySelector('.todo-item');
-        todoItem.innerText = `${todo.title} : ${todo.desc}`;
+        todoItem.innerText = `${this.title} : ${this.desc}`;
         this.dom = todoItem;
     }
 }

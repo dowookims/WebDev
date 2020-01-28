@@ -1,13 +1,14 @@
-class TodoList {
-
-    /* 
+/* 
     TodoList = {
-        year : [...months, month : {
-            dates : [ todo]
+        year : [...months, 
+            month : { ...dates,
+                date : [ ...todo, 
+                    todo : {id, title, desc}]
         }]
     }
-    */
-   
+*/
+class TodoList {
+
     constructor (todoList, y, m, t) {
         if (!!TodoList.instance) return TodoList.instance;
         TodoList.instance = this;
@@ -19,7 +20,7 @@ class TodoList {
     };
 
     _prepareDOM (y, m, t) {
-        this.side.paintDOM(this.data[y][m][t.getDate()]);
+        this.side.paintDOM(this.data[y][m].dates[t.getDate()].todos);
     };
 
     _prepareInitialData (y, m, t) {
