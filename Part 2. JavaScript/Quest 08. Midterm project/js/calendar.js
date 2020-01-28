@@ -15,7 +15,7 @@ class Calendar {
     this.month = date.getMonth();
     this.today = date;
 
-    if (this._setTodoList(todoList)) {
+    if (this._isEmptyTodoList(todoList)) {
         todoList[year] = [];
         for (let i = 0; i < 12; i++ ) {
             todoList[year].push({0: []});
@@ -26,7 +26,7 @@ class Calendar {
     this._prepareDOM();
   };
 
-  _setTodoList (todoList) {
+  _isEmptyTodoList (todoList) {
       for (let todo in todoList) {
           return false;
       };

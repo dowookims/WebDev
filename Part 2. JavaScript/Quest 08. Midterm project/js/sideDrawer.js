@@ -32,16 +32,14 @@ class SideDrawer {
         }
 
         if (todos) {
-            for (let dateTodo in todos ) {
-                todos[dateTodo].forEach( todo => {
-                    const dTodoContent = document.querySelector('.todo-content');
-                    if ( dTodoContent ) { todoContent = dTodoContent };
-                    const todoItemDivClone = document.importNode(todoItemDiv.content, true);
-                    const todoItem = todoItemDivClone.querySelector('.todo-item');
-                    todoItem.innerText = `${todo.title} : ${todo.desc}`;
-                    todoContent.appendChild(todoItem);   
-                })
-            };
+            todos.forEach( todo => {
+                const dTodoContent = document.querySelector('.todo-content');
+                if ( dTodoContent ) { todoContent = dTodoContent };
+                const todoItemDivClone = document.importNode(todoItemDiv.content, true);
+                const todoItem = todoItemDivClone.querySelector('.todo-item');
+                todoItem.innerText = `${todo.title} : ${todo.desc}`;
+                todoContent.appendChild(todoItem);   
+            });
         };
         this.dom = todoDivBox;
     }

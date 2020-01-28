@@ -3,10 +3,10 @@ class Day {
         this.year = y;
         this.month = m;
         this.date = d;
-        this.todos = {};
+        this.todos = [];
         this.dom = null;
         this.side = new SideDrawer(m, d);
-        this._prepareTodo(todos);
+        this._prepareTodo(todos, d);
     };
     
     _prepareTodo (todos) {
@@ -32,13 +32,10 @@ class Day {
         });
     };
 
-    addTodo(date, id, title, desc) {
-        if (!this.todos[date]) {
-            this.todos[date] = [];
-        };
-        this.todos[date].push(new Todo(id, title, desc));
+    addTodo(id, title, desc) {
+        this.todos.push(new Todo(id, title, desc));
         this.side.paintDOM(this.todos);
-        console.log(this.todos);
+        console.log("TODO", this.todos);
     }
 
     removeTodo(id){};

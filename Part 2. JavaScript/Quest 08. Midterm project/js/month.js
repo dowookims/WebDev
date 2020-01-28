@@ -64,23 +64,23 @@ class Month {
                 let dayInstance = null;
                 
                 // 이전달 / 다음달 / 이번달
-                if (this.firstDay >= idx) {
+                if ( this.firstDay >= idx ) {
                     date = this.lastMonthDate - this.firstDay + idx;
                     month--;
-                    if (month === -1) {
+                    if ( month === -1 ) {
                         year--;
                         month = 11;
                     };
                 } else if ( idx - this.firstDay > this.totalDate ) {
                     date = idx - this.firstDay - this.totalDate;
                     month++;
-                    if (month === 12) {
+                    if ( month === 12 ) {
                         year++;
                         month = 0;
                     };
                 } else {
                     date = idx - this.firstDay;
-                    if (this.dates[date]) {
+                    if ( this.dates[date] ) {
                         dayInstance = this.dates[date];
                     } else {
                         dayInstance = new Day(year, month, date, []);
@@ -96,10 +96,11 @@ class Month {
                 }
                 // 일자 게산 끝
                 
-                if (!dayInstance) {
-                    if (todoList.hasYear()
-                        && todoList.isMonth(year, month)
-                    ) {
+                if (!todoList.hasYear(year)) todoList.insertYear(year);
+                if (!todoList.isMonth(year, month)) todoList.insertMonth(year, month, this.today);
+
+                if ( !dayInstance ) {
+                    if ( todoList.data[year][month].dates[date] ) {
                         dayInstance = todoList.data[year][month].dates[date];
                     } else {
                         dayInstance = new Day(year, month, date, [])
@@ -108,15 +109,11 @@ class Month {
                     dayInstance.dom.classList.add('notThisMonth');
                 };
                 
-                if (this.today.getFullYear() === dayInstance.year
+                if ( this.today.getFullYear() === dayInstance.year
                     && this.today.getMonth() === dayInstance.month 
-                    && this.today.getDate() === dayInstance.date) {
+                    && this.today.getDate() === dayInstance.date ) {
                         dayInstance.dom.lastChild.classList.add("today");
                 };
-
-                if (!todoList.hasYear(year)) todoList.insertYear(year);
-                
-                if (!todoList.isMonth(year, month)) todoList.insertMonth(year, month, this.today);
                 
                 todoList.data[year][month].dates[date] = dayInstance;
 
@@ -124,7 +121,7 @@ class Month {
             };
                 numberContent.appendChild(weekDOM);
         };
-        
+        console.log(todoList);
         this.dom = numberContent;
         calendarNumberDiv.appendChild(numberContent);
     };
