@@ -37,6 +37,7 @@ class Side {
                 todoContent.appendChild(todo.dom);   
             });
         };
+        
         this.dom = todoDivBox;
     };
 };

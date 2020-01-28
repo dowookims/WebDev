@@ -1,16 +1,13 @@
 
 class Calendar {
     constructor(data, todoList = {}) {
-        if (!data instanceof(Date)) {
-            data = new Date(data);
-        }
-
-        if (data.toString === "Invalid Date") {
-            throw Error("Invalid Date Object data");
-        }
-
+        if (!data instanceof(Date)) data = new Date(data);;
+        
+        if (data.toString === "Invalid Date") throw Error("Invalid Date Object data");
+        
         const date = data;
         const year = date.getFullYear(); 
+
         this.year = year
         this.month = date.getMonth();
         this.today = date;
@@ -49,6 +46,7 @@ class Calendar {
       const addMonth = (n) => {
         return () => {
             this.month += n;
+            
             if (this.month === 12) {
                 this.year++;
                 this.month = 0;

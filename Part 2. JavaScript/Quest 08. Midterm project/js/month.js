@@ -3,13 +3,14 @@ class Month {
         this.year = y;
         this.month = m;
         this.today = today;
+        this.todos = todos;
+
         this.lastMonthDate = null;
         this.totalDate = null;
         this.firstDay = null;
         this.weeks = null;
         this.dates = null;
         this.dom = null;
-        this.todos = todos;
         this._calculateMonthDates();
     };
 
@@ -99,25 +100,20 @@ class Month {
                 if (!todoList.hasYear(year)) todoList.insertYear(year);
                 if (!todoList.isMonth(year, month)) todoList.insertMonth(year, month, this.today);
 
-                if ( !dayInstance ) {
-                    if ( todoList.data[year][month].dates[date] ) {
-                        dayInstance = todoList.data[year][month].dates[date];
-                    } else {
-                        dayInstance = new Day(year, month, date, [])
-                    }
-                    dayInstance.prepareDOM();
-                    dayInstance.dom.classList.add('notThisMonth');
-                };
-                
-                if ( this.today.getFullYear() === dayInstance.year
-                    && this.today.getMonth() === dayInstance.month 
-                    && this.today.getDate() === dayInstance.date ) {
-                        dayInstance.dom.lastChild.classList.add("today");
-                };
-                
-                todoList.data[year][month].dates[date] = dayInstance;
+                let dayObj = todoList.data[year][month].dates[date];
 
-                weekDOM.appendChild(dayInstance.dom);
+                if ( !dayInstance ) {
+                    dayObj.prepareDOM();
+                    dayObj.dom.classList.add('notThisMonth');
+                };
+                
+                if ( this.today.getFullYear() === dayObj.year
+                    && this.today.getMonth() === dayObj.month 
+                    && this.today.getDate() === dayObj.date ) {
+                        dayObj.dom.lastChild.classList.add("today");
+                };
+
+                weekDOM.appendChild(dayObj.dom);
             };
                 numberContent.appendChild(weekDOM);
         };

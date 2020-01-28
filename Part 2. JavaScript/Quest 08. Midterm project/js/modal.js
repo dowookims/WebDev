@@ -42,6 +42,7 @@ class Modal {
 
         Modal.instance.isModalOpen = true;
         Modal.instance.dom.style.display = 'flex';
+        
         const modalExitBtn = document.querySelector('.modal-close-btn');
         const todoDate = document.getElementById('todo-date');
         const closeModal = () => {
