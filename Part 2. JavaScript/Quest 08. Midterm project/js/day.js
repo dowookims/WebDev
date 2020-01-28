@@ -34,8 +34,7 @@ class Day {
 
     addTodo(id, title, desc) {
         this.todos.push(new Todo(id, title, desc));
-        this.side.paintDOM(this.todos);
-        console.log("TODO", this.todos);
+        alert(`${this.year}년 ${this.month+1}월 ${this.date}에 ${title} : ${desc} 일정이 추가 되었습니다.`)
     }
 
     removeTodo(id){};

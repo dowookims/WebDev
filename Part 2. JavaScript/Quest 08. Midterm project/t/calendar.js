@@ -27,7 +27,6 @@ class Calendar {
     }
   };
 
-  // drawCalendar(){};
 }
 
 module.exports = Calendar;

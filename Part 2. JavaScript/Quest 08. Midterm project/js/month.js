@@ -121,7 +121,7 @@ class Month {
             };
                 numberContent.appendChild(weekDOM);
         };
-        console.log(todoList);
+ 
         this.dom = numberContent;
         calendarNumberDiv.appendChild(numberContent);
     };
