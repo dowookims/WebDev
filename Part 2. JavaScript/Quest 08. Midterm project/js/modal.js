@@ -37,10 +37,9 @@ class Modal {
         };
 
         if (!(todoList.data[y][m] instanceof Month)) todoList.insertMonth(y, m, todoList.today);
-        todoList.data[y][m].dates[d].addTodo(titleData.value, descData.value);
+        todoList.data[y][m].dates[d].addTodo(d, 1, titleData.value, descData.value);
         titleData.value = '';
         descData.value = '';
-        console.log(y, m, d);
     }
 
     static closeModal() {

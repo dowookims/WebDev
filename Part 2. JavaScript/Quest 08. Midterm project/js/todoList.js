@@ -14,7 +14,6 @@ class TodoList {
     }
 
     _prepareInitialData (y, m, t) {
-        console.log(this.data);
         this.data[y][m] = new Month(y, m, t, this.data[y][m]);
         for (let date in this.data[y][m]) {
             this.data[y][m].dates[date] = this.data[y][m][date]

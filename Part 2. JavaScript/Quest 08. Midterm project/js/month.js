@@ -11,7 +11,29 @@ class Month {
         this.dom = null;
         this.todos = todos;
         this._calculateMonthDates();
-    }
+    };
+
+    _calculateMonthDates () {
+        const y = this.year;
+        const m = this.month;
+        const lastMonth = new Date(y, m, 0);
+        const monthFirst = new Date(y, m, 1);
+        const monthLast = new Date(y, m+1, 0);
+        const firstDay = monthFirst.getDay();
+        const lastDay = monthLast.getDay();
+
+        this.lastMonthDate = lastMonth.getDate();
+        this.totalDate = monthLast.getDate();
+        this.firstDay = firstDay;
+        this.weeks = ((this.totalDate + firstDay + 6 - lastDay) / 7);
+
+        if ( this.dates ) return;
+
+        this.dates = {};
+        for (let i = 1; i <= this.totalDate; i++) {
+            this.dates[i] = new Day(y, m, i, this.todos[i]);
+        };
+    };
 
     paintDOM () {
         const weekElems = document.querySelectorAll('.week');
@@ -75,7 +97,13 @@ class Month {
                 // 일자 게산 끝
                 
                 if (!dayInstance) {
-                    dayInstance = new Day(year, month, date, []);
+                    if (todoList.data[year] 
+                        && todoList.data[year][month].dates 
+                        ) {
+                        dayInstance = todoList.data[year][month].dates[date];
+                    } else {
+                        dayInstance = new Day(year, month, date, [])
+                    }
                     dayInstance.prepareDOM();
                     dayInstance.dom.classList.add('notThisMonth');
                 };
@@ -99,27 +127,5 @@ class Month {
         
         this.dom = numberContent;
         calendarNumberDiv.appendChild(numberContent);
-    };
-
-    _calculateMonthDates () {
-        const y = this.year;
-        const m = this.month;
-        const lastMonth = new Date(y, m, 0);
-        const monthFirst = new Date(y, m, 1);
-        const monthLast = new Date(y, m+1, 0);
-        const firstDay = monthFirst.getDay();
-        const lastDay = monthLast.getDay();
-
-        this.lastMonthDate = lastMonth.getDate();
-        this.totalDate = monthLast.getDate();
-        this.firstDay = firstDay;
-        this.weeks = ((this.totalDate + firstDay + 6 - lastDay) / 7);
-
-        if ( this.dates ) return;
-
-        this.dates = {};
-        for (let i = 1; i <= this.totalDate; i++) {
-            this.dates[i] = new Day(y, m, i, this.todos[i]);
-        };
     };
 };

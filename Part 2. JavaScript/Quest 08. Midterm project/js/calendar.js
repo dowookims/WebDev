@@ -27,7 +27,7 @@ class Calendar {
   };
 
   _setTodoList (todoList) {
-      for (let item in todoList) {
+      for (let todo in todoList) {
           return false;
       };
       return true
@@ -66,9 +66,12 @@ class Calendar {
       if (!this.todoList.data[this.year]){
           this.todoList.insertYear(this.year);
       };
-    
-      let month = this.todoList.insertMonth(this.year, this.month, this.today);
-      month.paintDOM();
+      
+      if (!this.todoList.data[this.year][this.month]) {
+          this.todoList.insertMonth(this.year, this.month, this.today);
+      };
+
+      this.todoList.data[this.year][this.month].paintDOM();
     };
   };
 };
