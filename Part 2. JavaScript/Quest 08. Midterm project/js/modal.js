@@ -57,7 +57,7 @@ class Modal {
         todoDate.value = `${y}-${m}-${d}`;
 
         modalExitBtn.addEventListener('click', (e) => {
-            if (Modal.instance.isModalOpen) {
+            if (Modal.instance.isModalOpen) {+
                 e.stopPropagation();
                 closeModal();
             }

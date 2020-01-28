@@ -23,6 +23,7 @@ class Day {
         dateSpan.innerText = this.date;
         dateSpan.addEventListener('click', (e) => {
             e.stopPropagation();
+            // dateDOM.fire('openModal', ...);
             Modal.openModal(this.year, this.month, this.date, this);
         });
         dateDOM.appendChild(dateSpan);
