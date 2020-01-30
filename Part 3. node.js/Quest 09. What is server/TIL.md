@@ -141,6 +141,42 @@ OSI 7계층은
 
 ### 5. www.knowre.com 을 url 창에 쳤을 때 어떤 과정을 통해 노리의 서버 주소를 알게 되나요?
 
+1. 주소 표시줄에 www.knowre.com을 입력한다.
+
+2. 웹 브라우저가 URL을 해석한다.
+   
+   ```
+   scheme:[//[user:password@]host[:port]][/]path[?query][#fragment]
+   ```
+
+   이 문법에 맞지 않다면, 입력을 웹 브라우저의 기본 검색엔진으로 검색 요청을 진행한다.
+
+3. URL이 문법에 맞으면 [Punycode](https://ko.wikipedia.org/wiki/%ED%93%A8%EB%8B%88%EC%BD%94%EB%93%9C) encoding을 url host 부분에 적용한다.
+
+4. HSTS (HTTP Strict Transport Security) 목록을 로드해서 확인한다.
+
+5. DNS(Domain Name Server)를 조회한다.
+   
+   1) DNS에 요청을 보내기전 Browser에 해당 Domain이 cache되어 있는지 확인한다.
+   2) 없을 경우 로컬에 저장되어 있는 hosts 파일에서 참조할 수 있는 Domain이 있는지 확인한다.
+   3) 1), 2)모두 실패 했을 경우 Network stack에 있는 DNS로 요청을 보낸다.
+
+
+6. ARP(Address Resolution Protocol)로 대상의 IP와 MAC address를 알아낸다.
+   
+   1) ARP broadcast를 보내려면 Network stack library가 조회 할 대상 IP 주소와 ARP broadcast에 사용할 인터페이스의 MAC address를 알아야 한다.
+   2) ARP cache는 대상 IP에 대한 ARP 항목을 확인해서 cache가 있을경우 MAC 주소를 반환
+   3) ARP cache가 없는 경우
+      * 대상 IP address가 local subnet에 있는지 확인하기 위해 routing table조회
+      * 있는경우 subnet과 연관된 interface사용
+      * 없는 경우 기본 gateway의 subnet과 연관된 interface 사용
+      * Network library는 Data link Layer(OSI Model Layer 2 )에 ARP 요청을 보냄
+   4) 응답에서 target의 MAC address와 IP address로 DNS 프로세스 다시 시작
+   5) DNS에 53번 포트를 열어 UDP 요청 보냄 (응답 데이터가 큰 경우 TCP가 대신 사용)
+   6) 로컬 / ISP DNS에 없는 경우 SOA(Service-oriented architecture)에 도달 할 때 까지 재귀요청을 보내서 응답을 받음
+
+[참고링크 : owlgwang Devlog](https://owlgwang.tistory.com/1)
+
 ### Q1) tracert(traceroute) 명령을 통해 www.google.com 까지 가는 경로는?
 
 ![traceroute](./traceroute.png)
