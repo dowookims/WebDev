@@ -137,7 +137,13 @@ OSI 7계층은
 * 사용자 인터페이스, 전자우편, DB 관리 등 서비스 제공
 * 웹 브라우저
 * 통신 가능성을 확인하고, 오류 회복 절차와 데이터 무결성 제어에 대한 동기화 및 설정 수행
-* HTTP, FTP, DNS 
+* HTTP, FTP, DNS
+
+[Mozila : 인터넷은 어떻게 동작하는가?](https://developer.mozilla.org/ko/docs/Learn/Common_questions/How_does_the_Internet_work)
+
+[Moazila : 웹의 동작 방식](https://developer.mozilla.org/ko/docs/Learn/Getting_started_with_the_web/%EC%9B%B9%EC%9D%98_%EB%8F%99%EC%9E%91_%EB%B0%A9%EC%8B%9D)
+
+[Naver D2 : 브라우저는 어떻게 동작하는가?](https://d2.naver.com/helloworld/59361)
 
 ### 5. www.knowre.com 을 url 창에 쳤을 때 어떤 과정을 통해 노리의 서버 주소를 알게 되나요?
 
@@ -177,11 +183,40 @@ OSI 7계층은
 
 [참고링크 : owlgwang Devlog](https://owlgwang.tistory.com/1)
 
-### Q1) tracert(traceroute) 명령을 통해 www.google.com 까지 가는 경로는?
+### Q1) tracert(traceroute) 명령을 통해 www.google.com 까지 가는 경로를 찾아볼것
+
+#### 1-1 어떤 IP 주소들이 있는가 ?
 
 ![traceroute](./traceroute.png)
 
-### Q3) telnet
+#### 1-2 그 IP 주소들은 어디에 위치해 있는가?
+
+Traceroute는 패킷이 목적지 까지 도달하는 동안 거치는 라우터의 IP를 확인하는 툴.
+
+### Q2 ) Wireshark를 통해 www.google.com으로 요청을 날렸을 때 어떤 TCP 패킷이 오가는지 확인
+
+![wireshark](wireshark.png)
+
+#### 2-1 TCP 패킷을 주고받는 과정은 어떻게 되었는가?
+
+3-way handshake
+
+#### 2-2 각각의 패킷에 어떤 정보들이 담겨 있는가?
+
+프레임이 들어가 있는데, 
+* OSI Layer 2 MAC 주소
+  * Destination, Source, Type
+* OSI Layer 3 Network IP
+  * Header Length, Differentiated Services Codepoint, Flags ..
+* OSI Layer 4 Trasnport TCP
+  * Source PORT, desctination PORT, stream index, sequence num,
+* OSI Layer 7 Application Data
+
+[참고블로그](https://asec.ahnlab.com/156)
+
+### Q3) telnet 명령을 통해 http://www.google.com/ URL에 HTTP 요청 날려보기
+
+#### 어떤 헤더들이 있으며, 그 헤더의 역할은 ?
 
 ```
 Trying 216.58.220.206...
