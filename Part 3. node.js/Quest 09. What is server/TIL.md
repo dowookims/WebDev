@@ -240,3 +240,160 @@ GET / HTTP/1.1
 ![telnet](./telnet.png)
 
 IP주소와 함께 연결 성공시 response에 대한 내용을 확인 할 수 있다.
+
+HTTP 헤더는 클라이언트와 서버가 요청 또는 응답으로 부가적인 정보를 전송할 수 있도록 해준다.
+
+HTTP 헤더는 대소문자를 구분하지 않는 이름과 콜론 ':' 다음에 오는 값(줄 바꿈 없이)으로 이루어져있다. 
+
+값 앞에 붙은 빈 문자열은 무시된다.
+
+헤더는 컨텍스트에 따라 그룹핑 될 수 있는데,
+
+* General Header : 요청과 응답 모두에 적용되나 바디에서 최종적으로 전송되는 데이터와 관련 없는 헤더
+* Request Header : 패치될 리소스나 클라이언트 자체에 대한 자세한 정보를 포함하는 헤더
+* Response Header : 위치 또는 서버 자체에 대한 정보(이름, 버전)와 같이 응답에 대한 부가적인 정보를 갖는 헤더
+* Entity Header : 컨텐츠 길이나 MIME 타입과 같이 엔티티 바디에 대한 자세한 정보를 포함하는 헤더
+
+헤더의 내용은, [Mozila](https://developer.mozilla.org/ko/docs/Web/HTTP/Headers)를 참고하여 작성.
+
+* Date : 메시지가 발생한 날짜와 시간을 포함.
+  
+* Expires : 응답이 최신이 아니라고 판단할 날짜 / 시간을 포함한다. 0, 유효하지 않은 날짜는 과거의 시간을 나타내어 리소스가 이미 만료됨을 의미함.
+  * 응답 내에 max-age, s-max-age 디렉티브를 지닌 Cache-Control 헤더가 존재 할 경우, Expires는 무시됨.
+  * `Expires: Wed, 21 Oct 2015 07:28:00 GMT`
+
+* Cache-Control : 요청과 응답 모두에서의 캐싱 메커니즘을 위한 디렉티브를 정하기 위해 사용된다.
+캐싱 디렉티브는 단방향성이며, 요청 내 주어진 디렉티브가 응답 내에 주어진 디렉티브와 동일하다는 것을 뜻하지는 않는다는 것을 의미함.
+
+  * 캐시 요청 디렉티브
+
+    ```
+    Cache-Control: max-age=<seconds>
+    Cache-Control: max-stale[=<seconds>]
+    Cache-Control: min-fresh=<seconds>
+    Cache-control: no-cache 
+    Cache-control: no-store
+    Cache-control: no-transform
+    Cache-control: only-if-cached
+    ```
+
+  * 캐시 응답 디렉티브
+
+    ```
+    Cache-control: must-revalidate
+    Cache-control: no-cache
+    Cache-control: no-store
+    Cache-control: no-transform
+    Cache-control: public
+    Cache-control: private
+    Cache-control: proxy-revalidate
+    Cache-Control: max-age=<seconds>
+    Cache-control: s-maxage=<seconds>
+    ```
+
+  * 캐시 능력
+    * public : 응답이 어떤 캐시에 의해서든 캐시됨
+    * private : 응답이 단일 사용자를 위한 것이며, 공유 캐시에 의해 저장되지 않음. 사설 캐시는 응답 저장 가능
+    * no-cache : 캐시된 복사본을 사용자에게 보여주기 전에, 재검증을 위한 요청을 원 서버로 보내도록 강제
+    * only-if-cached : 새로운 데이터를 내려받지 않음. 클라이언트는 캐시된 응답만 받으며, 최신 복사본을 요청하지 않음
+
+  * 만료
+    * max-age= seconds : 리소스가 최신 상태라고 판단할 최대 시간을 지정. 요청시간과 관련이 있다.
+    * s-maxage= seconds : max-age 혹은 Expires 헤더를 재정의하나, 공유 캐시에서만 적용되며 사설 캐시에 의해서 무시됨
+    * max-stale=[seconds] : 클라이언트가 캐시의 만료 시간을 초과한 응답을 받아들일지 나타냄. 부가적으로 초 단위의 값을 넣을 수 있는데, 이는 응답이 만료되서는 안되는 시칸을 나타냄
+    * min-fresh= seconds : 클라이언트가 지정된 시간 동안 fresh 상태로 유지될 응답을 원함
+
+  * 재검증과 리로딩
+    * must-revalidate : 캐시는 사용하기 이전 기존 리소스 상태를 확인해야 하며, 만료된 리소스는 사용하지 않음
+    * proxy-revalidate : must-revalidate와 동일하나, 공유캐시에서만 적용
+
+  * 기타
+    * no-store : 캐시는 클라이언트 요청 혹은 서버 응답에 관해 어떤 것도 저장하지 않음
+    * no-transform : 응답에 대한 변형이나 변환이 일어나지 않음
+
+* Content-Type : 응답 내에 존재하며, 클라이언트에게 반환된 컨텐츠의 유형이 실제로 무엇인지 알려준다. 어떤 경우 브라우저들은 MIME를 sniffing 하여 이 header의 값을 따르지 않기에, 이를 방지하기 위해 `X-Content-Type-Options` 헤더를 `nosniff`로 설정하기도 함.
+  
+* P3P : 쿠키 정보의 남용을 막기 위해 Platform for Personal Perferences 규약을 돌입, 이를 헤더에 사용.
+
+* Server : 요청을 처리하기 위해 오리진 서버에 의해 사용되는 소프트웨어에 대한 정보를 포함. `gws`, `Apache/2.4.1 (Unix)`
+
+* X-XSS-Protection : XSS 공격을 감지할 때 페이지 로드를 중지시키는 것. 최신 브라우저에서는 Inline JS('unsafe-inline') 사용을 못하게 하는 CSP(Content-Security-Policy) 보호기능이 있으나, 구형 웹브라우저에서 사용자를 보호할 수 있는 기능이다.
+
+```
+0 : XSS 필터링을 비활성화
+
+1 : XSS 필터링을 사용 (default). 사이트 내에서 스크립팅 공격이 감지되면 브라우저는 안전하지 않은 영역을 제거 후에 렌더링.
+
+1; mode=block : XSS 필터링을 사용. 공격이 탐지되면 페이지 렌더링을 중단.
+
+1; report=<reporting-URI>  (Chromium에서만 사용 가능) : XSS 필터링을 사용. XSS 공격을 탐지시 브라우저는 페이지 렌더링을 차단하고 위반 사항을 보고. 이것은 CSP report-uri 지시문의 기능을 사용하여 보고서를 보낸다.
+```
+  
+* X-Frame-Options : 해당 페이지를 `<frame>` 또는`<iframe>`, `<object>` 에서 렌더링할 수 있는지 여부를 나타내는데 사용. 사이트 내 콘텐츠들이 다른 사이트에 포함되지 않도록 하여 clickjaking 공격을 막기 위해 사용한다.
+
+```
+X-Frame-Options: deny => 같은 사이트 내에서 frame을 통한 접근도 막는다.
+
+X-Frame-Options: sameorigin => frame에 포함된 페이지가 페이지를 제공하는 사이트와 동일한 경우에만 사용 가능
+
+X-Frame-Options: allow-from https://example.com/ => 지정한 url에 속해있는 것만 허용.
+```
+
+* Set-Cookie : 서버에서 사용자 브라우저에 쿠키를 전송하기 위해 사용. [set-cookie](https://developer.mozilla.org/ko/docs/Web/HTTP/Headers/Set-Cookie)
+  
+* Accept-Ranges : 서버가 범위 요청을 지원하는지를 나타내며, 지원할 경우 범위가 표현될 수 있는 단위를 나타낸다.
+
+```
+none
+지원되는 범위의 단위가 없음을 나타냠, 이는 헤더가 존재하지 않는 경우와 동일하므로 거의 사용되지 않음. 
+IE9같은 브라우저의 경우 다운로드 매니저의 일시중지 버튼을 비활설화(disable) 혹은 제거(remove)할 때 쓰이고는 함.
+
+bytes
+범위는 바이트로 표현될 수 있음.
+```
+  
+* Vary : 오리진 서버로부터 새로운 요청을하는 대신 캐시된 응답을 사용할지 결정하기 위한 향후의 요청 헤더를 매칭할 방법을 정함. 이는 서버에서 컨텐츠 협상 알고리즘에 어떤 리소스를 선택 할 지 가르킨다.
+
+```
+*
+각 요청에 대해서 유일하며 캐시 할 수 없는 요청으로 간주.
+이보다 더 좋은 방법으로 Cache-Control: no-store, 를 사용 하는것이 객체를 저장하면 안된다는 의미로 좀더 명확하게 표시되고 읽을 수 있다.
+
+<header-name>
+헤더 이름은 쉼표로 구분되며 캐시 된 응답을 사용할 수 있는지 여부를 결정할 때 사용.
+```
+  
+* Transfer-Encoding : 사용자에게 엔티티를 안전하게 전송하기위해 사용할 인코딩 형식을 지정.
+  * 이 헤더는 hop-by-hop 헤더로, 리소스 자체가 아닌 두 노드 사이에 메시지를 적용한다.
+  * 다중 노드 연결의 각각 세그 먼트는 이 헤더 값을 다르게 사용할 수 있다.
+  * 전체 연결에 있어 데이터를 압축하려고 하면 end-to-en 헤더인 Content-Encoding 헤더를 사용해야 한다.
+
+```
+Transfer-Encoding: chunked
+Transfer-Encoding: compress
+Transfer-Encoding: deflate
+Transfer-Encoding: gzip
+Transfer-Encoding: identity
+
+// 어떤 값들은 쉼표로 구분하여 나열될 수 있다
+Transfer-Encoding: gzip, chunked
+
+chunked
+데이터가 일련의 청크 내에서 전송된다. Content-Length 헤더는 이 경우 생략되며, 각 청크의 앞부분에 현재 청크의 길이가 16진수 형태로 오고 그 뒤에는 '\r\n'이 오고 그 다음에 청크 자체가 오며, 그 뒤에는 다시 '\r\n'이 온다.
+ 종료 청크는 길이가 0인 것을 제외하면 일반적인 청크와 다르지 않다. 그 다음에는 (비어있을수도 있는) 연속된 엔티티 헤더 필드로 구성된 트레일러가 온다.
+
+compress
+Lempel-Ziv-Welch (LZW) 알고리즘을 사용하는 형식. 값의 이름은 이 알고리즘을 구현한, UNIX compress 프로그램에서 차용되었다.
+대부분의 UNIX 배포판에서 제외된 압축 프로그램처럼, 이 content-encoding은 어느 정도는 (2003년에 기한이 만료된) 특허 문제로 인해 오늘날 거의 대부분의 브라우저에서 사용되지 않는다.
+
+deflate
+(RFC 1951에 정의된) deflate 압축 알고리즘과 함께 (RFC 1950에서 정의된) zlib 구조체를 사용한다.
+
+gzip
+32비트 CRC를 이용한 Lempel-Ziv coding (LZ77)을 사용하는 형식. 이것은 근본적으로 UNIX gzip 프로그램의 형식. HTTP/1.1 표준은 이 content-encoding을 지원하는 서버는 호환성 목적을 위해 x-gzip 을 별칭으로 인지할 것을 권고하고 있음.
+
+identity
+압축이나 수정이 없는 상태를 나타낸다. 이 토크은 명시적으로 지정되는 경우를 제외하고 항상 허용 가능한 것으로 간주된다.
+```
+
+[HTTP헤더](https://developer.mozilla.org/ko/docs/Web/HTTP/Headers)
