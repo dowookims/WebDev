@@ -141,3 +141,31 @@ OSI 7계층은
 
 ### 5. www.knowre.com 을 url 창에 쳤을 때 어떤 과정을 통해 노리의 서버 주소를 알게 되나요?
 
+### Q1) tracert(traceroute) 명령을 통해 www.google.com 까지 가는 경로는?
+
+![traceroute](./traceroute.png)
+
+### Q3) telnet
+
+```
+Trying 216.58.220.206...
+Connected to google.com.
+Escape character is '^]'.
+Connection closed by foreign host.
+```
+
+여기서 기다리면 나올줄 알았는데, 추가적으로 작업을 진행했어야 했다. 즉, url 로 요청을 하고, 이에 대한 추가 요청(GET, POST 및 프로토콜)을 해야 무언가가 나온다.
+
+이를 위해
+```bash
+> telnet
+tellnet > open google.com 80
+GET / HTTP/1.1
+```
+을 입력하고 엔터를 치면, 구글 문서에 대한 정보를 확인 할 수 있다.
+
+그결과로
+
+![telnet](./telnet.png)
+
+IP주소와 함께 연결 성공시 response에 대한 내용을 확인 할 수 있다.
