@@ -339,7 +339,7 @@ X-Frame-Options: sameorigin => frame에 포함된 페이지가 페이지를 제�
 X-Frame-Options: allow-from https://example.com/ => 지정한 url에 속해있는 것만 허용.
 ```
 
-* Set-Cookie : 서버에서 사용자 브라우저에 쿠키를 전송하기 위해 사용. [set-cookie](https://developer.mozilla.org/ko/docs/Web/HTTP/Headers/Set-Cookie)
+* Set-Cookie : 서버에서 사용자 브라우저에 쿠키를 전송하기 위해 사용. [set-cookie 참조](https://developer.mozilla.org/ko/docs/Web/HTTP/Headers/Set-Cookie)
   
 * Accept-Ranges : 서버가 범위 요청을 지원하는지를 나타내며, 지원할 경우 범위가 표현될 수 있는 단위를 나타낸다.
 
@@ -397,3 +397,8 @@ identity
 ```
 
 [HTTP헤더](https://developer.mozilla.org/ko/docs/Web/HTTP/Headers)
+
+***
+추가적으로, telnet의 경우 https 가 안되므로, openSSL을 활용하여 https를 탐색할 수 있다.
+
+`openssl  s_client -connect www.google.com:443`
