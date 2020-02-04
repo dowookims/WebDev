@@ -26,6 +26,30 @@ NPM은 Node Package Manger의 약자로, 노드를 활용하여 만들어진 자
 
 NPM은 Node.js를 설치하면 자동으로 npm이 설치된다.
 
+### 2-0 npm init
+
+작업을 진행할 디렉토리에 CLI에서 npm init 을 하면, 해당 폴더에서 진행할 프로젝트에 대한 정보를 입력하고, npm을 사용할 수 있는 환경을 제공해 주는 명령어이다. 이 명령어를 통해 정보들을 입력하게 되면, package.json이라는 파일이 만들어 지게 되는데, 이 package.json에서 node기반의 프로젝트 환경을 구축 할 수 있다.
+
+### 2-1 scripts
+
+script는 CLI를 통해 작업을 해야 할 명령어들을 정리 해두어, npm run + '스크립트 명' 과 같은 식으로 단축 실행이 가능하게 만둘어준다.
+
+ex) npm run start, npm run test 등
+
+### 2-2 dependencies
+
+#### 2-2-1 devDependencies vs dependencies
+
+devDependecies에 기술된 라이브러리의 경우, 개발 환경에서만 필요한 라이브러리들을 이야기하고, dependencies에 기술된 라이브러리의 경우, 개발 환경 뿐만 아니라 런타임에서도 필요한 라이브러리 들을 기술한다.
+
+이는 개발자가 직접 입력해주기 보다는, npm의 명령어를 통해 패키지를 다운받을 때 사용하는 키워드에 따라 달라진다. 일반적으로 패키지를 다운 받을 때,
+
+`npm i packageName` 으로 패키지를 저장한다면, devDependencies의 경우 `npm i pacakgeName --save-dev`로 저장한다.
+
+ex)
+* devDependencies : Chai, Mocha,Enzyme etc..
+* dependencies : axios, express, react, redux
+
 ## 3. Node의 전역 변수.
 
 브라우저상에서 Javascript의 전역 Context, 최상위 객체는 Window였다. 그러나 Node 런타임 환경 내에서 전역은 Global이다.
@@ -72,7 +96,7 @@ exports.plusTwo = (a) => return sum(a,2);
 // browser 에서 사용되는 모듈
 
 require.define({'complex-numbers/plus-two': (require, exports) => {
-    var sum = require('./complex-number).sum;
+    var sum = require('./complex-number').sum;
     exports.plusTwo = (a) => return sum(a,2);
 };
 }, ['complex-numbers/math']);
@@ -177,10 +201,10 @@ exports.divide = function(a, b) {
 
 moudle객체는 exports 프로퍼티를 가지게 된다. exports는 module.exports를 참조하고 있다.
 
-module.exports는 주로 한 번에 export 할 때 사용하고, exports는 여러 개의 객체를 따로 export할 때 사용한다.
+module.exports는 주로 한 번에 export 할 때 사용하고, exports는 여러 개의 객체를 위로 export할 때 사용한다.
 
 ### npm
 
 #### npm pakage를 `-g` 옵션을 통해 Global로 저장하는 것과 그렇지 않은 것은 어떻게 다른가?
 
--g 옵션을 사용하면 로컬 node 저장소에 패키지가 다운받아지고, 패키지명과 관련한 `CLI`를 사용 할 수 있게 된다. -g 옵션을 사용하지 않고 설치 할 경우, 현재 package.json이 존재하는 위치에 modules 안에 라이브러리가 저장되어 그 해당 위치에서 해당 버전의 라이브러리를 사용 할 수 있다.
+-g 옵션을 사용하면 로컬 node 저장소에 패키지가 다운받아지고, 패키지명과 관련한 `CLI`를 사용 할 수 있게 된다. -g 옵션을 사용하지 않고 설치 할 경우, 현재 package.json이 존재하는 위치에 node_modules 안에 라이브러리가 저장되어 그 해당 위치에서 해당 버전의 라이브러리를 사용 할 수 있다.

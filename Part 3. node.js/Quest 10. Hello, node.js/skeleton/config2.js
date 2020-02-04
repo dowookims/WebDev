@@ -1,5 +1,5 @@
 module.exports = {
-    name: 'config2',
+    name: 'Config2',
     var1: 'bbb',
-    var2: [2, 3, 4, 5]
+    var2: [ 2, 3, 4, 5 ]
 }
