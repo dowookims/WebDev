@@ -37,7 +37,7 @@
 
 * 메시지나 파일들을 작은 패킷으로 나누어, 인터넷을 통해 전송하는 일을 수행한다.
 * 수신된 패킷들을 원래의 메시지로 재조립 하는 일을 담당한다.
-* 신뢰성 있는 연결지향형 프로토콜로, 신뢰성이 있다는 것은 패킷에 대한 오류 처리나 재전송따위로 에러를 복구하는 것
+* 신뢰성 있는 연결지향형 프로토콜로, 신뢰성이 있다는 것은 패킷에 대한 오류 처리나 재전송 따위로 에러를 복구하는 것
 * TCP의 헤더에 붙는 정보가 많음
 
 ```
@@ -402,3 +402,15 @@ identity
 추가적으로, telnet의 경우 https 가 안되므로, openSSL을 활용하여 https를 탐색할 수 있다.
 
 `openssl  s_client -connect www.google.com:443`
+
+
+***
+Additional Research
+
+TCP / UDP / IP
+
+라우팅 테이블, Cidr, Root Name Server, Top Level Domain,
+
+책추천 : TCP/IP illustrated
+
+google.com 을 타이핑 했을 때 어떤 동작들이 일어날까? 에 대해 한시간 정도도 이야기 할 수 있어야 한다_____________
