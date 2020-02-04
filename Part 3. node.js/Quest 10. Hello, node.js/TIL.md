@@ -22,7 +22,9 @@ Node.js가 이벤트 기반 비동식으로 작동하기 때문에, 대규모 �
 
 ## 2. NPM 이란?
 
-NPM은 Node Package Manger의 약자로, 노드를 활용하여 만들어진 라이브러리들을 설치, 관리 할 수 있게 도와주는 패키지 매니저이다.
+NPM은 Node Package Manger의 약자로, 노드를 활용하여 만들어진 자바스크립트 코드들의 저장소이며 라이브러리들을 설치, 관리 할 수 있게 도와주는 패키지 매니저이다.
+
+NPM은 Node.js를 설치하면 자동으로 npm이 설치된다.
 
 ## 3. Node의 전역 변수.
 
@@ -100,4 +102,85 @@ AMD는 비동기 모듈에 대한 표준안을 다루고 있으며, CommonJS와 
 
 `factory` 모듈이나 객체를 인스턴스화 하는 실제 구현을 담당한다. 팩토리 인수가 함수면 싱글톤으로 한번만 실행되고, 반환되는 값이 있다면 그 값을 exports 객체의 속성 값으로 할당한다. 인수가 객체면, exports 객체의 속성 값으로 할당된다.
 
+### 4-3 exports
+
+Node.js 환경에서 모듈을 만들 때 module.exports 를 사용한다.
+
+```js
+// calc.js
+function add(a, b) {
+    return a + b;
+}
+module.exports = add;
+
+// main.js
+const add = require('./calc.js');
+console.log(add(1,2));
+```
+
+```js
+// calc.js
+function add(a, b) {
+  return a + b;
+}
+
+function substract(a, b) {
+  return a - b;
+}
+
+function multiply(a, b) {
+  return a * b;
+}
+
+function divide(a, b) {
+  return a / b;
+}
+
+module.exports = {
+  add: add,
+  substract: substract,
+  multiply: multiply,
+  divide: divide,
+};
+
+// main.js
+const add = require('./calc.js').add;
+const multiply = require('./calc.js').multiply;
+
+console.log(multiply(add(1,2), add(2,3)); // 15
+```
+
+
+```js
+exports.add = function(a, b) {
+  return a + b;
+};
+
+exports.substract = function(a, b) {
+  return a - b;
+};
+
+exports.multiply = function(a, b) {
+  return a * b;
+};
+
+exports.divide = function(a, b) {
+  return a / b;
+};
+```
+
 [Javascript 표준을 위한 움직임: CommonJS와 AMD](https://d2.naver.com/helloworld/12864)
+
+## CheckList
+
+### module.exports 와 exports 변수는 어떻게 다를까?
+
+moudle객체는 exports 프로퍼티를 가지게 된다. exports는 module.exports를 참조하고 있다.
+
+module.exports는 주로 한 번에 export 할 때 사용하고, exports는 여러 개의 객체를 따로 export할 때 사용한다.
+
+### npm
+
+#### npm pakage를 `-g` 옵션을 통해 Global로 저장하는 것과 그렇지 않은 것은 어떻게 다른가?
+
+-g 옵션을 사용하면 로컬 node 저장소에 패키지가 다운받아지고, 패키지명과 관련한 `CLI`를 사용 할 수 있게 된다. -g 옵션을 사용하지 않고 설치 할 경우, 현재 package.json이 존재하는 위치에 modules 안에 라이브러리가 저장되어 그 해당 위치에서 해당 버전의 라이브러리를 사용 할 수 있다.
