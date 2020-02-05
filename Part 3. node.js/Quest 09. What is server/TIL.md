@@ -62,6 +62,49 @@ DNS는 특정 컴퓨터의 주소를 찾기 위해 사람이 이해하기 쉬운
 
 컴퓨터 도메인 이름(https://knowre.com)을 IP 주소로 변환하고, 라우팅 정보를 제공하는 분산형 데이터베이스 시스템.
 
+#### 3-1 DNS의 종류
+
+모든 DNS 서버는 4개의 카테고리 중 하나로 분류된다. 
+
+* Recursive resolvers
+* root nameservers
+* TLD nameservers
+* authoritative nameservers.
+
+일반적인 DNS 조회에서 (cache가 수행되지 않았을 때), 이 4개의 DNS servers는 함께 작동하여 클라이언트에 지정된 도메인에 대한 IP 주소를 전달하는 작업을 완료한다.
+
+##### Recursive resolvers(DNS recursor)
+
+DNS query가 첫번째로 멈추는 곳이다. Recursive resolver는 client와 DNS nameserver 사이에서 중간자 역할을 수행한다. Recursive resolver가 client로 부터 DNS query를 받으면 recursive resolver는 cache된 data로 응답하거나, root nameserver로 요청을 보내고, TLD nameserver에 다른 요청을 한다음, autehntitative nameserver에 마지막 요청읇 보낸다.
+
+요청한 IP 주소를 포함하는 authentitative 서버로부터 응답을 받은 후, Recursive resolver는 client로 응답을 보낸다. 이 과정에서, recursive resolver는 authoritative name server로 부터 받은 정보를 cache 한다. 
+
+클라이언트가 최근에 다른 클라이언트에 의해 요청된 도메인 이름의 IP 주소를 요청할 때, resolver는 name server와 통신하는 과정을 우회할 수 있고, 요청된 레코드를 캐시에서 클라이언트에 전달하기만 하면 된다.
+
+##### DNS root nameserver
+
+13개의 root nameserver는 모든 recursive resolver에게 알려져 있으며, Recursive resolver가 DNS 레코드를 찾는 첫 번째 정지 지점이다.
+
+root server는 도메인 이름을 포함하는 recursive resolver의 쿼리를 받아들이고, root name server는 해당 도메인(.com, .net, .org 등)의 확장에 기초하여 recursive resolver를 TLD nameserver로 directing하는 응답을 한다.
+
+root server는 ICANN(Internet Corporation for Assigned Name and Numbers)이라는 비영리 단체가 감독한다.
+
+##### TLD nameserver
+
+TLD name server 는 .com, .net 또는 URL의 마지막 `.` 뒤에 오는 모든 도메인 이름에 대한 정보를 유지한다. 예를 들어 .com TLD name server에는 com으로 끝나는 모든 웹 사이트에 대한 정보가 들어 있다
+
+사용자가 google.com을 검색하는 경우, root nameserver로부터 응답을 받은 후, recursive resolver는 .com TLD name server에 쿼리를 보내는데, 이 TLD name server는 해당 도메인에 대한 authoritative name server를 가리켜 응답한다.
+
+TLD nameserver의 관리는 인터넷 주소 관리 기구(Internet Assigned Number Authority, IANA)가 담당한다. IANA는 TLD 서버를 두 개의 주요 그룹으로 나뉜다.
+* Generic top-level domain : country specific 하지 않은 도메인. ex) .com, .net, .edu, .gov
+* Country code top-level domains : specific to a country or state. ex) .uk, .us, .kr
+
+##### authoritative nameserver
+
+recursive resolver가 TLD nameserver로 부터 응답을 받고, 응답은 resolver를 authoritative nameserver로 direct 시킨다. Authoritative nameserver는 주로 resolver의 마지막 단계이다.
+
+authoritative nameserver는 자신이 서비스 하는 도메인 이름(google.com, knowre.com)에 특정된 정보를 포함하고 있으며, DNS A레코드에서 발견된 서버의 IP 주소를 제공 할 수 있으며, 도메인이 CNAME 레코드(alias)를 가지고 있는 경우 recursive resolver 에게 alias domain을 제공 할 것이며, 이때 recursive resolver는 authoritative name server에서 레코드를 얻기 위해 완전히 새로운 DNS 조회를 수행해야 한다.
+
 ### 4. 인터넷은 어떻게 동작하는가 ? OSI 7 Layer에 입각하여.
 
 이 질문에 대해 대답하기 위해 일단, OSI 7 계층에 대해 이야기를 먼저 해야 할 것 이다.
@@ -185,9 +228,19 @@ OSI 7계층은
 
 ### Q1) tracert(traceroute) 명령을 통해 www.google.com 까지 가는 경로를 찾아볼것
 
+traceroute(tracert)는 컴퓨터 네트워크 진단 커맨드로, 라우트(경로)를 display 하고 IP network에서 패킷간 transit delay를 측정하는데 사용된다.
+
+* 라우트 이력은 경로(라우트)에서 각 연속 호스트(원격 노드)로 부터 수신된 패킷의 왕복 시간으로 기록된다.
+* 각 홉의 평균 시간의 합은 연결을 설정하는 데 소요된 총 시간이다.
+* Traceroute는 모든 (3개) 전송된 패킷이 두 번 이상 손실되지 않는 한 진행된다. 2번 이상 손실 되면 다음 연결이 손실되고 경로를 평가할 수 없다. 반면 `Ping`은 목적지점에서 최종 왕복 시간만 계산한다.
+
 #### 1-1 어떤 IP 주소들이 있는가 ?
 
 ![traceroute](./traceroute.png)
+
+* RTT(Round Trip Time) : 해당 hop에 들렸다 돌아오는 시간이며, 지연시간으로 간주되기도 한다. traceroute는 3개의 패킷을 보내기 때문에, 이 3개의 패킷이 돌아오는데 걸리는 시간을 나타낸다.
+* `*`은 response를 받지 못했다는 것을 의미한다. 패킷 손실.
+* Domain Name : router의 location(IP)를 나타낸다.
 
 #### 1-2 그 IP 주소들은 어디에 위치해 있는가?
 
@@ -407,10 +460,35 @@ identity
 ***
 Additional Research
 
+### Dig
+
+DNS에 querying 할 수 있는 network administration Command line tool.
+
+#### 1. TTL (Time To Live)
+
+IP Packet 내부에 있는 데이터가 유효한 시간을 알려주는 값으로써 네트워크 라우터에게 패킷이 너무 오래되었는지, 버려야 하는지 알려준다. IPv6에서 패킷에 있는 TTL 필드는 hop limit 이라는 이름으로 변경되었다.
+
+IP Packet에서 TTL은 1 ~ 255 사이의 값으로 설정됨, OS마다 다른 default 값을 설정한다. 각 라우터는 최소 TTL이 1이상인 패킷을 받으며, 만약 TTL 카운트가 1 이상이면 라우터는 패킷을 앞으로 보내고, 그렇지 않으면 그 패킷을 버리고 ICMP(Internet Control Message Protocol) 을 origin host로 보내서 재전송을 요청한다.
+
+TTL/hop limit의 핵심은, 전송되지 않는 패킷 스트림이 라우팅 루프에서 무한정 돌아 stuck 되는 것을 방지하는 것 이다.
+
+`ping` 및 `traceroute`는 TTL value를 활용하여 주어진 host computer에 접근하거나 host의 route 를 추적한다. Traceroute는 연속적으로 더 높은 TTL을 가진 패킷을 전송해서 각 패킷은 목적지로 가는 경로에서 다음 홉(router)에 의해 차례로 버려지게 된다. 첫번째 패킷은 1의 TTL을, 2번째 패킷은 2의 TTL을 가지게 된다.
+
+패킷을 보내는 시간과 폐기된 ICMP 메시지를 받는 시간 사이의 시간은 각각 연속적인 홉 이동 시간을 계산하는데 사용된다.
+
+* TTL은 캐시에서 DNS 레코드를 반환할 수 있는 시간을 설명하는 데에도 사용된다. 이런 맥락에서 TTL은 도메인에 대한 권한있는 DNS 서버의 DNS 레코드에 설정된 숫자 값이며, 캐싱 서버가 레코드에 캐시된 값을 제공할 수 잇는 시간을 정의한다. 마지막 새로 고침 이후 그 시간이 경과하면 캐싱 서버는 authoritative한 서버에 다시 연락하여 레코드에 대한 현재 값을 받게 된다.
+
+* HTTP에서 TTL은 웹 서버가 그 컨텐츠가 새로운 것인지 확인하기 전에 캐시된 웹 컨텐츠를 반환 할 수 있는 시간을 의미한다. 기본값은 웹 서버의 설정에 의해 정외되지만, cache-control tags 또는 expires 태그에 의해 재정의 될 수 있다.
+
+[출처 : searchnetworking.techtarget.com](https://searchnetworking.techtarget.com/definition/time-to-live)
+
 TCP / UDP / IP
 
 라우팅 테이블, Cidr, Root Name Server, Top Level Domain,
 
+Ping, Dig
+
 책추천 : TCP/IP illustrated
 
-google.com 을 타이핑 했을 때 어떤 동작들이 일어날까? 에 대해 한시간 정도도 이야기 할 수 있어야 한다_____________
+google.com 을 타이핑 했을 때 어떤 동작들이 일어날까? 에 대해 한시간 정도도 이야기 할 수 있어야 한다!
+ 
