@@ -208,3 +208,36 @@ module.exports는 주로 한 번에 export 할 때 사용하고, exports는 여�
 #### npm pakage를 `-g` 옵션을 통해 Global로 저장하는 것과 그렇지 않은 것은 어떻게 다른가?
 
 -g 옵션을 사용하면 로컬 node 저장소에 패키지가 다운받아지고, 패키지명과 관련한 `CLI`를 사용 할 수 있게 된다. -g 옵션을 사용하지 않고 설치 할 경우, 현재 package.json이 존재하는 위치에 node_modules 안에 라이브러리가 저장되어 그 해당 위치에서 해당 버전의 라이브러리를 사용 할 수 있다.
+
+### difference `require` and  `import`
+
+* require
+  * can dynamic loading wherever the loaded moudle name is not predefined /static * wherever you do not absolutely loada  module providing it's "truly required (depending on bound code flow)
+  * loading synchronous
+
+* import
+  * can use name import selectively load only the pieces that need. can save memory
+  * Import can be asynchronous
+  * return Promise
+  * can do tree shaking - webpack
+  * static loading
+
+* Require is more of dynamic analysis and import is more of static analysis
+* Require Throws error at runtime and Import throws error while parsing
+* Require is Nonlexical and Import is Lexical
+* Requires to stay where they have put the file and imports get sorted to the top of the file.
+* Import is always run at the very beginning of the file and can’t be run conditionally. On the other hand require can be used inline, conditionally,
+
+use require() "natively" in NodeJS and not in browsers, and import() is specified for all JavaScript engines.
+
+You can't selectively load only the pieces you need with require but with imports, you can selectively load only the pieces you need. That can save memory.
+
+Loading is synchronous(step by step) for require on the other hand import can be asynchronous(without waiting for previous import) so it can perform a little better than require
+
+[참고 - educba](https://www.educba.com/require-vs-import/)
+
+[참고 - javascript.info](https://javascript.info/modules-intro)
+
+[참고](https://insights.untapt.com/webpack-import-require-and-you-3fd7f5ea93c0)
+
+[webpack](https://medium.com/front-end-weekly/webpack-and-dynamic-imports-doing-it-right-72549ff49234)
