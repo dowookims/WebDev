@@ -62,6 +62,8 @@ DNS는 특정 컴퓨터의 주소를 찾기 위해 사람이 이해하기 쉬운
 
 컴퓨터 도메인 이름(https://knowre.com)을 IP 주소로 변환하고, 라우팅 정보를 제공하는 분산형 데이터베이스 시스템.
 
+[참고자료-freeCodeCamp](https://www.freecodecamp.org/news/why-cant-a-domain-s-root-be-a-cname-8cbab38e5f5c/)
+
 #### 3-1 DNS의 종류
 
 모든 DNS 서버는 4개의 카테고리 중 하나로 분류된다. 
@@ -71,6 +73,11 @@ DNS는 특정 컴퓨터의 주소를 찾기 위해 사람이 이해하기 쉬운
 * TLD nameservers
 * authoritative nameservers.
 
+```
+ When you write a domain name in your browser, a DNS query is sent to your internet service provider (ISP). The ISP has a recursive server, which might have the needed information cached in its memory. But if the data is outdated, this recursive server need to find the IP elsewhere. It will try to find it in other recursive servers, but if it can’t, it needs to get the IP address from an authoritative DNS server.
+```
+
+![dns server](https://www.cloudflare.com/img/learning/dns/dns-server-types/recursive-resolver.png)
 일반적인 DNS 조회에서 (cache가 수행되지 않았을 때), 이 4개의 DNS servers는 함께 작동하여 클라이언트에 지정된 도메인에 대한 IP 주소를 전달하는 작업을 완료한다.
 
 ##### Recursive resolvers(DNS recursor)
@@ -83,13 +90,17 @@ DNS query가 첫번째로 멈추는 곳이다. Recursive resolver는 client와 D
 
 ##### DNS root nameserver
 
-13개의 root nameserver는 모든 recursive resolver에게 알려져 있으며, Recursive resolver가 DNS 레코드를 찾는 첫 번째 정지 지점이다.
+Root name server는 인터넷 DNS의 root zone이다. root zone의 record 요청에 직접 응답하고, 해당 최상위 도메인(TLD)에 대한 authoritative name server 목록을 반환하여 다른 요청에 응답한다.
+
+13개의 root name server(A ~ M)는 모든 recursive resolver에게 알려져 있으며, Recursive resolver가 DNS 레코드를 찾는 첫 번째 정지 지점이다.
 
 root server는 도메인 이름을 포함하는 recursive resolver의 쿼리를 받아들이고, root name server는 해당 도메인(.com, .net, .org 등)의 확장에 기초하여 recursive resolver를 TLD nameserver로 directing하는 응답을 한다.
 
 root server는 ICANN(Internet Corporation for Assigned Name and Numbers)이라는 비영리 단체가 감독한다.
 
-##### TLD nameserver
+[참고 : wikipedia](https://en.wikipedia.org/wiki/Root_name_server)
+
+##### TLD(Top-Level Domain) nameserver
 
 TLD name server 는 .com, .net 또는 URL의 마지막 `.` 뒤에 오는 모든 도메인 이름에 대한 정보를 유지한다. 예를 들어 .com TLD name server에는 com으로 끝나는 모든 웹 사이트에 대한 정보가 들어 있다
 
@@ -99,11 +110,57 @@ TLD nameserver의 관리는 인터넷 주소 관리 기구(Internet Assigned Num
 * Generic top-level domain : country specific 하지 않은 도메인. ex) .com, .net, .edu, .gov
 * Country code top-level domains : specific to a country or state. ex) .uk, .us, .kr
 
+* www.google.com 에서, `www`는 호스트, `google.com` 은 도메인이다. 여기서, 호스트와 도메인을 함께 명시하여 전체 경로를 모두 표기하는 것을 Fully Qualified Domain Name(FQDN, 전체 도메인 네임) 이라고 한다.
+* FQDN과 달리, 전체 경로명이 아닌 하위 일부 경로만으로 식별가능하게 하는 이름을 PQDA(Partially Qualified Domain Name)이라고 한다.
+
 ##### authoritative nameserver
+
+authoritative name server는 특정 도메인, 주소에 대한 실제 DNS records(A, CNAME, PTR 등)을 가지고 있는 name server이다.
 
 recursive resolver가 TLD nameserver로 부터 응답을 받고, 응답은 resolver를 authoritative nameserver로 direct 시킨다. Authoritative nameserver는 주로 resolver의 마지막 단계이다.
 
 authoritative nameserver는 자신이 서비스 하는 도메인 이름(google.com, knowre.com)에 특정된 정보를 포함하고 있으며, DNS A레코드에서 발견된 서버의 IP 주소를 제공 할 수 있으며, 도메인이 CNAME 레코드(alias)를 가지고 있는 경우 recursive resolver 에게 alias domain을 제공 할 것이며, 이때 recursive resolver는 authoritative name server에서 레코드를 얻기 위해 완전히 새로운 DNS 조회를 수행해야 한다.
+
+* CNAME : Canonical Name의 줄임말로, 하나의 도메인 이름에 다른 별칭을 붙일 때 사용한다. CNAME은 반드시 다른 도메인 이름을 pointing 해야하며, 직접적으로 IP 주소를 pointing 해서는 안된다. 또한, CNAME은 CNAME을 pointing 할 수 있으나, 퍼포먼스 적 문제 때문에 일반적으로 추천되지는 않는다.
+
+  ```
+  test.me => A record가 서버 ip address를 Pointing 하고 있음
+  blog.tset.me => test.me // test.me 의 또 다른 도메인명
+  www.test.me => test.me // test.me 의 또 다른 도메인명
+
+  위 3개의 도메인들은 하나의 서버를 가리킨다.
+  ```
+
+* A record : Address record의 약자로, `domain name`에 하나의 `IP Address`가 있음을 의미한다. 하나의 도메인(서브나 루트 포함)에 해당하는 IP 주소의 값을 가지고 있다.
+
+  ```
+  dev.test.me => 123.456.789.123
+  test.me => 987.654.321.123
+  ```
+
+* [MX record](https://en.wikipedia.org/wiki/MX_record) : A mail exchanger record. domain name을 대신하여 email message를 수신할 책임이 있는 mail server를 지정하는 record
+  * DNS안에 있는 resource record 중 하나이다.
+  * 여러 MX records 들을 설정 할 수 있다.
+  * 일반적으로 mail server 배열을 pointing 함으로 load balancing 및 정리를 진행한다.
+
+The `A` record maps a name to one or more IP addresses when the IP are known and stable.
+
+The `CNAME` record maps a name to another name. It should only be used when there are no other records on that name.
+
+The `ALIAS` record maps a name to another name, but can coexist with other records on that name.
+
+The `URL` record redirects the name to the target name using the HTTP 301 status code.
+
+Use an `A` record if you manage which IP addresses are assigned to a particular machine, or if the IP are fixed (this is the most common case).
+
+Use a `CNAME` record if you want to alias one name to another name, and you don’t need other records (such as `MX` records for emails) for the same name.
+
+Use an `ALIAS` record if you’re trying to alias the root domain (apex zone), or if you need other records for the same name.
+
+Use the `URL` record if you want the name to redirect (change address) instead of resolving to a destination.
+
+
+[출처 : cloudFlare](https://www.cloudflare.com/learning/dns/dns-server-types/#recursive-resolver)
 
 ### 4. 인터넷은 어떻게 동작하는가 ? OSI 7 Layer에 입각하여.
 
@@ -483,6 +540,8 @@ TTL/hop limit의 핵심은, 전송되지 않는 패킷 스트림이 라우팅 �
 [출처 : searchnetworking.techtarget.com](https://searchnetworking.techtarget.com/definition/time-to-live)
 
 TCP / UDP / IP
+
+CSMA / CD
 
 라우팅 테이블, Cidr, Root Name Server, Top Level Domain,
 
