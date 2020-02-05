@@ -162,6 +162,8 @@ Use the `URL` record if you want the name to redirect (change address) instead o
 
 [출처 : cloudFlare](https://www.cloudflare.com/learning/dns/dns-server-types/#recursive-resolver)
 
+[DNS Record Types](https://simpledns.plus/help/dns-record-types)
+
 ### 4. 인터넷은 어떻게 동작하는가 ? OSI 7 Layer에 입각하여.
 
 이 질문에 대해 대답하기 위해 일단, OSI 7 계층에 대해 이야기를 먼저 해야 할 것 이다.
@@ -539,7 +541,7 @@ TTL/hop limit의 핵심은, 전송되지 않는 패킷 스트림이 라우팅 �
 
 [출처 : searchnetworking.techtarget.com](https://searchnetworking.techtarget.com/definition/time-to-live)
 
-TCP / UDP / IP
+TCP / UDP / IP / Ethernet / Mac address / Check Sum / Ipv4, Ipv6
 
 CSMA / CD
 
