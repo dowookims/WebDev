@@ -4,9 +4,7 @@ const qs = require('querystring');
 
 http.createServer((req, res) => {
 	// TODO: 이 곳을 채워넣으세요..!
-	req.on('connect', (req, cs, head) => {
-		console.log(head)
-	});
+	console.log(req.headers);
 	res.statusCode = 200;
 	res.setHeader('Content-Type', 'text/plain');
 	const parseObject = url.parse(req.url);
