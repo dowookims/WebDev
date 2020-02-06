@@ -212,11 +212,13 @@ module.exports는 주로 한 번에 export 할 때 사용하고, exports는 여�
 ### difference `require` and  `import`
 
 * require
-  * can dynamic loading wherever the loaded moudle name is not predefined /static * wherever you do not absolutely loada  module providing it's "truly required (depending on bound code flow)
+  * can dynamic loading wherever the loaded moudle name is not predefined 
+  * wherever you do not absolutely loada  module providing it's "truly required (depending on bound code flow)
   * loading synchronous
 
 * import
-  * can use name import selectively load only the pieces that need. can save memory
+  * can use name import selectively load only the pieces that need. can save memory => A module’s structure being static means that you can determine imports and exports at compile time (statically)
+  * declarative syntax
   * Import can be asynchronous
   * return Promise
   * can do tree shaking - webpack
@@ -233,6 +235,8 @@ use require() "natively" in NodeJS and not in browsers, and import() is specifie
 You can't selectively load only the pieces you need with require but with imports, you can selectively load only the pieces you need. That can save memory.
 
 Loading is synchronous(step by step) for require on the other hand import can be asynchronous(without waiting for previous import) so it can perform a little better than require
+
+[참고 자료 - 2ality](https://2ality.com/2014/09/es6-modules-final.html)
 
 [참고 - educba](https://www.educba.com/require-vs-import/)
 
