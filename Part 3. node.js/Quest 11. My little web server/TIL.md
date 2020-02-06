@@ -57,6 +57,8 @@ Rest는 HTTP URI(Uniform Resource Identifier)를 통해 자원을 명시하고, 
 
 ### 1-2-2 stateless
 
+* 작업을 위한 상태정보를 따로 저장, 관리 하지 않는다.
+* 세션 정보, 쿠키 정보를 별도로 저장, 관리하지 않고, API 서버는 단순 요청만 처리한다.
 * HTTP는 Stateless Protocol 이므로 REST 역시 무상태성을 갖는다.
 * Client의 context를 Server에 저장하지 않아도 된다.
 * Server는 각각의 요청을 별개의 것으로 인식하고 처리한다.
@@ -78,6 +80,10 @@ Rest는 HTTP URI(Uniform Resource Identifier)를 통해 자원을 명시하고, 
 
 * URI로 지정한 Resource에 대한 조작을 통일되고 한정적인 인터페이스로 수행한다.
 * HTTP 표준 프로토콜에 따르는 모든 플랫폼에서 사용이 가능하기에 특정 언어나 기술에 종속되지 않는다.
+
+### 1-2-6 Self descriptive (자체 표현 구조)
+
+* REST API 메시지만 보고 이해할 수 있는 자체 표현 구조로 되어 있다.
 
 ### 1-3 Rest API : Representational State Transfer API
 
@@ -153,11 +159,117 @@ RESTFUL 한 API를 만드는 이유는 이해하기 쉽고, 사용하기 쉬우�
 
 ## 2. Node.js http module
 
-### 2-1 req
+Node.js에서 http 모듈을 사용하기 위해서는 `require('http')`로 http 모듈을 가지고 와야 한다.
 
-### 2-2 res
+Node.js의 HTTP 인터페이스는 사용하기 어려운 프로토콜의 많은 기능을 지원하도록 설계되었다. 인터페이스는 전체 요청이나 응답이 buffer 되지 않도록 주의하며, 사용자는 데이터를 stream 할 수 있다.
 
-## Rest API
+http 모듈내에 있는 `createServer` 메소드 콜백의 매개변수인 `request`와 `response`가 있다.
+
+### 2-1 http.ClientRequest
+
+* `<Stream>` 객체를 상속
+
+요청을 담당한다. 클라이언트 측에서 서버로 보내는 요청에 대한 정보가 들어있다.
+
+이 Object는 내부적으로 만들어지며, http.request()를 통해 리턴 되어 만들어진다.
+
+http.clientRequest는 헤더가 이미 대기 중인 진행 중인 요청을 나타내며, 헤더는 `setHeader(name, value)`, `getHeader(name)`, `removeHeader(name)` API를 통해 변경 가능하다. 실제 헤더는 첫 번째 데이터 청크와 함께 전송되거나, `request.end()`를 호출 할 때 전송된다.
+
+response 객체를 얻기 위해서, request 객체에 response listener를 붙이면 된다. `response` 객체는 response header들을 수신하면, `request` 객체를 반환한다. `response` 이벤트는 `http.IncomingMessage` 클래스의 인스턴스로 실행되어 진다.
+
+`response` 이벤트가 진행되는 동안, response object에 listener들을 추가 할 수 있으며, 특히 `data` 이벤트를 listen 할 수 있다.
+
+만약, `response` hanlder가 추가되지 않으면, reponse는 완전히 폐기된다. 그러나, `response` 이벤트 핸들러가 추가되면, `readable` 이벤트가 있을 때마다 `response.read()`를 통해 호출하거나, `data` handler를 추가하거나, `resume()` 메서드를 사용하여 response object의 데이터를 사용해야 한다. 데이터가 consume되기 전까지, `end` 이벤트는 fire 되지 않으며, 데이터를 계속 읽어 들여 메모리를 소비하여 `process out ouf memory` 이벤트를 초래 할 수 있다.
+
+[참조 : Node.js 공식문서](https://nodejs.org/api/http.html#http_class_http_clientrequest)
+
+### 2-2 http.ServerResponse
+
+* `<Stream>` 상속
+
+클라이언트의 요청에 대한 처리를 한 후 결과물을 response 객체로 돌려준다. 어떤 정보를 보낼지 설정 할 때 response 객체를 활용한다.
+
+HTTP server 내부적으로 만들어지는 객체로, `request` 이벤트의 두번째 파라미터로 전달되어 진다.
+
+### 2-3 http.IncomingMessage
+
+`IncomingMessage` 객체는 `http.Server` 또는 `http.ClientRequest`에 의해서 생성되어지고, `request`, `response` 이벤트 각각의 첫번째 인자로 전달된다. 이 `IncomingMessage`는 response status나 header, data등에 접근할 때 사용된다.
+
+## Rest API Methods
+
+* GET / POST / PUT / PATCH / DELETE
 
 ## Content-type & Header
 
+### Content-type
+
+자원의 media type을 명시할 때 사용하는 HTTP Header.
+
+response에서, `Content-type` header는 클라이언트에게 리턴되는 컨텐츠가 실제로 어떤 타입의 컨텐츠인지 말해준다.
+
+### MIME Type (Multipurpose Internet Mail Extensions)
+
+MIME는 전자 우편을 위한 인터넷 표준 포맷이다. 이메일은 7비트 ASCII 문자를 사용하여 전송하기 때문에, 8비트 이상의 코드를 사용하는 문자나 이진 파일들은 MIME 포맷으로 변환되어 SMTP로 전송된다. 실질적으로, SMTP로 전송되는 대부분의 Email은 MIME 형식을 따르고 있으며, MIME 표준에 정의된 content types은 HTTP 등 통신 프로토콜에 사용되고 있다.
+
+예전에는 텍스트 파일을 주고 받을 때 ASCII 표준만 따르면 문제가 없었으나, 네트워크를 통해 사진, 영상, 음악 등 다양한 컨텐츠를 주고 받을 때 문제가 생겼다. MIME는 ASCII가 아닌 문자 인코딩을 이용해 영어가 아닌 다른 언어, 다양한 컨텐츠들을 email로 보낼수 있도록 한다.
+
+클라이언트에게 전송된 문서의 다양성을 알려주기 위한 메커니즘으로써, 웹에서 파일의 확장자가 큰 의미가 없기 때문에 문서와 함께 올바른 MIME 타입을 전송하여 서버가 정확히 설정하는 것이 중요하다.
+
+브라우저들은 리소스를 내려받았을 때 해야 할 동작이 무엇인지 결정하기 위해 MIME 타입을 사용한다.
+
+#### 1) 문법
+
+`type/subtype` : `'/'`로 구분된 두 개의 문자열인 타입과 서브 타입으로 구성되며 스페이스는 허용되지 않는다. type은 카테고리를 나타내며, 개별 혹은 멀티파트 타입이 될 수 있고, subtype은 각각의 타입에 한정된다.
+
+```
+text/plain
+text/html
+image/jpeg
+image/png
+audio/mpeg
+audio/ogg
+audio/*
+video/mp4
+application/octet-stream
+…
+```
+
+* text : 텍스트를 포함하는 모든 문서로, 이론상 인간이 읽을 수 있어야 한다.
+  * plain, html, css, javascript
+* image
+  * gif, png, jpeg, bmp, webp
+* audio
+  * midi, mpeg, webm, ogg, wav
+* video
+  * webm, ogg
+* application : 모든 종류의 이진 데이터
+  * octet-stream, pkcs12, xml, pdf, xhtml+xml, vnd.mspowerpoint
+
+#### 2) 멀티파트 타입
+
+멀티파트 타입은 일반적으로 다른 MIME 타입들을 지닌 개별적인 파트들로 나누어지는 문서의 카테고리를 가리킨다. 즉, 합성된 문서를 나타낸다.
+
+* multipart/form-data : `HTML Forms`와 `POST` 메서드 관계에서 사용된다.
+* multipart/byteranges : 전체 문서의 하위 집합만 전송하기 위한 `206 Partial Content` 상태 메시지와 함께 사용됨
+
+#### 3) MIME Sniffing
+
+MIME 타입이 없거나, 클라이언트가 타입이 잘못 설정됐다고 판단한 경우에 브라우저들은 MIME Sniffing 을 시도 할 수 있다. 이는 리소스를 훑어보고, 정확한 MIME Type을 추축하는 것이다. 서버에서는 `Content-type`중에 `X-Content-Type-Options`를 전송하여 MIME Sniffing을 차단 할 수 있다.
+
+[참고 - 위키피디아](https://ko.wikipedia.org/wiki/MIME)
+[참고 - MDN](https://developer.mozilla.org/ko/docs/Web/HTTP/Basics_of_HTTP/MIME_types)
+
+### Postman에서 POST 요청을 보내는 여러 가지 방법(form-data, x-www-form-urlencoded, raw, binary) 각각은 어떤 용도를 가지고 있나요?
+
+* POST 요청은 Request body에 클라이언트 측 데이터를 동봉해서 보내게 된다. 이때, 보내는 데이터들을 인코딩 할 필요가 있는데, 이 때 사용하는게 위에 나온 여러 가지 방법 들이다.
+  * 웹 브라우저가 웹 form element에서 POST 요청을 보낼 때, 기본 media type은 "application/x-www-form-urlencodeed"이다.
+  * multipart/form-data 의경우, user가 파일을 upload할 때 사용하는 type.
+  * raw data는 text로 타이핑 할 수 있는 모든 것들이다. Text, javascript, JSON, HTML, XML 등.
+  * BinaryData : image, audio, video file등.
+
+
+ if you have binary (non-alphanumeric) data (or a significantly sized payload) to transmit, use multipart/form-data. Otherwise, use application/x-www-form-urlencoded.
+
+[Stack Over Flow](https://stackoverflow.com/questions/4007969/application-x-www-form-urlencoded-or-multipart-form-data)
+
+[Postman](https://learning.postman.com/docs/postman/sending-api-requests/requests/#form-data)
