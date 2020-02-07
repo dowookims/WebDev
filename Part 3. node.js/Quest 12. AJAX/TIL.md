@@ -244,6 +244,12 @@ document.querySelector('.btn').click(() => {
 
 렌더링 관련된 문제 뿐만 아니라, 실행이 오래 걸리는 코드를 `setTimeout`을 사용하여 적절하게 다른 태스크로 나누어 주는 것은 전체 어플리케이션이 멈추는 것을 방지해준다.
 
+* setImmediate 은 한번의 Tick 또는 루프가 돌 때마다 관리되고
+* process.nextTick() 은 한 페이즈에서 다음 페이즈로 넘어가는 매 Tick 마다 최대한 빨리 호출되도록 작동하고 있다.
+* setImmediate와 setTimeout의 실행속도에서 차이가 나는 이유는, immediate는 타이머 관련하여 비교하지 않아도 되지만, setTimeout의 경우 타이머 비교 로직이 추가 되기 때문에 더 오랜 시간이 걸리게 된다.
+
+#### Promise
+
 자바스크립트의 비동기에 관련이 있는 구조들은 call stack, event loop, task queue만 있는게 아니라, task queue보다 우선 순위에 있는 micro task queue도 존재한다.
 
 프로미스도 비동기 처리가 되는데, 이 때 프로미스는 일반적인 비동기보다 우선적으로 처리된다.
