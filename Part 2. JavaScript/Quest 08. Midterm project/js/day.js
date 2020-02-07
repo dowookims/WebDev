@@ -5,9 +5,15 @@ class Day {
         this.date = d;
         this.todos = [];
         this.dom = null;
-        this.side = new SideDrawer(m, d);
-        this._prepareTodo(todos);
+        this.side = new Side(m, d);
+        this._prepareTodo(todos, d);
     };
+    
+    _prepareTodo (todos) {
+        todos && todos.forEach(todo => {
+            this.todos.push(new Todo(todo.id, todo.title, todo.desc))
+        });
+    }
 
     prepareDOM () {
         const dateDiv = document.getElementById("date");
@@ -17,6 +23,7 @@ class Day {
         dateSpan.innerText = this.date;
         dateSpan.addEventListener('click', (e) => {
             e.stopPropagation();
+            // dateDOM.fire('openModal', ...);
             Modal.openModal(this.year, this.month, this.date, this);
         });
         dateDOM.appendChild(dateSpan);
@@ -26,19 +33,9 @@ class Day {
         });
     };
 
-    _prepareTodo (todos) {
-        todos && todos.forEach(todo => {
-            this.todos.push(new Todo(todo.id, todo.title, todo.desc))
-        });
-    }
-
-    addTodo(title, desc) {
-        if (!this.todos) this.todos = [];
-        this.todos.push({
-            id: 1,
-            title,
-            desc,
-        });
+    addTodo(id, title, desc) {
+        this.todos.push(new Todo(id, title, desc));
+        alert(`${this.year}년 ${this.month+1}월 ${this.date}에 ${title} : ${desc} 일정이 추가 되었습니다.`);
         this.side.paintDOM(this.todos);
     }
 

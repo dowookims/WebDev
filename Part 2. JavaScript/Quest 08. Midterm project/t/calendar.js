@@ -9,7 +9,6 @@ class Calendar {
     }
 
     const date = data;
-    console.log(date);
     this.year = date.getFullYear();
     this.month = date.getMonth();
     this.todoList = todoList;
@@ -28,7 +27,6 @@ class Calendar {
     }
   };
 
-  // drawCalendar(){};
 }
 
 module.exports = Calendar;

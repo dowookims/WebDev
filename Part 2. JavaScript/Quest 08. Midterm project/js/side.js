@@ -1,4 +1,4 @@
-class SideDrawer {
+class Side {
     constructor (m, d) {
         this.month = m;
         this.date = d;
@@ -7,7 +7,6 @@ class SideDrawer {
 
     paintDOM (todos) {
         const todoDiv = document.getElementById('todo');
-        const todoItemDiv = document.getElementById('todo-item');
         const todoDivClone = document.importNode(todoDiv.content, true);
         const todoItems = document.querySelectorAll('.todo-item');
         const todoDivBox = todoDivClone.querySelector('.todo');
@@ -29,16 +28,16 @@ class SideDrawer {
         } else {
             todoMonth.innerHTML = `${this.month + 1}월 `;
             todoDate.innerHTML = `${this.date} 일 `;
-        }
+        };
 
-        todos && todos.forEach(todo => {
-            const dTodoContent = document.querySelector('.todo-content');
-            if ( dTodoContent ) { todoContent = dTodoContent };
-            const todoItemDivClone = document.importNode(todoItemDiv.content, true);
-            const todoItem = todoItemDivClone.querySelector('.todo-item');
-            todoItem.innerText = `${todo.title} : ${todo.desc}`;
-            todoContent.appendChild(todoItem);   
-        });
+        if (todos) {
+            todos.forEach( todo => {
+                const dTodoContent = document.querySelector('.todo-content');
+                if ( dTodoContent ) { todoContent = dTodoContent };
+                todoContent.appendChild(todo.dom);   
+            });
+        };
+        
         this.dom = todoDivBox;
-    }
-}
+    };
+};

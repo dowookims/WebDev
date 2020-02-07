@@ -15,48 +15,41 @@ class Modal {
         const submitBtn = modalClone.querySelector('.submit-btn');
 
         submitBtn.addEventListener('click', () => {
-            Modal.submitTodo();
+            const dateData = document.getElementById('todo-date');
+            const titleData = document.getElementById('todo-title');
+            const descData = document.getElementById('todo-desc');
+            const todoList = new TodoList();
+            let [ y, m, d ] = dateData.value.split("-")
+            m = m[0] === '0' ? parseInt(m[1]) - 1 : parseInt(m) -1;
+            d = d[0] === '0' ? d[1] : d;
+            d = parseInt(d);
+            
+            if (!todoList.data[y]) todoList.insertYear(y);
+
+            if (!todoList.isMonth(y, m)) todoList.insertMonth(y, m, todoList.today);
+
+            todoList.data[y][m].dates[d].addTodo( 1, titleData.value, descData.value);
+
+            titleData.value = '';
+            descData.value = '';
         });
 
         this.dom = modalDiv;
-        
     };
-
-    static submitTodo () {
-        const dateData = document.getElementById('todo-date');
-        const titleData = document.getElementById('todo-title');
-        const descData = document.getElementById('todo-desc');
-        const todoList = new TodoList();
-        let [ y, m, d ] = dateData.value.split("-")
-        m = m[0] === '0' ? parseInt(m[1]) - 1 : parseInt(m) -1;
-        d = d[0] === '0' ? d[1] : d;
-        d = parseInt(d);
-        
-        if (!todoList.data[y]) {
-            todoList.insertYear(y);
-        };
-
-        if (!(todoList.data[y][m] instanceof Month)) todoList.insertMonth(y, m, todoList.today);
-        todoList.data[y][m].dates[d].addTodo(titleData.value, descData.value);
-        titleData.value = '';
-        descData.value = '';
-        console.log(y, m, d);
-    }
-
-    static closeModal() {
-        if (!Modal.instance.isModalOpen) return
-
-        Modal.instance.isModalOpen = false;
-        Modal.instance.dom.style.display = 'none';
-    }
 
     static openModal (y, m, d) {
         if (Modal.instance.isModalOpen) return;
 
         Modal.instance.isModalOpen = true;
         Modal.instance.dom.style.display = 'flex';
+        
         const modalExitBtn = document.querySelector('.modal-close-btn');
         const todoDate = document.getElementById('todo-date');
+        const closeModal = () => {
+            if (!Modal.instance.isModalOpen) return
+            Modal.instance.isModalOpen = false;
+            Modal.instance.dom.style.display = 'none';
+        };
 
         m = m < 9 ? '0' + (m + 1) : m + 1;
         d = d < 10  ? '0' + d  : d;
@@ -64,15 +57,15 @@ class Modal {
         todoDate.value = `${y}-${m}-${d}`;
 
         modalExitBtn.addEventListener('click', (e) => {
-            if (Modal.instance.isModalOpen) {
+            if (Modal.instance.isModalOpen) {+
                 e.stopPropagation();
-                Modal.closeModal();
+                closeModal();
             }
         });
 
         const modalCloseEvent = document.addEventListener('click', e => {
             if (Modal.instance.isModalOpen && e.target.className === 'modal') {
-                Modal.closeModal();
+                closeModal();
                 document.removeEventListener('click', modalCloseEvent);  
             };
         });
