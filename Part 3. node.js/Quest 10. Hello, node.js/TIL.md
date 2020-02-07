@@ -242,6 +242,10 @@ Loading is synchronous(step by step) for require on the other hand import can be
 
 [참고 - javascript.info](https://javascript.info/modules-intro)
 
+[참고 - JS module system, hacks.mozila](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive/)
+
+[참고 - Naver D2](https://d2.naver.com/helloworld/591319)
+
 [참고](https://insights.untapt.com/webpack-import-require-and-you-3fd7f5ea93c0)
 
 [webpack](https://medium.com/front-end-weekly/webpack-and-dynamic-imports-doing-it-right-72549ff49234)
