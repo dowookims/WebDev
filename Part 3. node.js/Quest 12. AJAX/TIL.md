@@ -296,6 +296,8 @@ Promise.resolve()
 
 XMLHttpReques(XHR) 객체는 서버와 상호작용하기 위해 사용된다. XMLHttpRequest는 전체 페이지의 새로고침 없이도 URL로 데이터를 받아 올 수 있고, 사용자가 하고 있는 행동을 방해하지 않으면서 페이지의 일부를 업데이트 할 수 있다. 이는 AJAX(Asynchronous Javascript And XML)에 주로 사용된다.
 
+### What is Ajax?
+
 AJAX는 비동기적인 웹 애플리케이션의 제작을 위해 아래와 같은 조합을 이용하는 웹 개발 기법이다.
 
 * 표현 정보를 위한 HTML(XHTML)
@@ -324,7 +326,27 @@ AJAX를 사용하면서 얻게 되는 이점은
 * Cross-origin 이슈로 인해 다른 도메인과 통신시 추가적인 작업을 진행해야 한다.
 * Cross-origin 이슈를 해결하기 위한 추가적인 작업을 진행시 보안상 이슈가 생길 수 있다.
 
-[Wiki](https://ko.wikipedia.org/wiki/Ajax)
+[Wiki Ajax](https://ko.wikipedia.org/wiki/Ajax)
+
+### What is XMLHttpRequest?
+
+XMLHttpRequest(XHR)는 웹 브라우저와 웹 서버 간에 데이터를 전송하는 방법을 사용하는 객체 형태의 API이다.
+
+이 객체는 웹 브라우저의 자바스크립트 환경에서 제공된다. 특히, 로드된 웹 페이지를 지속적으로 수정하기 위한 목적으로 XHR에서 데이터를 검색하는 것은 Ajax 설계의 기본 개념이다.
+
+XHR 이라는 이름에도 불구하고 XHR은 HTTP 이외의 프로토콜과 함께 사용할 수 있으며 데이터는 XML뿐만 아니라 JSON, HTML 또는 일반 텍스트의 형태로 사용될 수 있다.
+
+#### XHR의 역사
+
+XMLHttpRequest 객체의 개념은 Microsoft Exchange Server 2000의 Outlook Web Access 개발자들에 의해 만들어졌다.
+
+IXMLHTTPRequest라는 인터페이스가 개발되어 이 개념을 사용하여 MSXML 라이브러리의 두 번째 버전으로 구현되었다. MSXML 라이브러리의 두 번째 버전은 1999년 3월에 Internet Explorer 5.0에 탑재 되어 ActiveX를 통해 MSXML 라이브러리의 XMLHTTP 래퍼를 사용하여 IXMLHTTPRequest 인터페이스에 액세스할 수 있게 되었다. Internet Explorer 버전 5와 6은 XMLHttpRequest 객체 식별자를 스크립트 언어로 정의하지 않았는데 그 이유는 XMLHttpRequest가 해당 릴리스 시 표준이 아니었기 때문이다. 이 당시, MS에서는 XHR이 존재하지 않을 때 역호환성(Backward compatibility)을 달성할 수 있었기 때문이다. Microsoft는 2006년 10월에 발표된 Internet Explorer 7.0의 스크립팅 언어에 XHR 추가했다.
+
+mozila 프로젝트는 gecko 레이아웃 엔진에 nsIXHR 이라는 인터페이스를 개발하여 구현했다. 이 인터페이스는 가능한 한 마이크로소프트의 IXHR 인터페이스에 가깝게 작동하도록 모델링되었다. Mozilla는 인터페이스(nsIXHR)를 사용하기 위한 래퍼인 XHR 객체를 만들었다.
+
+XMLHttpRequest 객체는 2000년 12월 6일 출시된 gecko 버전 0.6부터 사용 할 수 있었으나 2002년 6월 5일에 출시된 gecko 버전 1.0에 완전하게 기능할 수 있었다.
+
+[Wiki XMLHttpRequest](https://en.wikipedia.org/wiki/XMLHttpRequest)
 
 ## fetch API는 무엇이고 어떻게 동작하나요?
 
