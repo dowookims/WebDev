@@ -468,6 +468,10 @@ cross-origin request의 제한은 복잡한 부분이다. 이미지, 스타일�
 
 [Working with the Fetch API](https://developers.google.com/web/ilt/pwa/working-with-the-fetch-api)
 
+## Promise
+
+
+
 **참고자료**
 
 [Wiki XMLHttpRequest](https://en.wikipedia.org/wiki/XMLHttpRequest)
@@ -482,6 +486,83 @@ Living Standard](https://xhr.spec.whatwg.org/)
 
 
 ### 자바스크립트의 Promise는 어떤 객체이고 어떤 일을 하나요?
+
+Promise는 비동기 작업의 최종 완료 또는 실패를 나타내는 객체이다. Promise는 함수에 콜백을 전달하는 대신에, 콜백을 첨부하는 방식의 객체이다.
+
+Promise는 콜백 함수를 전달해주는 이전 방식과는 달리 아래와 같은 특징을 보장하는데
+
+* Callback은 자바스크립트 Event Loop가 현재 실행중인 콜 스택을 완료하기 이전에는 절대 호출되지 않는다.
+* 비동기 작업이 성공하거나 실패한 뒤 `then()`을 이용하여 추가한 콜백의 경우도 위와 마찬가지이다.
+* `.then()`을 여러번 사용하여 여러개의 콜백을 추가 할 수 있다. 그리고 각각의 콜백은 주어진 순서대로 실행하게 된다.
+
+Promise의 장점 중 하나는 **chaning**이다.
+
+### Chaining
+
+보통 하나나 두 개 이상의 비동기 작업을 순차적으로 실행해야 하는 상황들을 흔하게 볼 수 있다. 순차적으로 각각 작업이 이전 단계의 비동기 작업이 성공하고 나서 그 결과값을 이용하여 다음 비동기 작업을 실행하는데, 콜백을 이용하면 콜백 함수 내에서 콜백이 들어가 콜백의 뎁스가 깊어지게 된다. 그러나 Promise를 활용한 Promise chaining은 이를 쉽게 해결 해 주는데, `.then()`은 새로운 promise를 반환하고, 처음에 만들었던 Promise 객체와는 다른 Promise객체이다.
+
+```javascript
+const promise = doSomething();
+const promise2 = prmise.then(successCb, failureCb);
+
+or //#endregion
+const promise2 = doSomething().then(successCallback, failureCallback);
+```
+
+```javascript
+doSomething().then(function(result) {
+  return doSomethingElse(result);
+})
+.then(function(newResult) {
+  return doThirdThing(newResult);
+})
+.then(function(finalResult) {
+  console.log('Got the final result: ' + finalResult);
+})
+.catch(failureCallback);
+```
+
+`.then()`에 넘겨지는 인자는 선택적이고, `catch(failureCb)`는 `.then(null, failureCallback)`의 축약이다.
+
+Promise에서 반환값이 반드시 있어야 하는데, 없다면 콜백 함수가 이전의 Promise의 결과를 받지 못하기 때문이다.
+
+### Error handling
+
+Promise가 reject될 때마다 두 가지 이벤트 중 하나가 전역 스코프에서 발생한다.
+
+`rejectionhandled`
+executor의 `reject` 함수에 의해 `reject`가 처리 된 후 `promise` 가 `reject` 될 때 발생한다.
+
+`unhandledrejection`
+promise가 reject되었으나 사용할 수 있는 reject 핸들러가 없을 때 발생한다.
+
+`PromiseRejectionEvent`유형인 두 이벤트에는 멤버 변수인 `promise`와 `reason`속성이 있다. `promise`는 reject된 promise를 가리키는 속성이고, `reason`은 promise가 reject된 이유를 알려준다.
+
+이들을 이용해 프로미스에 대한 에러 처리를 대체하는 것이 가능해지며, 프로미스 관리시 발생하는 이슈들을 디버깅 하는데 도움을 얻을 수 있다.
+
+### Composition
+
+`Promise.all()`과 `Promise.race()`는 비동기 작업을 병렬로 실행하기 위한 함수이다. 병렬로 작업을 시작하고 모든 작업이 끝날 때 까지 다음과 같이 처리를 하면 된다.
+
+```javascript
+PromiseAll([func1(), func2(), func3()])
+.then(([result1, result2, result3]) => { })
+```
+
+```javascript
+[func1, func2, func3].reduce((p, f) => p.then(f), Promise.resolve())
+.then(result3 => { /* use result3 */ });
+
+// Promise.resolve().then(func1).then(func2).then(func3);
+
+const applyAsync = (acc,val) => acc.then(val);
+const composeAsync = (...funcs) => x => funcs.reduce(applyAsync, Promise.resolve(x));
+
+
+
+```
+
+[Using Promises](https://developer.mozilla.org/ko/docs/Web/JavaScript/Guide/Using_promises)
 
 #### Fulfilled
 
