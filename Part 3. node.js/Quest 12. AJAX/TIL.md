@@ -381,7 +381,7 @@ fetch('examples/example.json)
 .catch((err) => { console.log(`Look kike there was a problemn: ${err}`)});
 ```
 
-fetch API는 파라미터로 요청할 자원의 경로를 입력받는다. 그러면 fetch는 `promise` 객체를 리턴한다.
+fetch API는 파라미터로 요청할 자원의 경로를 입력받는다. 그러면 fetch는 `promise` 객체를 리턴한다. 이때, 경로에 대한 text url 뿐만 아니라, `Request`객체를 생성하고, url과 option을 넣어서 `fetch()`를 사용 할 수도 있다.
 
 promise 객체가 resolve되면, 응답은 .then 으로 전달된다. 여기서 response와 관련된 처리를 진행하면 되며, 요청이 성공하지 못한경우 `.catch`를 통해 에러를 처리 할 수 있다.
 
@@ -462,7 +462,9 @@ const newHeaders = new Headers({
 
 ### fetch의 Cross-origin requests
 
-Fetch와 XHR은 same-origin policy를 따른다.
+Fetch와 XHR은 same-origin policy를 따른다. 이는 브라우저가 스크립트 내에서 발신되는 cross HTTP request를 제한한다는 것을 의미한다. cross origin request는 하나의 도메인(예: domain)이 별도의 도메인(예: requests)에서 리소스를 요청할 때 발생한다.
+
+cross-origin request의 제한은 복잡한 부분이다. 이미지, 스타일시트, 스크립트와 같은 많은 리소스는 cross origin에서 가져온다. 그러나, 이 자원들은 same-origin policy에 대한 예외들이다. cross-origin request는 스크립트 내에서 제한된다.
 
 [Working with the Fetch API](https://developers.google.com/web/ilt/pwa/working-with-the-fetch-api)
 
