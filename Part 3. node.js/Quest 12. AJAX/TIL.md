@@ -346,7 +346,17 @@ mozila 프로젝트는 gecko 레이아웃 엔진에 nsIXHR 이라는 인터페�
 
 XMLHttpRequest 객체는 2000년 12월 6일 출시된 gecko 버전 0.6부터 사용 할 수 있었으나 2002년 6월 5일에 출시된 gecko 버전 1.0에 완전하게 기능할 수 있었다.
 
+
+**참고자료**
+
 [Wiki XMLHttpRequest](https://en.wikipedia.org/wiki/XMLHttpRequest)
+
+[Browser APIs and Protocols: XMLHttpRequest - High Performance Browser Networking](https://hpbn.co/xmlhttprequest/)
+
+[w3 XMLHttpRequest](https://www.w3.org/TR/XMLHttpRequest/)
+
+[XMLHttpRequest
+Living Standard](https://xhr.spec.whatwg.org/)
 
 ## fetch API는 무엇이고 어떻게 동작하나요?
 
@@ -374,3 +384,24 @@ Additional
 Observable
 
 Proxy
+
+cors - same origin
+
+XHR은 브라우저 레벨의 API로써, 수많은 로우 레벨의 detail들(caching, handling redirect, content negotiation, authentication 등)을 자동적으로 설정해준다. 이런 특징은 개발자로 하여금 비즈니스 로직에 집중하게 함으로써 개발을 더 편하게 해주고, 애플리케이션 코드에 일련의 보안 및 정책 제약을 가할 수 있게 한다.
+
+XHR interface는 엄격한 매 요청에 대해 HTTP semantic을 요구한다. application은 data와 url을 제공하고, 브라우저는 요청을 포맷하고 각 연결의 전체 라이프사이클을 처리한다. 그리고 `setRequestHeader()` 메서드를 통하여 커스텀 HTTP header를 추가하여 특정 정보 및 보안, 인가에 대한 헤더 정보들을 담을 수 있다.
+
+브라우저는 애플리케이션이 fake user, agent, user 또는 요청이 만들어진 원본을 faking하는 것을 방지하기 위해 안전하지 않은 헤더를 무시할 것이다. origin header를 보호하는게 특히 중요하기 때문에,모든 XHR 요청에 적용되는 "same-origin policy"는 이에 대한 중요한 키가 될 것이다.
+
+`origin`은 `application protocol`, `domain name`, `port number`로 정의된다.
+`http://www.naver.com:80`, `https://www.knowre.com:443`
+
+same-origin policy의 동기는 브라우저가 authentication token, cookie, 기타 privacy metadata와 같은 사용자 데이터를 저장하므로, 서로 다른 애플리케이션에서 유출되지 않기 위해 지정 된 것이다.
+
+이 문제를 해결하기 위해, XHR의 초기 버전은 same-origin requests가 요청된 자원의 origin과 일치해야 하는 것으로만 제한되었다. example.com에서 시작된 XHR은 동일한 example.com origin에서만 다른 자원을 요청할 수 있었다. 또는 same-origin 전제조건이 실패하면 브라우저는 XHR 요청의 시작을 거부하고 오류를 발생시켰다.
+
+그러나, same-origin policy는 XHR의 유용성에 심각한 제약을 가한다. 서버가 다른 origin에서 실행되는 스크립트에 resource를 제공할 때 문제가 생기기 때문이다. 이문제를 해결하끼 위해 CORS(Cross-Origin Resource Sharing)가 도입되었다. CORS는 클라이언트측 cross-origin request에 대한 안전한 opt-in 메커니즘을 제공한다.
+
+CORS 요청도 XHR API를 활용하여 작업이 진행한다. same-origin과 다른건, request와 response의 URL이 다른 것이다. CORS에 대한 opt-in authentication은 더 낮은 layer를 다룬다. request가 만들어 질 때, 브라우저는 자동적으로 protected된 Origin HTTP Header를 추가하는데, 요청이 어디에서 만들어졌는지를 알려주는 내용을 header에 추가한다.
+
+껼과적으로, remote server는 Origin header를 검사 할 수 있고, 응답 시 Access-Control-Allow-Origin 헤더를 반환하여 요청을 허용할지 여부를 결정할 수 있다.
