@@ -369,6 +369,102 @@ CORS 요청도 XHR API를 활용하여 작업이 진행한다. same-origin과 �
 
 W3C CORS spec은 preflight 요청을 사용해야 하는 시기와 장소를 규정한다. 단순한 요청은 이를 건너뛸 수 있지만, 다양한 조건으로 CORS를 트리거 하기도 한다. preflight 요청이 이루어지면, 클라이언트가 각각의 요청에 대해 same-origin 검증을 피하도록 cache할 수 있다.
 
+## fetch API는 무엇이고 어떻게 동작하나요?
+
+fetch API는 자원을 fetching하는데 사용되는 간단한 interface로써 웹 요청과 응답을 XMLHttpRequest보다 편하게 만든 특징을 가지고 있다. fetch는 native Javascipt API로 `XMLHttpReuqest` API를 향상시킨 API이고, Promise 기반에 콜백 헬을 탈출했다는 것이 특징이다.
+
+```javascript
+fetch('examples/example.json)
+.then((res) => {
+    // Do stuff with the response
+})
+.catch((err) => { console.log(`Look kike there was a problemn: ${err}`)});
+```
+
+fetch API는 파라미터로 요청할 자원의 경로를 입력받는다. 그러면 fetch는 `promise` 객체를 리턴한다.
+
+promise 객체가 resolve되면, 응답은 .then 으로 전달된다. 여기서 response와 관련된 처리를 진행하면 되며, 요청이 성공하지 못한경우 `.catch`를 통해 에러를 처리 할 수 있다.
+
+fetch API에서 Response 객체는 요청에 대한 응답으로 나타나지며, 이 객체는 요청에 대한 자원과 다양한 property와 메서드가 존재한다.
+
+예를들어, `response.ok`, `response.status`, `response.statusText`는 응답에 대한 상태를 평가하는데 사용된다.
+
+응답 성공에 대한 평각가 중요한 이유는, fetch를 사용할 때, bad response(404와 같은) 또한 resolve를 통해 작업이 진행된다. fetch promise에서 reject가 되는 경우는 요청에 대한 완료가 불가능한 경우에만 나타나기 때문이다. 즉, `.catch`로 요청에 대한 응답과 관련된 에러 핸들링이 이루어지지 않기 때문이다.
+
+```javascript
+fetch('examples/example.json)
+.then(res => {
+    if (!res.ok) {
+        throw Error(res.statusText);
+    }
+    // Do stuff with the res
+})
+.catch(err => {console.log(err)});
+```
+
+위의 코드에서 res.ok 값이 200 대가 아닐 경우, throw 함수가 res.statusText를 나타내며 에러를 던지게 되며, catch에서 error를 처리하게 된다. 이는 bad response를 fetch로 chaining 하는 방법 중 하나이다.
+
+Response 객체는 response body에서 접근해야만 한다. Response object는 이를 위한 메서드를 제공하는데, `Response.json()`은 응답을 읽고 resolve된 JSON을 가진 promise를 반환한다.
+
+```javascript
+fetch('examples/example.json')
+.then(function(response) {
+  if (!response.ok) {
+    throw Error(response.statusText);
+  }
+  // Read the response as json.
+  return response.json();
+})
+.then(function(responseAsJson) {
+  // Do stuff with the JSON
+  console.log(responseAsJson);
+})
+.catch(function(error) {
+  console.log('Looks like there was a problem: \n', error);
+});
+```
+
+이 요청에서, response객체의 body는 `ReadableStream`으로 되어있기에, 이를 resolve하기 위해 `response.json()`이 필요하다.
+
+### fetch의 두번째 인자
+
+`fetch()`는 second optinoal parameter인 `init`을 받을 수 있는데, 요청에 대한 custom setting을 가능하게 만든다.
+
+fetch는 default로 GET method를 사용한다. 그 외의 메소드를 사용하기 위해서는
+
+```javascript
+fetch('examples/words.txt', {
+    method: 'POST',
+    body: 'title=hello&message=world'
+});
+```
+
+이렇게 사용 될 수 있으며, form data를 활용하기 위해
+
+```javascript
+fetch('someurl/comment', {
+  method: 'POST',
+  body: new FormData(document.getElementById('myForm')
+})
+```
+
+위처럼 쓰이기도 하며, 커스텀 헤더를 사용하려면
+
+```javascript
+
+const newHeaders = new Headers({
+    'Content-type': 'text/plain',
+    'X-Custom-Header': 'hello world'
+});
+```
+
+이렇게 활용 할 수 있다.
+
+### fetch의 Cross-origin requests
+
+Fetch와 XHR은 same-origin policy를 따른다.
+
+[Working with the Fetch API](https://developers.google.com/web/ilt/pwa/working-with-the-fetch-api)
 
 **참고자료**
 
@@ -381,7 +477,7 @@ W3C CORS spec은 preflight 요청을 사용해야 하는 시기와 장소를 규
 [XMLHttpRequest
 Living Standard](https://xhr.spec.whatwg.org/)
 
-## fetch API는 무엇이고 어떻게 동작하나요?
+
 
 ### 자바스크립트의 Promise는 어떤 객체이고 어떤 일을 하나요?
 
