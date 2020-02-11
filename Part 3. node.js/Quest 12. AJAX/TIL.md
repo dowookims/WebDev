@@ -668,11 +668,86 @@ const composeAsync = (...funcs) => x => funcs.reduce(applyAsync, Promise.resolve
 
 ### 자바스크립트의 async와 await 키워드는 어떤 역할을 하며 그 정체는 무엇일까요?
 
+`async`, `await`은 Promise 객체를 더 편리하게 사용하기 위해서 나온 키워드 이다. `async / await`의 목적은 promise를 동기적으로 더 간단하게 사용하기 위함이면서, Promise객체를 그룹화하여 특정 행동들을 수행하기 위함이다.
+
+`async / await`은 `generators`와 `promise`의 조합과 유사하다.
+
+#### async
+
+async는 함수 앞에 위치하며 이 함수는 항상 Promise 객체를 리턴하는 것을 의미한다. 리턴되는 값들은 `resolved promise`에 자동적으로 wrapping되며, `async` 키워드는 다음과 같이 쓰인다. 
+
+```js
+async function f() {
+    return 1
+}
+
+const f = async () => {
+    return 1
+}
+```
+
+#### await
+
+`await`키워드는 Promise가 settle되고, 그 결과를 리턴할때 까지 기다리게 하는 키워드 이다.
+
+```js
+async function f() {
+    let promise = new Promise((resolve, reject) => {
+        setTimeout(() => resolve("done!"), 1000)
+    });
+    
+    let result = await promise;
+
+    alert(result);
+}
+```
+
+`await`은 문자 그대로 자바스크립트가 Promise객체가 settle되고 result를 반환할 때 까지 기다리게 만든다. 이 일련의 과정은 어떤 CPU resource를 소비하지 않는데, 그 이유는 자바스크립트 엔진이 그동안 다른 스크립트를 실행하거나 이벤트를 핸들링 하기 때문이다.
+
+```js
+async function getTodo(num) {
+    let res = await fetch(`https://jsonplaceholder.typicode.com/todos/${num}`);
+    let data = await res.json();
+    console.log(data);
+}
+```
+
+#### Error Handling
+
+`async`, `await` 키워드를 활용하여 작업을 할 때, 일반적으로 promise가 resolve되면, await promise가 결과로 리턴될 것이다. 그러나 rejection이 일어날 경우, 그 해당 라인에 `throw`문이 있는 것처럼 동작한다.
+
+```js
+async function f() {
+    await Promise.reject(new Error("Oops"));
+}
+
+async function f() {
+    throw new Error("Oops");
+}
+```
+
+실제 개발 환경에서 Promise객체는 reject하기 전에 약간의 시간이 걸릴 수 있다. 이 경우, await이 에러를 던지기 전에 약간의 딜레이가 있을 것이다. 이런 에러를 처리하기 위해 `try..catch`문을 사용하게 된다.
+
+```js
+async function f() {
+    try {
+        let res = await fetch('http://no-such-url');
+        let user = await res.json();
+    } catch (err) {
+        console.log(err);
+    }
+}
+```
+
+위의 경우 catch문은 res 뿐만 아니라 user와 관련된 `await` 키워드의 에러도 핸들링 할 수 있다.
+
+만약 `try ... catch`구문을 쓰지 않은경우, async function f()가 rejected된 상태로 Promise객체가 생성되어 진다. 이 경우, `f()` 함수에 `.catch()`를 활용하여 에러를 핸들링 할 수 있다.
+
+[javascript info / async-await](https://javascript.info/async-await)
+
 ***
 Additional
 
 Observable
 
 Proxy
-
-
