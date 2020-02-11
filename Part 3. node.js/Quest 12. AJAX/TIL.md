@@ -668,7 +668,9 @@ const composeAsync = (...funcs) => x => funcs.reduce(applyAsync, Promise.resolve
 
 ### 자바스크립트의 async와 await 키워드는 어떤 역할을 하며 그 정체는 무엇일까요?
 
-`async`, `await`은 Promise 객체를 더 편리하게 사용하기 위해서 나온 키워드 이다. `async / await`의 목적은 promise를 동기적으로 더 간단하게 사용하기 위함이면서, Promise객체를 그룹화하여 특정 행동들을 수행하기 위함이다.
+`async`, `await`은 Promise 객체를 더 편리하게 사용하기 위해서 나온 키워드 이다. `async / await`의 목적은 promise를 동기적으로 더 간단하게 사용하기 위함이면서, Promise 객체를 그룹화하여 특정 행동들을 수행하기 위함이다.
+
+MDN에서는 `async / await`을 비동기 함수로써 이벤트 루프를 통하여 비동기적으로 작동하며, 내부적으로 result를 Promise로  반환하는 함수이며, `async / await` 함수를 활용한 코드의 문법과 구조는 표준 동기 함수와 유사하다고 이야기 하고 있다. 또한 `async function`은 `await` expression을 포함하고 있는데 이 `await` 키워드는 `async function`의 실행을 중단하고 Promise의 `resolve`된 결과를 기다리며, async function의 실행을 재개한 후, resolved된 결과를 반환한다고 나와있다.
 
 `async / await`은 `generators`와 `promise`의 조합과 유사하다.
 
@@ -743,7 +745,44 @@ async function f() {
 
 만약 `try ... catch`구문을 쓰지 않은경우, async function f()가 rejected된 상태로 Promise객체가 생성되어 진다. 이 경우, `f()` 함수에 `.catch()`를 활용하여 에러를 핸들링 할 수 있다.
 
+#### return await promiseValue vs return promiseValue
+
+```js
+async function getProcessedData(url) {
+  let v
+  try {
+    v = await downloadData(url)
+  } catch(e) {
+    v = await downloadFallbackData(url)
+  }
+  return processDataInWorker(v)
+}
+```
+
+```js
+async function getProcessedData(url) {
+  let v
+  try {
+    v = await downloadData(url)
+  } catch(e) {
+    v = await downloadFallbackData(url)
+  }
+  try {
+    return await processDataInWorker(v) 
+  } catch (e) {
+    return null
+  }
+}
+```
+
+위 두가지 예시를 보면, v를 선언하고, 에러에 따라서 v 값이 변하면서 이를 바탕으로 다른 처리를 해준다.
+첫번째 예시에서, `return processDataInWorker(v)`의 경우는 Promise를 리턴한다. 물론 밑에 있는 예시 또한 resolved 된 경우 Promise를 반환하지만 그렇지 않은 경우 `null`이 반환될 것이다.
+
+여기서 주목해야 할 점은 `v`로 리턴되는 값이다. 첫번째 예시의 경우에 Promise의 특성상 `resolve`되든 `reject`가 되든 `Promise`가 반환된다. 그러나 Promise 객체가 개발자가 원하는 값을 가진 Promise가 아닐수도 있다. 이와 다르게, 아래 예시에 있는 `v`의 경우 `resolve`시 v가 개발자가 원하는 값이 들어간 Promise객체이기 때문에 원하는 방향으로 이끌어 갈 것이며, `reject`시에도 따로 에러 핸들링을 통해 `null`값을 할당하였기 때문에 `reject` 상황에도 개발자가 원하는 방향으로 이끌어 갈 수 있다.
+
+
 [javascript info / async-await](https://javascript.info/async-await)
+[async function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
 
 ***
 Additional
@@ -751,3 +790,55 @@ Additional
 Observable
 
 Proxy
+
+
+```js
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { 
+    try { 
+        var info = gen[key](arg); 
+        var value = info.value; 
+    } catch (error) {
+         reject(error); 
+         return; 
+    } if (info.done) {
+         resolve(value); 
+    } else {
+         Promise.resolve(value).then(_next, _throw); 
+    }
+}
+
+function _asyncToGenerator(fn) {
+     return function () {
+          var self = this, args = arguments; 
+          return new Promise(function (resolve, reject) {
+                var gen = fn.apply(self, args); 
+                function _next(value) {
+                    asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); 
+                } 
+                function _throw(err) {
+                    asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); 
+                } 
+                _next(undefined); 
+        }); 
+    }; 
+}
+
+function getProcessedData(_x) {
+  return _getProcessedData.apply(this, arguments);
+}
+
+function _getProcessedData() {
+  _getProcessedData = _asyncToGenerator(function* (url) {
+    let v;
+
+    try {
+      v = yield downloadData(url);
+    } catch (e) {
+      v = yield downloadFallbackData(url);
+    }
+
+    return processDataInWorker(v);
+  });
+  return _getProcessedData.apply(this, arguments);
+}
+```
