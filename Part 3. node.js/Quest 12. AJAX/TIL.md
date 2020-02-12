@@ -487,6 +487,8 @@ cross-origin request의 제한은 복잡한 부분이다. 이미지, 스타일�
 
 Promise는 미래에 단일 값을 생성할 수 있는 객체로써, resolve된 값 또는 resolve되지 않은 이유(에러)를 반환한다. 주로 비동기 작업의 최종 완료 또는 실패를 나타내는 객체이다. Promise는 함수에 콜백을 전달하는 대신에, 콜백을 첨부하는 방식의 객체이다.
 
+비동기 처리 작업을 진행할 때 `callback`으로 작업이 진행가능하나, 대규모 어플리케이션에서 다양한 비동기 처리 작업을 진행하다보면 `callback hell`과 더불어 비동기 처리 코드가 복잡해지고, 에러를 컨트롤하기 어려워 지는 등 많은 문제를 일으켰다. 이를 해결하기 위해 Promise가 나왔다.
+
 Promise는 3가지의 상태를 가질 수 있는데, `fulfilled`, `rejected`, `pending`을 가질 수 있다. Promise를 사용하는 개발자는 Promise가 `Pending`에서 `Settle`되어 `fulfilled`된 값 또는 `rejection` 에 대해 `callback`을 붙일 수 있다.
 
 Promise는 콜백 함수를 전달해주는 이전 방식과는 달리 아래와 같은 특징을 보장하는데
@@ -794,30 +796,131 @@ Iterator 객체가 생성되면, iterator 객체는 `next()` 메서드를 반복
 
 #### Iterables
 
+#### iterable protocol
+
 어떤 객체가 **iterable** 하다는 것은 그 객체가 iteration behavior를 정의하고 있다는 건데, 이는 값들이 `for ...of`와 같은 순회가 가능한 구조라는 것이다. 자바스크립트의 built-in type인 String, Array, TypedArray와 Map, Set은 기본적으로 iteration behavior를 가지고 있으나 Object와 그외의 몇몇 타입들은 가지고 있지 않다.
 
 Iterable하기 위해서는, 객체는 **@@iterator** 메서드를 실행해야만 한다. 간단히 이야기 해서, Iterable하기 위한 객체 또는 객체의 프로토타입이 반드시 `Symbol.iterator`를 가져야 한다.
 
+`Symbol.iterator`는 인자가 없는 함수로써 객체를 반환한다.
+
 Iterable한 객체를 단 한번만 순회하는 거나 그 이상 순회하는 것은 개발자의 의도에 따라 달라진다. Generator와 같이 iterate를 단 한번만 하는 객체는 **@@iterator**메서드에서 this를 반환해야 하고, iterate를 여러번 하는 객체의 경우 **@@iterator**의 실행시 새로운 iterator를 반환해야 한다.
 
+#### iterator protocol
+
+**iterator** 프로토콜은 값들의 시퀀스들을 생성하는 표준적인 방법을 정의하고, 모든 값들이 generated되면 값들을 리턴한다.
+
+어떤 객체는 다음과 같은 semantic을 가진 next() 메서드를을 구현할 때 iterator라고 하는데, 
+
+`next()`가 인자 없이 호출 할 수 있으며, 이 메서드가 호출되서 객체를 반환하는데, 반환되는 객체가
+
+{`value`: `any`, `done`: `boolean`}
+
+이 두 프로토콜(iterable, iterator)을 구현해야 Iterator의 조건을 충족할 수 있다.
+
 ```js
-const myIterable = {
-    *[Symbol.iterator]() {
-        yield 1;
-        yield 2;
-        yield 3;
+let someString = new String('hi')            // need to construct a String object explicitly to avoid auto-boxing
+
+someString[Symbol.iterator] = function() {
+  return { 
+    // this is the iterator object, returning a single element (the string "bye")
+    next: function() {
+      if (this._first) {
+        this._first = false 
+        return { value: 'bye', done: false }
+      } else {
+        return { done: true }
+      }
+    },
+    _first: true
+  }
+}
+```
+
+```js
+let myIterable = {}
+myIterable[Symbol.iterator] = function* () {
+    yield 1 
+    yield 2 
+    yield 3 
+};
+[...myIterable]  // [1, 2, 3]
+```
+
+```js
+function makeIterator(array) {
+    let nextIndex = 0
+    
+    return {
+       next: function() {
+           return nextIndex < array.length ?
+               {value: array[nextIndex++], done: false} :
+               {done: true};
+       }
     }
 }
 
-for (let value of myIterable) { 
-    console.log(value); 
-}
-// 1
-// 2
-// 3
+let it = makeIterator(['yo', 'ya']) 
 
-[...myIterable]; // [1, 2, 3]
+console.log(it.next().value)  // 'yo'
+console.log(it.next().value)  // 'ya'
+console.log(it.next().done)   // true
 ```
+
+```js
+class SimpleClass {
+  constructor(data) {
+    this.index = 0 
+    this.data = data
+  }
+
+  [Symbol.iterator]() {
+    return {
+      next: () => {
+        if (this.index < this.data.length) {
+          return {value: this.data[this.index++], done: false}
+        } else {
+          this.index = 0  // If you want to iterate over this again without forcing manual update of the index
+          return {done: true}
+        }
+      }
+    }
+  }
+}
+
+const simple = new SimpleClass([1,2,3,4,5])
+
+for (const val of simple) {
+  console.log(val)   //'1' '2' '3' '4' '5' 
+}
+```
+
+[Symbol.iterator - mozila](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/iterator)
+
+
+### Coroutine
+
+Co + Routine
+
+Routine을 간단하게 하나의 태스크 또는 함수라고 생각했을 때, Co(함께, 협력) 이라는 접두사를 넣어서 협력하는 함수라는 의미이다.
+
+코루틴은 "루틴" 상의 로컬 상태를 유지하면서 제어를 반환했다가(suspend), 제어권을 다시 획득했을 때 (resume) 흐름을 이어 나간다.
+
+Routine은 main routine 과 sub routine이 존재한다. main routine은 메인이 되는 함수이고, sub routine은 main routine에서 일어나는 sub하는 routine이다. sub routine의 경우 함수의 선언과 더불어, 함수의 bracket 이 끝나는 부븐에서 종료가 된다. 그러나 코루틴은 이런 루틴과는 조금 개념을 달리하는데 함수에 진입하는 진입점이 여러개이고(resume), 함수를 빠져나갈 수 있는 탈출점도 여러개이다(suspend). 코루틴의 경우 개발자가 원하는 지점에서 특정 부분을 호출하고, 멈출 수 있기 때문에 비동기 처리 및 동시성 프로그래밍을 가능하게 해준다.
+
+하나의 쓰레드는 여러개의 코루틴을 가질 수 있기 때문에, 싱글 스레드 기반인 자바스크립트에서는 동시적 처리를 가능하게 해주는 중요한 개념이라 볼 수 있다.
+
+이런 관점에서 자바스크립트의 Generator는 코루틴의 한 형태이다. `Iterator` 프로토콜을 활용하여 `next()`를 통해 yield 값을 가지고 계산한다. 
+
+자바스크립트에서 비동기 작업을 용이하게 처리하기 위해서 나온 `Promise`가 있다. Promise는 3가지 상태 (Pending, Resolve, Reject)를 가지며, 이를 기반으로 비동기 작업을 수행한다. 또한, Resolve와 Reject 상태의 Return 값 또한 Promise이므로 Promise chaining 및 error handling등을 다양하게 처리 할 수 있게 되었고 이를 더 간결하게 표현하기 위해 Syntatic Sugar인 `Async / Await`이 나타나게 되었다. 이 `Async / Await`은 `generator`와 `promise`를 사용하여 만들어졌다.
+
+Promise 객체가 콜백을 내부에 가지고 있고, resolve된 상태의 값을 `.then(value => )`라는 식으로 처리를 했다면, `async / await`이 나오고 나서 `await`으로 준비된 값을 꺼낼 수 있게 되었다.
+
+Async 함수는 await에서 suspend되고, await 대상 Promise에서 값이 준비되면 resume되어 다시 실행을 이어간다.
+
+[쾌락코딩](https://wooooooak.github.io/kotlin/2019/08/25/%EC%BD%94%ED%8B%80%EB%A6%B0-%EC%BD%94%EB%A3%A8%ED%8B%B4-%EA%B0%9C%EB%85%90-%EC%9D%B5%ED%9E%88%EA%B8%B0/)
+
+[Coroutine - Wiki](https://en.wikipedia.org/wiki/Coroutine)
 
 ### Generator
 
@@ -828,6 +931,8 @@ for (let value of myIterable) {
 프로미스와 조합하여 사용되는 자바스크립트의 제너레이터는 비동기 프로그래밍을 처리하는 강력한 도구이다. 이 제너레이터를 활용하여 callback hell과 같은 문제를 경감시켜준다. 그리고, `Promise`와 `Generator`의 조합인 `Async / Await`으로 이 문제를 더 간단히 해결하기도 한다.
 
 제너레이터 함수를 호출하는 것은 함수의 본체를 실행하는 것이 아니다. 함수 내부에 있는 `iterator`객체가 대신에 반환되는 것을 의미한다. iterator객체의 `next()`메서드가 호출되면, 제너레이터 함수의 내부 코드 중 첫번째 `yield`를 만날 때 까지의 코드 만을 실행하거나, iterator 또는 `yield*`에서 위임받은 다른 제너레이터 함수에서 리턴된 특정 값들을 만날때 까지 실행한다.
+
+또한, Generator는 yield되는 값을 on-demand 방식으로 계산하므로, 컴퓨팅 비용이 많이 드는 시퀀스를 효율적으로 표현할 수 있다.
 
 `next()` 메서드는 리턴 값으로 객체를 반환하는데, 그 객체는 yield된 값을 가지고 있는 `value` 프로퍼티와 iterator 객체의 마지막 값이 yield 되었는지를 판단하는 `done`프로퍼티를 가지고 있다.
 
