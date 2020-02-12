@@ -786,17 +786,50 @@ async function getProcessedData(url) {
 
 ### Iterator
 
+Iterator는 시퀀스를 정의하고, 종료시 값을 반환하는 객체이다. 특히, 이터레이터는 `value`와 `done` 프로퍼티를 가진 객체를 반환하는 `next()`메서드를 사용하여 `Iterator protocol`을 실행할 수 있는 객체들을 의미한다.
+
+Iterator 객체가 생성되면, iterator 객체는 `next()` 메서드를 반복적으로 호출하여 iterate 할 수 있다. iterator를 Iterating 하는 것은 iterator를 소모하는 것인데, 일반적으로 iterating 하는 것은 각 단계당 한번만 할 수 있기 때문이다. `next()`메서드로 마지막 값이 yield되면, 그 추가적인 `next()` 호출은 `{value: undefined, done: true}` 객체를 반환받게 된다.
+
+자바스크립트에서 가장 흔한 iterator는 배열 iterator로, 손쉽게 array 내부에 있는 시퀀스의 값들을 반환한다. 여기서 조심해야 할 것은, 모든 iterator들이 배열 iterator 처럼 표현될 것이라 생각하는데 이는 사실이 아니다. 배열의 iterator의 경우 배열 전체를 할당되는데(배열 전부를 순회 함) 그러나 일반적인 iterator들은 필요에 의해서 전체가 아닌 일부를 사용한다. (물론 몇몇 경우는 전체도 가능하다.) 예를 들어 integer 범위의 경우 0 과 `Infinity` 인것 처럼, 제한되지 않은 사이즈의 시퀀스들이 존재 할 수 있기 때문이다.
+
+#### Iterables
+
+어떤 객체가 **iterable** 하다는 것은 그 객체가 iteration behavior를 정의하고 있다는 건데, 이는 값들이 `for ...of`와 같은 순회가 가능한 구조라는 것이다. 자바스크립트의 built-in type인 String, Array, TypedArray와 Map, Set은 기본적으로 iteration behavior를 가지고 있으나 Object와 그외의 몇몇 타입들은 가지고 있지 않다.
+
+Iterable하기 위해서는, 객체는 **@@iterator** 메서드를 실행해야만 한다. 간단히 이야기 해서, Iterable하기 위한 객체 또는 객체의 프로토타입이 반드시 `Symbol.iterator`를 가져야 한다.
+
+Iterable한 객체를 단 한번만 순회하는 거나 그 이상 순회하는 것은 개발자의 의도에 따라 달라진다. Generator와 같이 iterate를 단 한번만 하는 객체는 **@@iterator**메서드에서 this를 반환해야 하고, iterate를 여러번 하는 객체의 경우 **@@iterator**의 실행시 새로운 iterator를 반환해야 한다.
+
+```js
+const myIterable = {
+    *[Symbol.iterator]() {
+        yield 1;
+        yield 2;
+        yield 3;
+    }
+}
+
+for (let value of myIterable) { 
+    console.log(value); 
+}
+// 1
+// 2
+// 3
+
+[...myIterable]; // [1, 2, 3]
+```
+
 ### Generator
 
-`function*`선언은 제너레이터 함수를 정의한 것이며, `Generator` 객체를 반환한다.
+`function*`선언은 제너레이터 함수를 정의한 것이며, `Generator` 객체를 반환한다. 
 
-제너레이터는 종료되고 이후에 다시 재 진입이 가능한 함수이다. 제너레이터 함수가 중지되고, 재진입시 상태(context)는 내부 처리에 의해 저장되어 있다.
+제너레이터는 종료되고 이후에 다시 재 진입이 가능한 함수이며 `iterable protocol`과 `iterator protocol`을 따른다. 제너레이터 함수가 중지되고, 재진입시 상태(context)는 내부 처리에 의해 저장되어 있다.
 
 프로미스와 조합하여 사용되는 자바스크립트의 제너레이터는 비동기 프로그래밍을 처리하는 강력한 도구이다. 이 제너레이터를 활용하여 callback hell과 같은 문제를 경감시켜준다. 그리고, `Promise`와 `Generator`의 조합인 `Async / Await`으로 이 문제를 더 간단히 해결하기도 한다.
 
 제너레이터 함수를 호출하는 것은 함수의 본체를 실행하는 것이 아니다. 함수 내부에 있는 `iterator`객체가 대신에 반환되는 것을 의미한다. iterator객체의 `next()`메서드가 호출되면, 제너레이터 함수의 내부 코드 중 첫번째 `yield`를 만날 때 까지의 코드 만을 실행하거나, iterator 또는 `yield*`에서 위임받은 다른 제너레이터 함수에서 리턴된 특정 값들을 만날때 까지 실행한다.
 
-`next()` 메서드는 yield된 값을 가지고 있는 `value` 프로퍼티와 iterator 객체의 마지막 값이 yield 되었는지를 판단하는 `done`프로퍼티를 가지고 있다.
+`next()` 메서드는 리턴 값으로 객체를 반환하는데, 그 객체는 yield된 값을 가지고 있는 `value` 프로퍼티와 iterator 객체의 마지막 값이 yield 되었는지를 판단하는 `done`프로퍼티를 가지고 있다.
 
 `next()`메서드에 인자를 넣어서 호출하게 되면 제너레이터 함수의 실행을 재시작하며, 인자 없이 `next()`로 호출된 마지막 실행 이후에서 인자 값을 가지고 `yield` 표현식을 대체한다.
 
@@ -889,6 +922,8 @@ test4.next(); // {value: '3', done: false};
 test4.next(); // {value: '4', done: true};
 test4.next(); // {value: undefined, done: true};
 ```
+
+[Iterators and generators - MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Iterators_and_Generators)
 
 ***
 Additional
