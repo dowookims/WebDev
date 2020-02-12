@@ -934,6 +934,8 @@ Async 함수는 await에서 suspend되고, await 대상 Promise에서 값이 준
 
 또한, Generator는 yield되는 값을 on-demand 방식으로 계산하므로, 컴퓨팅 비용이 많이 드는 시퀀스를 효율적으로 표현할 수 있다.
 
+제너레이터는 코루틴과는 다르게 멈출 때 돌아갈 위치를 직접 지정할 수 없고, 단순히 호출자에게 제어권을 넘겨주게 되기 때문에 세미 코루틴이라 불리기도 한다.
+
 `next()` 메서드는 리턴 값으로 객체를 반환하는데, 그 객체는 yield된 값을 가지고 있는 `value` 프로퍼티와 iterator 객체의 마지막 값이 yield 되었는지를 판단하는 `done`프로퍼티를 가지고 있다.
 
 `next()`메서드에 인자를 넣어서 호출하게 되면 제너레이터 함수의 실행을 재시작하며, 인자 없이 `next()`로 호출된 마지막 실행 이후에서 인자 값을 가지고 `yield` 표현식을 대체한다.
@@ -941,6 +943,8 @@ Async 함수는 await에서 suspend되고, await 대상 Promise에서 값이 준
 제너레이터 함수 내부에 있는 `return` 선언은 return이 실행 되었을 때 제너레이터의 종료를 의미하며, `done` 프로퍼티의 값이 `true`로 변한다. 제너레이터 함수 내부의 return 선언문에서 값을 반환하면, `next()`메서드를 통해 반환되는 객체에 값으로 나타나게 된다. `{value: returnValue, done: true}`
 
 제너레이터 함수 내부의 return 처럼, 제너레이터 함수 내부의 에러를 던지는 것 또한 제너레이터 함수를 종료한다. 제너레이터 함수가 종료되면, `next()`메서드를 실행 했을 때 어떤 제너레이터 코드도 작동하지 않고 `{value: undefined, done: true}`의 object만 반환한다.
+
+[toast meet up](https://meetup.toast.com/posts/73)
 
 ```js
 function* testGen() {
