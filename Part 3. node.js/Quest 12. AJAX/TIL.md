@@ -784,6 +784,8 @@ async function getProcessedData(url) {
 [javascript info / async-await](https://javascript.info/async-await)
 [async function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
 
+### Iterator
+
 ### Generator
 
 `function*`선언은 제너레이터 함수를 정의한 것이며, `Generator` 객체를 반환한다.
@@ -817,6 +819,22 @@ test.next() // {value: undefined, done: true};
 ```
 
 ```js
+function* logGenerator() {
+  console.log(0);
+  console.log(1, yield);
+  console.log(2, yield);
+  console.log(3, yield);
+}
+
+var gen = logGenerator();
+
+gen.next();             // 0
+gen.next('pretzel');    // 1 pretzel
+gen.next('california'); // 2 california
+gen.next('mayonnaise'); // 3 mayonnaise
+```
+
+```js
 function* testGen2() {
     yield 1;
     yield 2;
@@ -846,9 +864,30 @@ test3.next(); // {value: 'c', done: false};
 test3.next(); // {value: 1, done: false};
 test3.next(); // {value: 2, done: false};
 test3.next(); // {value: 3, done: false};
-test3.next(); // {value: 'd', done: true}; yield*를 활용할 때 generator의 경우 yield로 산출된 것만 사용 가능하고, generator 문의 return value는 사용되지 않음을 유의해야한다.
-test3.next(); // {value: undefined, done: true};
+test3.next(); // {value: 'd', done: true}; testGen2에서 return 값이 아님을 유의해야 한다.
 
+test3.next(); // {value: undefined, done: true};
+```
+
+`yield*`는 선언문이 아닌 표현식이기 때문에, yield*를 활용할 때 generator의 `next()`를 활용한 경우 yield로 산출된 것만 사용 가능하고, iterator 문의 return value는 `yield*` 표현에 저장된다. 그렇기에 iterator의 return value를 사용하고 싶다면
+
+```js
+function* testGen4() {
+  yield "aaa";
+  yield "bbb";
+  const tg2 = yield* testGen2();
+  return tg2;
+  // return yield* testGen2();
+}
+
+const test4 = testGen4();
+test4.next(); // {value: 'aaa', done: false};
+test4.next(); // {value: 'bbb', done: false};
+test4.next(); // {value: '1', done: false};
+test4.next(); // {value: '2', done: false};
+test4.next(); // {value: '3', done: false};
+test4.next(); // {value: '4', done: true};
+test4.next(); // {value: undefined, done: true};
 ```
 
 ***
