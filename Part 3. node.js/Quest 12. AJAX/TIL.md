@@ -784,6 +784,73 @@ async function getProcessedData(url) {
 [javascript info / async-await](https://javascript.info/async-await)
 [async function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
 
+### Generator
+
+`function*`선언은 제너레이터 함수를 정의한 것이며, `Generator` 객체를 반환한다.
+
+제너레이터는 종료되고 이후에 다시 재 진입이 가능한 함수이다. 제너레이터 함수가 중지되고, 재진입시 상태(context)는 내부 처리에 의해 저장되어 있다.
+
+프로미스와 조합하여 사용되는 자바스크립트의 제너레이터는 비동기 프로그래밍을 처리하는 강력한 도구이다. 이 제너레이터를 활용하여 callback hell과 같은 문제를 경감시켜준다. 그리고, `Promise`와 `Generator`의 조합인 `Async / Await`으로 이 문제를 더 간단히 해결하기도 한다.
+
+제너레이터 함수를 호출하는 것은 함수의 본체를 실행하는 것이 아니다. 함수 내부에 있는 `iterator`객체가 대신에 반환되는 것을 의미한다. iterator객체의 `next()`메서드가 호출되면, 제너레이터 함수의 내부 코드 중 첫번째 `yield`를 만날 때 까지의 코드 만을 실행하거나, iterator 또는 `yield*`에서 위임받은 다른 제너레이터 함수에서 리턴된 특정 값들을 만날때 까지 실행한다.
+
+`next()` 메서드는 yield된 값을 가지고 있는 `value` 프로퍼티와 iterator 객체의 마지막 값이 yield 되었는지를 판단하는 `done`프로퍼티를 가지고 있다.
+
+`next()`메서드에 인자를 넣어서 호출하게 되면 제너레이터 함수의 실행을 재시작하며, 인자 없이 `next()`로 호출된 마지막 실행 이후에서 인자 값을 가지고 `yield` 표현식을 대체한다.
+
+제너레이터 함수 내부에 있는 `return` 선언은 return이 실행 되었을 때 제너레이터의 종료를 의미하며, `done` 프로퍼티의 값이 `true`로 변한다. 제너레이터 함수 내부의 return 선언문에서 값을 반환하면, `next()`메서드를 통해 반환되는 객체에 값으로 나타나게 된다. `{value: returnValue, done: true}`
+
+제너레이터 함수 내부의 return 처럼, 제너레이터 함수 내부의 에러를 던지는 것 또한 제너레이터 함수를 종료한다. 제너레이터 함수가 종료되면, `next()`메서드를 실행 했을 때 어떤 제너레이터 코드도 작동하지 않고 `{value: undefined, done: true}`의 object만 반환한다.
+
+```js
+function* testGen() {
+    yield 1;
+    yield 2;
+    yield 3;
+}
+
+const test = testGen()
+test.next() // {value: 1, done: false};
+test.next() // {value: 2, done: false};
+test.next() // {value: 3, done: false};
+test.next() // {value: undefined, done: true};
+```
+
+```js
+function* testGen2() {
+    yield 1;
+    yield 2;
+    yield 3;
+    return 4;
+}
+
+function* testGen3() {
+    yield 'a';
+    yield 'b';
+    yield 'c';
+    yield* testGen2();
+    return 'd';
+};
+
+const test2 = testGen2();
+test2.next(); // {value: 1, done: false};
+test2.next(); // {value: 2, done: false};
+test2.next(); // {value: 3, done: false};
+test2.next(); // {value: 4, done: true};
+test2.next(); // {value: undefined, done: true};
+
+const test3 = testGen3();
+test3.next(); // {value: 'a', done: false};
+test3.next(); // {value: 'b', done: false};
+test3.next(); // {value: 'c', done: false};
+test3.next(); // {value: 1, done: false};
+test3.next(); // {value: 2, done: false};
+test3.next(); // {value: 3, done: false};
+test3.next(); // {value: 'd', done: true}; yield*를 활용할 때 generator의 경우 yield로 산출된 것만 사용 가능하고, generator 문의 return value는 사용되지 않음을 유의해야한다.
+test3.next(); // {value: undefined, done: true};
+
+```
+
 ***
 Additional
 
