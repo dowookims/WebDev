@@ -11,10 +11,10 @@ img, footer, header, nav {
 
 body {
 	line-height: 1;
+	width: 100%;
 }
 
 #app {
-	width: 100%;
 	padding: 50px 100px;
 }
 
@@ -23,6 +23,7 @@ body {
 }
 
 .menu {
+	width: 100%;
 	margin-top: 30px;
 	display: flex;
 	border: 1px solid #333;
@@ -30,6 +31,7 @@ body {
 
 .icon-div {
 	display: flex;
+	width: 200px;
 }
 
 .sep {
@@ -54,4 +56,33 @@ body {
 	font-size: 18px;
 	font-weight: 500;
 }
+
+.tab-div {
+	display: flex;
+	align-items: center;
+	background-color: #ccc;
+}
+
+.tab {
+	position: relative;
+	display: flex;
+	align-items: center;
+	height: 100%;
+}
+
+.tab-name {
+	margin-left: 10px;
+	margin-right: 25px;
+}
+.close-tab {
+	position: absolute;
+	right: 0;
+	margin-right: 10px;
+}
+
+.close-tab:hover {
+	background-color: #aaa;
+	border-radius: 50%;
+}
+
 
