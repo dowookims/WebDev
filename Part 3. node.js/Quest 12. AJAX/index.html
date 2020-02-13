@@ -9,23 +9,14 @@
 <body>
   <div id="app"></div>
   <script>
+    fetch('https://jsonplaceholder.typicode.com/todos/121')
+    .then(
+      res => {throw error("KAZ"); return res.json()}
+      , (e) => console.log('then error e', e)
+    )
+    .then(res => console.log(res.title))
+    .catch(e => console.log(e));
 
-fetch('https://jsonplaceholder.typicode.com/todos/1')
-.then(function(response) {
-  if (!response.ok) {
-    throw Error(response.statusText);
-  }
-  // Read the response as json.
-  console.log(response);
-  return response.json();
-})
-.then(function(responseAsJson) {
-  // Do stuff with the JSON
-  console.log(responseAsJson);
-})
-.catch(function(error) {
-  console.log('Looks like there was a problem: \n', error);
-});
   </script>
 </body>
 </html>

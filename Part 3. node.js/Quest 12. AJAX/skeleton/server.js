@@ -3,6 +3,15 @@ const express = require('express'),
 	app = express();
 
 app.use(express.static('client'));
+app.use(express.bodyParser());
+
+app.post('/', (req, res) => {
+	res.end("KAKAKAKAKAKAKAKAKAKAKA")
+});
+
+app.patch('/', (req, res) => {
+	res.end("PAAAAtch")
+});
 
 app.get('/', (req, res) => {
 	res.sendFile(path.join(__dirname, 'index.html'));
