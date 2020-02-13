@@ -2,14 +2,47 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<link rel="stylesheet" href="/style.css">
-		<script src="/notepad.js"></script>
+		<link rel="stylesheet" href="./style.css">
+		<script src="./notepad.js"></script>
+		<title>Knowre Note</title>
 	</head>
 	<body>
 		<!-- TODO: 이 곳을 채워 클라이언트를 만들어 보세요 -->
-		<h1>hi there</h1>
+		<div id="app">
+				<header>
+						<h1 class="header-title">Knowre Note</h1>
+				</header>
+				<div class="menu">
+					<div class="icon-div"></div>
+					<div class="sep"></div>
+					<div class="tab-div"></div>
+				</div>
+				<div class="board-div"></div>
+		</div>
+
+		<template id="icon">
+				<div class="icon">
+						<span class="icon-name"></span>
+				</div>
+		</template>
+
+		<template id="tab">
+				<div class="tab">
+						<span class="tab-name"></span>
+						<span class="close-tab">&times;</span>
+				</div>
+		</template>
+
+		<template id="board">
+				<div class="board">
+						<textarea id="textarea" class="textarea" placeholder="Input some text."></textarea>
+				</div>
+		</template>
+
 		<script>
+
 			let notepad = new Notepad();
+
 		</script>
 	</body>
 </html>

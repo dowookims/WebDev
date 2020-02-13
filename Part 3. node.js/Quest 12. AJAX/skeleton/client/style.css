@@ -1,3 +1,112 @@
-* {
-	/* TODO: 필요한 CSS를 채워넣어 보세요! */
+html, body, div, span, h1, h2, h3, h4, h5, h6, p, pre,
+img, footer, header, nav {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+	box-sizing: botder-box;
 }
+/* HTML5 display-role reset for older browsers */
+
+body {
+	line-height: 1;
+	width: 100%;
+}
+
+#app {
+	margin: 50px 100px;
+}
+
+.header-title {
+	font-size: 30px;
+}
+
+.menu {
+	width: 100%;
+	margin-top: 30px;
+	display: flex;
+}
+
+.icon-div {
+	display: flex;
+	width: 200px;
+}
+
+.sep {
+	width: 2px;
+	margin: 0 20px 0 0;
+	background-color: #333;
+}
+
+.icon {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 5px 10px;
+	background-color: #4CD579;
+	color: #fff;
+	border-radius: 10px;
+	margin-left: 10px;
+	cursor: pointer;
+}
+
+.icon:hover {
+	background-color: #1CB448;
+}
+
+.icon-name {
+	font-size: 18px;
+	font-weight: 500;
+}
+
+.tab-div {
+	display: flex;
+	align-items: center;
+	background-color: #ccc;
+}
+
+.tab {
+	position: relative;
+	display: flex;
+	align-items: center;
+	height: 100%;
+	border-right: 1px solid #333;
+	cursor: pointer;
+}
+
+.tab:hover {
+	background-color: #bbb;
+}
+
+.activeTab {
+	background-color: #eee;
+}
+
+.tab-name {
+	margin-left: 10px;
+	margin-right: 25px;
+}
+.close-tab {
+	position: absolute;
+	right: 0;
+	margin-right: 10px;
+}
+
+.close-tab:hover {
+	background-color: #aaa;
+	border-radius: 50%;
+}
+.board {
+	margin-top: 30px;
+	width: 100%;
+}
+
+.textarea {
+	width: 100%;
+	min-height: 500px;
+	font-size: 18px;
+}
+
+
