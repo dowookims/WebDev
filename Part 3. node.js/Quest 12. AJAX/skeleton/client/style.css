@@ -6,6 +6,7 @@ img, footer, header, nav {
 	font-size: 100%;
 	font: inherit;
 	vertical-align: baseline;
+	box-sizing: botder-box;
 }
 /* HTML5 display-role reset for older browsers */
 
@@ -15,7 +16,7 @@ body {
 }
 
 #app {
-	padding: 50px 100px;
+	margin: 50px 100px;
 }
 
 .header-title {
@@ -26,7 +27,6 @@ body {
 	width: 100%;
 	margin-top: 30px;
 	display: flex;
-	border: 1px solid #333;
 }
 
 .icon-div {
@@ -35,9 +35,8 @@ body {
 }
 
 .sep {
-	min-width: 5px;
-	min-height: 20px;
-	margin-left: 20px;
+	width: 2px;
+	margin: 0 20px 0 0;
 	background-color: #333;
 }
 
@@ -50,6 +49,11 @@ body {
 	color: #fff;
 	border-radius: 10px;
 	margin-left: 10px;
+	cursor: pointer;
+}
+
+.icon:hover {
+	background-color: #1CB448;
 }
 
 .icon-name {
@@ -69,6 +73,11 @@ body {
 	align-items: center;
 	height: 100%;
 	border-right: 1px solid #333;
+	cursor: pointer;
+}
+
+.tab:hover {
+	background-color: #bbb;
 }
 
 .tab-name {
@@ -84,6 +93,16 @@ body {
 .close-tab:hover {
 	background-color: #aaa;
 	border-radius: 50%;
+}
+.board {
+	margin-top: 30px;
+	width: 100%;
+}
+
+.textarea {
+	width: 100%;
+	min-height: 500px;
+	font-size: 18px;
 }
 
 
