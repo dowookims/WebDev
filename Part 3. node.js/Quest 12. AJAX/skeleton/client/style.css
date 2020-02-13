@@ -1,3 +1,57 @@
-* {
-	/* TODO: 필요한 CSS를 채워넣어 보세요! */
+html, body, div, span, h1, h2, h3, h4, h5, h6, p, pre,
+img, footer, header, nav {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
 }
+/* HTML5 display-role reset for older browsers */
+
+body {
+	line-height: 1;
+}
+
+#app {
+	width: 100%;
+	padding: 50px 100px;
+}
+
+.header-title {
+	font-size: 30px;
+}
+
+.menu {
+	margin-top: 30px;
+	display: flex;
+	border: 1px solid #333;
+}
+
+.icon-div {
+	display: flex;
+}
+
+.sep {
+	min-width: 5px;
+	min-height: 20px;
+	margin-left: 20px;
+	background-color: #333;
+}
+
+.icon {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 5px 10px;
+	background-color: #4CD579;
+	color: #fff;
+	border-radius: 10px;
+	margin-left: 10px;
+}
+
+.icon-name {
+	font-size: 18px;
+	font-weight: 500;
+}
+
