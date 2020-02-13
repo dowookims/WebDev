@@ -68,6 +68,7 @@ body {
 	display: flex;
 	align-items: center;
 	height: 100%;
+	border-right: 1px solid #333;
 }
 
 .tab-name {
