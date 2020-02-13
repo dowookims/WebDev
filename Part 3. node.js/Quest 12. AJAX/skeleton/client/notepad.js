@@ -36,6 +36,7 @@ class Notepad {
 			};
 
 			this.currentTab = this.tabs[this.tabs.length-1];
+			this.currentTab.dom.classList.add("activeTab");
 
 			const boardInstance = new Board();
 			app.append(boardInstance.dom);
@@ -44,13 +45,24 @@ class Notepad {
 
 		_customEventHandler() {
 				this.dom.addEventListener('removeTab', (e) => {
-					console.log(e.detail.id())
 						this.tabs =  this.tabs.filter(tab => {
 						tab.id !== e.detail.id
-				})
-				console.log(this.tabs);
-		})
-	}
+						})
+				});
+
+				this.dom.addEventListener('createTab', (e) => {
+					this.tabs.push(e.detail.tab)
+					this.currentTab.dom.classList.remove("activeTab");
+					this.currentTab = e.detail.tab;
+					this.currentTab.dom.classList.add("activeTab");
+				});
+				
+				this.dom.addEventListener('openTab', (e) => {
+					this.currentTab.dom.classList.remove("activeTab");
+					this.currentTab = e.detail.tab;
+					this.currentTab.dom.classList.add("activeTab");
+				})	;
+			}
 };
 
 class Icon {
@@ -73,7 +85,7 @@ class Icon {
 		_clickEvent(){
 				if (this.type === 'create') {
 						const tabDiv = document.querySelector('.tab-div');
-						const tabItem = new Tab('untitled', '');
+						const tabItem = Tab.create('untitled', '');
 						tabDiv.append(tabItem.dom);
 				} else if (this.type ==='load') {
 						console.log("LOAD");
@@ -100,6 +112,7 @@ class Tab {
 				const tabNameSpan = tabClone.querySelector('.tab-name');
 				tabNameSpan.innerHTML = this.name;
 				this.dom = tabClone.querySelector('.tab');
+				this.dom.addEventListener('click', () => this._openEvent())
 				this._removeEvent();
 		}
 
@@ -108,15 +121,12 @@ class Tab {
 			const tabItem = new Tab(name, text);
 			const createTab = new CustomEvent('createTab', {
 				bubles: true,
-				detail: {
-					id: () => tabItem.id,
-					name: () => tabItem.name,
-					text: () => tabItem.text
-				}
+				detail: {tab: (() => tabItem)()}
 			});
+			
 			app.dispatchEvent(createTab);
 			tapDiv.append(tabItem.dom);
-			return tabItem
+			return tabItem;
 		}
 
 		_removeEvent() {
@@ -124,7 +134,7 @@ class Tab {
 					this.dom.remove();
 					const removeTab = new CustomEvent('removeTab', {
 						bubbles: true,
-						detail: {id: () => this.id}
+						detail: {id: (() => this.id)()}
 					});
 					app.dispatchEvent(removeTab);
 				})
@@ -133,8 +143,9 @@ class Tab {
 		_openEvent() {
 				const openTab = new CustomEvent('openTab', {
 					bubles: true,
-					detail: {}
+					detail: {tab: (() => this)()}
 				})
+				app.dispatchEvent(openTab);
 		}
 };
 

@@ -80,6 +80,10 @@ body {
 	background-color: #bbb;
 }
 
+.activeTab {
+	background-color: #eee;
+}
+
 .tab-name {
 	margin-left: 10px;
 	margin-right: 25px;
