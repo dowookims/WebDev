@@ -3,7 +3,8 @@ const express = require('express'),
 	app = express();
 
 app.use(express.static('client'));
-app.use(express.bodyParser());
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
 
 app.post('/', (req, res) => {
 	res.end("KAKAKAKAKAKAKAKAKAKAKA")

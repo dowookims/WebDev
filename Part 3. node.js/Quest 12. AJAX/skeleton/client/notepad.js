@@ -45,18 +45,23 @@ class Notepad {
 
 	_customEventHandler() {
 		function toggleTab(e) {
-			const textArea = document.getElementById('textarea')
+			const textArea = document.getElementById('textarea');
+			const boardTitle = document.getElementById('board-title');
+
 			this.currentTab.dom.classList.remove("activeTab");
 			this.currentTab.text = textArea.value;
+			this.currentTab.name = boardTitle.value;
+			this.currentTab.dom.querySelector('.tab-name').innerHTML = boardTitle.value;
 			this.currentTab = e.detail.tab;
 			textArea.value = this.currentTab.text || '';
+			boardTitle.value = this.currentTab.name || '';
 			this.currentTab.dom.classList.add("activeTab");
 		}
 
 		this.dom.addEventListener('removeTab', (e) => {
-				this.tabs =  this.tabs.filter(tab => {
+			this.tabs =  this.tabs.filter(tab => {
 				tab.id !== e.detail.id
-				})
+			})
 		});
 
 		this.dom.addEventListener('createTab', (e) => {
@@ -154,8 +159,7 @@ class Tab {
 };
 
 class Board {
-	constructor(text="") {
-		this.text =text;
+	constructor() {
 		this.dom = null;
 		this._prepareDOM();
 	}
