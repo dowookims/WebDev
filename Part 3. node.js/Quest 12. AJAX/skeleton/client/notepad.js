@@ -5,6 +5,7 @@ class Notepad {
 		this.currentTab = null;
 		this._prepareDOM();
 		this._customEventHandler();
+		this.serverUrl = 'http://127.0.0.1:8080'
 	}
 
 	_prepareDOM(){
@@ -44,7 +45,7 @@ class Notepad {
 	}
 
 	_customEventHandler() {
-		function toggleTab(e) {
+		function toggleTab(tabInstance) {
 			const textArea = document.getElementById('textarea');
 			const boardTitle = document.getElementById('board-title');
 
@@ -52,7 +53,7 @@ class Notepad {
 			this.currentTab.text = textArea.value;
 			this.currentTab.name = boardTitle.value;
 			this.currentTab.dom.querySelector('.tab-name').innerHTML = boardTitle.value;
-			this.currentTab = e.detail.tab;
+			this.currentTab = tabInstance || this.currentTab;
 			textArea.value = this.currentTab.text || '';
 			boardTitle.value = this.currentTab.name || '';
 			this.currentTab.dom.classList.add("activeTab");
@@ -66,12 +67,37 @@ class Notepad {
 
 		this.dom.addEventListener('createTab', (e) => {
 			this.tabs.push(e.detail.tab)
-			toggleTab.call(this, e)
+			toggleTab.call(this, e.detail.tab)
 		});
 		
 		this.dom.addEventListener('openTab', (e) => {
-			toggleTab.call(this, e)
+			toggleTab.call(this, e.detail.tab)
 		});
+
+		this.dom.addEventListener('saveData', async() => {
+			toggleTab.call(this, this.currentTab)
+			const res = await fetch(this.serverUrl, {
+				method: 'POST',
+				credentials: 'same-origin',
+				mode: 'cors',
+				headers: {
+					'Content-type': 'application/json'
+				},
+				body: JSON.stringify({
+					name: this.currentTab.name,
+					text: this.currentTab.text
+				})
+			});
+			console.log(await res.json());
+		});
+
+		this.dom.addEventListener('getList', async () => {
+			const res = await fetch(`${this.serverUrl}/list`);
+			const fileList = await res.json();
+			fileList.fileList.forEach(file => {
+				Tab.create(file.name, file.text)
+			})
+		})
 	}
 };
 
@@ -98,10 +124,15 @@ class Icon {
 			const tabItem = Tab.create('untitled', '');
 			tabDiv.append(tabItem.dom);
 		} else if (this.type ==='load') {
-			console.log("LOAD");
+			const getList = new CustomEvent('getList', {
+				bubles: true,
+			});
+			app.dispatchEvent(getList);
 		} else if (this.type === 'save') {
-			const textData = document.getElementById("textarea").value;
-			console.log(textData);
+			const saveData = new CustomEvent('saveData', {
+				bubles: true,
+			});
+			app.dispatchEvent(saveData);
 		} 	
 	}
 };
