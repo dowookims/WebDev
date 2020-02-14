@@ -51,7 +51,7 @@ class Notepad {
 			this.currentTab.dom.classList.remove("activeTab");
 			this.currentTab.text = textArea.value;
 			this.currentTab.name = boardTitle.value;
-			this.currentTab.dom.querySelector('.tab-name').innerHTML = boardTitle.value;
+			this.currentTab.dom.querySelector('.tab-name').innerHTML = boardTitle.value || 'untitled';
 			this.currentTab = tabInstance || this.currentTab;
 			textArea.value = this.currentTab.text || '';
 			boardTitle.value = this.currentTab.name || '';
