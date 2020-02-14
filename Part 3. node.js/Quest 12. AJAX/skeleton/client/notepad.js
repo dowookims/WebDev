@@ -22,8 +22,7 @@ class Notepad {
 		const iconInstances = iconArr.map(icon => {
 			const iconItem = new Icon(icon.name, icon.type)
 			iconDiv.append(iconItem.dom);
-			}
-		);
+		});
 		
 		// tab init
 		if (this.tabs.length === 0) {
@@ -95,7 +94,7 @@ class Notepad {
 			const res = await fetch(`${this.serverUrl}/list`);
 			const fileList = await res.json();
 			fileList.fileList.forEach(file => {
-				Tab.create(file.name, file.text)
+				Tab.create(file.title, file.text)
 			})
 		})
 	}
@@ -154,8 +153,12 @@ class Tab {
 		this.dom = tabClone.querySelector('.tab');
 		this.dom.addEventListener('click', () => this._openEvent())
 		this._removeEvent();
+		console.log("THIS", this);
+		console.log(this.name);
+		console.log(this.dom);
 	}
 
+	// Load 클릭시 서버에서 데이터는 불러와지나, tab의 이름과, board에서 title 이름이 나오지 않는거 추가 수정
 	static create(name, text) {
 		const tapDiv = document.querySelector('.tab-div');
 		const tabItem = new Tab(name, text);
