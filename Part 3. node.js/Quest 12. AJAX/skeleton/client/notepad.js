@@ -64,7 +64,7 @@ class Notepad {
 				})	;
 			}
 };
-
+// @TODO save textarea value to notepad and server
 class Icon {
 		constructor(name,type){
 				this.name = name;
