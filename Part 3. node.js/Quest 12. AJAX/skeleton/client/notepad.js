@@ -124,12 +124,12 @@ class Icon {
 			tabDiv.append(tabItem.dom);
 		} else if (this.type ==='load') {
 			const getList = new CustomEvent('getList', {
-				bubles: true,
+				bubbles: true,
 			});
 			app.dispatchEvent(getList);
 		} else if (this.type === 'save') {
 			const saveData = new CustomEvent('saveData', {
-				bubles: true,
+				bubbles: true,
 			});
 			app.dispatchEvent(saveData);
 		} 	
@@ -163,7 +163,7 @@ class Tab {
 		const tapDiv = document.querySelector('.tab-div');
 		const tabItem = new Tab(name, text);
 		const createTab = new CustomEvent('createTab', {
-			bubles: true,
+			bubbles: true,
 			detail: {tab: (() => tabItem)()}
 		});
 		
@@ -185,7 +185,7 @@ class Tab {
 
 	_openEvent() {
 		const openTab = new CustomEvent('openTab', {
-			bubles: true,
+			bubbles: true,
 			detail: {tab: (() => this)()}
 		})
 		app.dispatchEvent(openTab);

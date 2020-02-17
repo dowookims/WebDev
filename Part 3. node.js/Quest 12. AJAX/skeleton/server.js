@@ -8,9 +8,8 @@ const notepadPath = path.join(__dirname, 'notepad');
 
 app.use(express.static('client'));
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
 
-app.get('/list', (req, res) => {
+app.get('/articles', (req, res) => {
 	let fileList = []
 	fs.readdirSync(notepadPath).forEach(file => {
 		fileList.push({
@@ -21,14 +20,17 @@ app.get('/list', (req, res) => {
 	res.json({fileList})
 })
 
-app.post('/', (req, res) => {
+app.post('/articles', (req, res) => {
 	fs.writeFile(`${notepadPath}/${req.body.name}.txt`, req.body.text, (err) => {
 		console.log(err);
 	})
-	res.json({wow: 'good'})
+	res.json({
+		success: 'true',
+		message: 'it is saved successfully'
+	})
 });
 
-app.patch('/', (req, res) => {
+app.patch('/articles', (req, res) => {
 	res.end("PAAAAtch")
 });
 
