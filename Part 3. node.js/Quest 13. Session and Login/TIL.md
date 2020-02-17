@@ -175,5 +175,19 @@ Stateless 서버는 반대로, 상태를 유지 하지 않는다. 상태정보�
 
 [Velopert](https://velopert.com/2350)
 
+[The Ins and Outs of token based authentication](https://scotch.io/tutorials/the-ins-and-outs-of-token-based-authentication#introduction)
+
+### Oauth
+
+O(pen) + Auth (Authentication || Authorization)
+
+[Oauth - wiki](https://en.wikipedia.org/wiki/OAuth)
+
+[Oauth 와 함께 춤을](https://d2.naver.com/helloworld/24942)
+
+[Oauth 2.0 ](https://oauth.net/2/)
+
+[What the heck is oauth](https://developer.okta.com/blog/2017/06/21/what-the-heck-is-oauth)
+
 
 ### localStorage, SessionStorage, IndexedDB
