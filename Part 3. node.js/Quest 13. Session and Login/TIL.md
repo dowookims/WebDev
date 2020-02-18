@@ -106,6 +106,88 @@ session은 key - value 타입의 해쉬 테이블 과 비슷하게 저장된다(
 
 ### JWT
 
-https://medium.com/@rahulgolwalkar/pros-and-cons-in-using-jwt-json-web-tokens-196ac6d41fb4
+#### 토큰 기반의 인증 방식
+
+모던 웹 서비스에서 많이 사용되는 방식으로, 인증 작업을 처리 할 때 많이 사용된다.
+
+##### Stateless
+
+Stateful 서버는 클라이언트에게서 요청을 받을 때 마다 클라이언트의 상태를 계속해서 유지하고, 이 정보를 서비스 제공에 이용 한다.
+
+Ex) 세션을 유지하는 웹서버가 있다면, 그 서버는 유저가 로그인 하면 세션에 로그인이 되었다고 저장을 하고, 서비스를 제공 할 때에 세션에 저장된 데이터를 사용한다. 이 세션은 서버의 메모리에 담을 때도 있고 데이터베이스 시스템에 담을 때도 있다. 
+
+Stateless 서버는 반대로, 상태를 유지 하지 않는다. 상태정보를 저장하지 않으면, 서버는 클라이언트측에서 들어오는 요청만으로만 작업을 처리한다. 이렇게 상태가 없는 경우 클라이언트와 서버의 연결고리가 없기 때문에 서버의 확장성 (Scalability) 이 높아진다.
+
+#### 왜 토큰 기반 인증을 사용하게 됬을까?
+
+##### 서버 기반 인증
+
+![Server Based Authentication](https://velopert.com/wp-content/uploads/2016/12/bb.png)
+
+서버측에서 유저들의 정보를 기억하고 있어야한다. 세션을 유지하기 위해서는 여러가지 방법이 사용되는데, 메모리 / 디스크 / 데이터베이스에 세션 정보를 저장한다.
+
+이러한 인증 시스템은 아직도 많이 사용되고 있으나, 최근 웹 모바일 어플리케이션 등장 및 부흥으로 인해, 기존에 있던 세션 저장 방식에서 문제가 생기게 되었는데, 그 중 하나가 확장성이다.
+
+* 세션
+```
+유저가 인증을 할 때, 서버는 기록을 서버에 저장을 한다. 이를 세션 이라고 부릅니다. 대부분의 경우엔 메모리에 저장하는데, 로그인 중인 유저의 수가 늘어난다면 서버의 램이 과부화된다. 이를 피하기 위해서, 세션을 데이터베이스에 저장하는 방식도 있으나 이 또한 유저의 수가 많으면 데이터베이스의 성능에 무리를 줄 수 있다.
+```
+
+* 확장성
+  
+```
+세션을 사용하면 서버를 확장하는것이 어려워진다. 서버의 확장이란, 단순히 서버의 사양을 업그레이드 하는것이 아니라, 더 많은 트래픽을 감당하기 위하여 여러개의 프로세스를 돌리거나, 여러대의 서버 컴퓨터를 추가 하는것을 의미한다. 세션을 사용하면서 분산 시스템을 설계하는건 가능하지만 과정이 매우 복잡해집니다.
+```
+
+* CORS (Cross-Origin Resource Sharing)
+
+```
+웹 어플리케이션에서 세션을 관리 할 때 자주 사용되는 쿠키는 단일 도메인 및 서브 도메인에서만 작동하도록 설계되었다. 그렇기에 쿠키를 여러 도메인에서 관리하는것은 상당히 번거롭고 복잡한 일이다.
+```
+
+#### 토큰 기반 시스템의 작동 원리
+
+토큰 기반 시스템의 특징은 `stateless` 이다. 무상태. 즉 상태유지를 하지 않는것이 특징이다. 이 시스템에서는 더 이상 유저의 인증 정보를 서버나 세션에 담아두지 않는다. 이 개념 만으로도 서버 측 인증 방식에서 발생하는 많은 문제점들을 해결 할 수 있다.
+
+세션이 존재하지 않으니, 유저의 로그인 유무를 구분 할 필요 없이 서버를 손쉽게 확장 할 수 있다.
+
+토큰 기반 시스템의 구현 방식은 시스템마다 크고작은 차이가 있으나 대략적으로 다음과 같습니다:
+
+![token based authentication system](https://velopert.com/wp-content/uploads/2016/12/token-diagram.png)
+
+1. 유저가 아이디와 비밀번호로 로그인을 합니다
+2. 서버측에서 해당 계정정보를 검증합니다.
+3. 계정정보가 정확하다면, 서버측에서 유저에게 signed 토큰을 발급해줍니다.
+ 여기서 signed 의 의미는 해당 토큰이 서버에서 정상적으로 발급된 토큰임을 증명하는 signature 를 지니고 있다는 것입니다
+4. 클라이언트 측에서 전달받은 토큰을 저장해두고, 서버에 요청을 할 때 마다, 해당 토큰을 함께 서버에 전달합니다.
+5. 서버는 토큰을 검증하고, 요청에 응답합니다.
+
+#### 토큰의 장점
+
+* 웹 표준 기반 (JWT는 웹 표준 RFC 7519 에 등록됨 )
+* stateless 하며 확장성(scalability)이 좋다
+* 확장성 (Extensibility)
+* CORS 처리 용이
+  * 서버측에서 어플리케이션의 응답부분에 이 헤더를 포함시키면 된다.
+  * `Access-Control-Allow-Origin: *`
+
+[JsonWebToekn이란?](https://velopert.com/2389)
+
+[Velopert](https://velopert.com/2350)
+
+[The Ins and Outs of token based authentication](https://scotch.io/tutorials/the-ins-and-outs-of-token-based-authentication#introduction)
+
+### Oauth
+
+O(pen) + Auth (Authentication || Authorization)
+
+[Oauth - wiki](https://en.wikipedia.org/wiki/OAuth)
+
+[Oauth 와 함께 춤을](https://d2.naver.com/helloworld/24942)
+
+[Oauth 2.0 ](https://oauth.net/2/)
+
+[What the heck is oauth](https://developer.okta.com/blog/2017/06/21/what-the-heck-is-oauth)
+
 
 ### localStorage, SessionStorage, IndexedDB
