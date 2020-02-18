@@ -1,8 +1,5 @@
 class Notepad {
 	constructor () {
-		this._serverUrl = (function() {
-			return '127.0.0.1:8080';
-		})();
 		this.dom = null;
 		this._prepareDOM()
 	}
@@ -32,7 +29,8 @@ class NavBar {
 		const tabDiv = menuClone.querySelector('.tab-div');
 		const domController = new DomController
 
-		domController.navBar = menu;
+		domController.navBar = this;
+		this.dom = menu;
 		
 		const domAppend = (instances, dom) => {
 			instances.forEach(instance => {
@@ -45,13 +43,9 @@ class NavBar {
 
 		domAppend(iconArr, iconDiv);
 		domAppend(tabArr, tabDiv);
-
-		this.dom = menu;
 	};
 
 	_prepareIcons () {
-		const menuTemplate = document.getElementById('menu');
-		const menuClone = document.importNode(menuTemplate.content, true);
 		const iconArr = [
 			{name: 'new', type: 'create'},
 			{name: 'load', type: 'load'},
@@ -76,10 +70,15 @@ class NavBar {
 		}
 		return tabData;
 	}
+
+	appendTabDOM (dom) {
+		this.dom.querySelector('.tab-div').append(dom);
+	}
 }
 
 class Tab {
 	constructor (title="undefined", text="") {
+		this.created_at = new Date();
 		this.title = title;
 		this.text = text;
 		this.dom = null;
@@ -104,47 +103,67 @@ class Tab {
 		this._openTab();
 
 		stateController.tabs.push(this);
-		domController.navBar.querySelector('.tab-div').append(this.dom);
-		
+		domController.navBar.appendTabDOM(this.dom);
 	}
 
 	_openTab() {
 		const stateController = new StateController();
 		const domController = new DomController();
-		if (stateController.selectedTab) {
-			stateController.selectedTab.title = domController.board.dom.querySelector('.board-title').value;
-			stateController.selectedTab.text = domController.board.dom.querySelector('.textarea').value;
-			stateController.selectedTab.dom.querySelector('.tab-name').innerHTML = stateController.selectedTab.title || 'undefined';
-			stateController.selectedTab.dom.classList.remove('activeTab');
+		const pastTab = stateController.selectedTab;
+		const boardDOM = domController.board;
+
+		if (pastTab) {
+			let boardTitle ='',
+				boardText = '';
+			if (boardDOM) {
+				const boardData = boardDOM.getBoardData();
+				boardTitle = boardData.title;
+				boardText = boardData.text;
+			}
+			pastTab.title = boardTitle;
+			pastTab.text = boardText;
+			const pastTabTitle = pastTab.title || 'undefined';
+			pastTab.setTabTitle(pastTabTitle);
+			pastTab.dom.classList.remove('activeTab');
 		}
+
 		stateController.selectedTab = this;
-		this.dom.classList.add('activeTab');
-		if (domController.board) {
-			domController.board.dom.querySelector('.board-title').value = this.title;
-			domController.board.dom.querySelector('.textarea').value = this.text;
+
+		if (boardDOM) {
+			boardDOM.setBoardData(stateController.selectedTab.title, stateController.selectedTab.text);
 		}
-		
+
+		this.dom.classList.add('activeTab');
 	};
 
 	_closeTab(e) {
 		e.stopPropagation();
 		const stateController = new StateController();
-		let tabArr = []
-		for (let i = 0; i < stateController.tabs.length; i++) {
-			if (stateController.tabs[i].title === this.title) {
+		const domController = new DomController();
+		const tabList = stateController.tabs;
+		const lastIndex = tabList.length;
+		let tabArr = [];
+		let selectedTabIdx = null;
+
+		for (let i = 0; i < lastIndex; i++) {
+
+			if (tabList[i].created_at === stateController.selectedTab.created_at) {
+				selectedTabIdx = i;
+			};
+
+			if (tabList[i].created_at === this.created_at) {
 				tabArr = [
-					...stateController.tabs.slice(0, i),
-					...stateController.tabs.slice(i+1, stateController.tabs.length)
+					...tabList.slice(0, i),
+					...tabList.slice(i+1, lastIndex)
 				];
 
-				if (stateController.selectedTab === this) {
-					console.log(i);
-					if (stateController.selectedTab.length === 1) {
-						
-					} else if (i === 0) {
-						stateController.tabs[i+1].dom.add('activeTab')
+				if (selectedTabIdx === i) {
+					if (lastIndex === 1) {
+						domController.board.setBoardData("", "");
+					} else if (i === lastIndex -1) {
+						tabList[i-1]._openTab();
 					} else {
-						stateController.tabs[i-1].dom.add('activeTab')
+						tabList[i+1]._openTab();
 					}
 				}
 				break;
@@ -152,6 +171,11 @@ class Tab {
 		}
 		stateController.tabs = tabArr;
 		this.dom.remove();
+	}
+
+	setTabTitle(title) {
+		this.title = title;
+		this.dom.querySelector('.tab-name').innerHTML = title;
 	}
 }
 
@@ -172,42 +196,69 @@ class Icon {
 	}
 
 	_clickEvent(){
+		const domController = new DomController();
+		const stateController = new StateController();
+		const serverUrl = 'http://127.0.0.1:8080';
+
 		if (this.type === 'create') {
-			const t = new Tab();
+			new Tab();
 		} else if (this.type ==='load') {
-			const getList = new CustomEvent('getList', {
-				bubbles: true,
-			});
-			app.dispatchEvent(getList);
+			let fileList = {};
+			fetch(`${serverUrl}/list`)
+			.then(res => res.json())
+			.then(res => console.log(res.fileList))
+			.catch(e => console.error(e));
 		} else if (this.type === 'save') {
-			const stateController = new StateController();
-			const domController = new DomController();
-			const tab =  stateController.selectedTab;
-			tab.title = domController.board.dom.querySelector('.board-title').value;
-			tab.text = domController.board.dom.querySelector('.textarea').value;
-			tab.dom.querySelector('.tab-name').innerHTML = tab.title;
+			const boardData = domController.board.getBoardData();
+			console.log(boardData);
+			fetch(serverUrl, {
+				method: 'POST',
+				credentials: 'same-origin',
+				mode: 'cors',
+				headers: {
+					'Content-type': 'application/json'
+				},
+				body: JSON.stringify(boardData)
+			}).then(res => res.json())
+			.then(res => {
+				const message = res.success ? "success" : "fail"
+				alert(`file save ${message}`)
+			})
+			.catch(e => console.log(e));
+			
+			stateController.selectedTab.setTabTitle(boardData.title);
 		} 	
 	}
 }
 
 class Board {
-	constructor (title="", text="") {
-		this.title = title;
-		this.text = text;
+	constructor () {
+		this.title = null;
+		this.text = null;
 		this.dom = null;
 		this._prepareDOM();
 	}
 
 	_prepareDOM() {
 		const domController = new DomController();
-
-		const boardDiv = document.querySelector('.board-div');
 		const textAreaTemplate = document.getElementById('board');
 		const textAreaClone = document.importNode(textAreaTemplate.content, true);
 		const textAreaDiv = textAreaClone.querySelector('.board');
+		this.title = textAreaDiv.querySelector('.board-title');
+		this.text = textAreaDiv.querySelector('.textarea');
 
-		domController.board = this;
 		this.dom = textAreaDiv;
+		domController.board = this;
+	}
+
+	setBoardData(title, text) {
+		console.log(this.title)
+		this.title.value = title;
+		this.text.value = text;
+	};
+
+	getBoardData() {
+		return {title: this.title.value, text: this.text.value};
 	}
 }
 
@@ -218,8 +269,6 @@ class StateController {
 		};
 		StateController.instance = this;
 		this.tabs = [];
-		this.boardTitle = '';
-		this.boardText = '';
 		this.selectedTab = '';
 	};
 };
