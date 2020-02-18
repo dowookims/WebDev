@@ -5,12 +5,15 @@ class Notepad {
 	}
 
 	_prepareDOM() {
+		const domController = new DomController();
 		const app = document.getElementById('app');
+		const modal = new Modal();
 		const navBar = new NavBar();
 		const board = new Board();
 		this.dom = app;
 		app.append(navBar.dom);
 		app.append(board.dom);
+		app.append(modal.dom);
 	}
 };
 
@@ -137,13 +140,14 @@ class Tab {
 	};
 
 	_closeTab(e) {
-		e.stopPropagation();
 		const stateController = new StateController();
 		const domController = new DomController();
 		const tabList = stateController.tabs;
 		const lastIndex = tabList.length;
 		let tabArr = [];
 		let selectedTabIdx = null;
+
+		e.preventDefault();
 
 		for (let i = 0; i < lastIndex; i++) {
 
@@ -192,7 +196,7 @@ class Icon {
 		const iconNameSpan = iconClone.querySelector('.icon-name');
 		iconNameSpan.innerHTML = this.type;
 		this.dom = iconClone.querySelector('.icon');
-		this.dom.addEventListener('click', () => this._clickEvent())
+		this.dom.addEventListener('click', (e) => this._clickEvent(e))
 	}
 
 	_clickEvent(){
@@ -203,14 +207,15 @@ class Icon {
 		if (this.type === 'create') {
 			new Tab();
 		} else if (this.type ==='load') {
+			const modal = domController.modal;
+			modal.handleOpen();
 			let fileList = {};
 			fetch(`${serverUrl}/list`)
 			.then(res => res.json())
 			.then(res => console.log(res.fileList))
-			.catch(e => console.error(e));
+			.catch(err => console.error(err));
 		} else if (this.type === 'save') {
 			const boardData = domController.board.getBoardData();
-			console.log(boardData);
 			fetch(serverUrl, {
 				method: 'POST',
 				credentials: 'same-origin',
@@ -224,7 +229,7 @@ class Icon {
 				const message = res.success ? "success" : "fail"
 				alert(`file save ${message}`)
 			})
-			.catch(e => console.log(e));
+			.catch(err => console.log(err));
 			
 			stateController.selectedTab.setTabTitle(boardData.title);
 		} 	
@@ -263,9 +268,31 @@ class Board {
 };
 
 class Modal {
-	constructor () {};
+	constructor () {
+		this.dom = null;
+		this.open = false;
+		this._prepareDOM();
+	};
 
-	_prepareDOM() {}
+	_prepareDOM() {
+		const domController = new DomController();
+		const modalTemplate = document.getElementById('modal');
+		const modalClone = document.importNode(modalTemplate.content, true);
+		const modal = modalClone.querySelector('.modal');
+		const closeButton = modalClone.querySelector('.modal-close');
+		closeButton.addEventListener('click', () => this.handleClose());
+		this.dom = modal;
+		domController.modal = this;
+		console.log(domController.modal)
+	}
+
+	handleOpen() {
+		this.dom.style.display = "";
+	};
+
+	handleClose() {
+		this.dom.style.display = "none";
+	}
 }
 
 class StateController {
@@ -287,5 +314,6 @@ class DomController {
 		DomController.instance = this;
 		this.navBar = null;
 		this.board = null;
+		this.modal = null;
 	}
 }

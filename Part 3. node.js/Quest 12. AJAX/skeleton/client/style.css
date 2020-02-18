@@ -128,11 +128,36 @@ body {
 }
 
 .modal {
+	display: none;
 	position: absolute;
+	z-index: 10;
 	left: 0;
 	top: 0;
 	width: 100vw;
 	height: 100vh;
 	background-color: rgba(33, 33, 33, 0.6);
+}
+
+.modal-content {
+	position: absolute;
+	left: 25vw;
+	top: 25vh;
+	width: 50vw;
+	height: 50vh;
+	background-color: #fff;
+	border-radius: 10px;
+}
+
+.modal-header {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	height: 50px;
+}
+
+.modal-close {
+	color: #333;
+	font-size: 20px;
+	margin-right: 15px;
 }
 
