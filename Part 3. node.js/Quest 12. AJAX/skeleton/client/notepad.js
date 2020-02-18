@@ -153,9 +153,6 @@ class Tab {
 		this.dom = tabClone.querySelector('.tab');
 		this.dom.addEventListener('click', () => this._openEvent())
 		this._removeEvent();
-		console.log("THIS", this);
-		console.log(this.name);
-		console.log(this.dom);
 	}
 
 	// Load 클릭시 서버에서 데이터는 불러와지나, tab의 이름과, board에서 title 이름이 나오지 않는거 추가 수정
