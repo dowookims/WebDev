@@ -9,11 +9,11 @@ class Notepad {
 
 	_prepareDOM() {
 		const app = document.getElementById('app');
-		const boardDiv = document.querySelector('.board-div');
 		const navBar = new NavBar();
 		const board = new Board();
-		app.append(navBar.dom);
 		this.dom = app;
+		app.append(navBar.dom);
+		app.append(board.dom);
 	}
 };
 
@@ -25,38 +25,50 @@ class NavBar {
 	}
 
 	_prepareDOM () {
-		const menu = document.querySelector('.menu');
-		this._prepareIcons();
+		const menuTemplate = document.getElementById('menu');
+		const menuClone = document.importNode(menuTemplate.content, true);
+		const menu = menuClone.querySelector('.menu');
+		const iconDiv = menuClone.querySelector('.icon-div');
+		const tabDiv = menuClone.querySelector('.tab-div');
+		const iconArr = this._prepareIcons();
 		this._prepareTabs();
+
+		iconArr.forEach(icon => {
+			iconDiv.append(icon.dom);
+		});
+
+		this.tabs.forEach(tab => {
+			tabDiv.append(tab.dom);
+		})
+
+		this.dom = menu;
 	};
 
 	_prepareIcons () {
-		const iconDiv = document.querySelector('.icon-div');
+		const menuTemplate = document.getElementById('menu');
+		const menuClone = document.importNode(menuTemplate.content, true);
+		const iconDiv = menuClone.querySelector('.icon-div');
 		const iconArr = [
 			{name: 'new', type: 'create'},
 			{name: 'load', type: 'load'},
 			{name: 'save', type: 'save'}
 		];
 
-		iconArr.map(icon => {
-			const iconItem = new Icon(icon.type);
-			iconDiv.append(iconItem.dom);
+		return iconArr.map(icon => {
+			return new Icon(icon.type);
 		});
 	};
 
 	_prepareTabs () {
-		const tabDiv = document.querySelector('.tab-div');
 		const tabData = [];
 		if (tabData.length > 0 ) {
 			tabData.forEach(tab => {
 				const t = new Tab(tab.title, tab.text)
-				tabDiv.append(t.dom);
 				this.tabs.push(t);
 			})
 		} else {
 			const tab = new Tab();
 			this.tabs.push(tab);
-			tabDiv.append(tab.dom);
 		}
 	}
 }
@@ -131,7 +143,6 @@ class Board {
 		const textAreaClone = document.importNode(textAreaTemplate.content, true);
 		const textAreaDiv = textAreaClone.querySelector('.board');
 		this.dom = textAreaDiv;
-		boardDiv.append(this.dom);
 	}
 }
 
