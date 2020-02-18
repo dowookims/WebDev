@@ -1,35 +1,25 @@
 const fs = require('fs'),
 	path = require('path'),
 	express = require('express'),
+	utils = require('./utils');
 	app = express();
-
-const notepadPath = path.join(__dirname, 'notepad');
-
 
 app.use(express.static('client'));
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
 
 app.get('/list', (req, res) => {
-	let fileList = []
-	fs.readdirSync(notepadPath).forEach(file => {
-		fileList.push({
-			title: file.split('.')[0],
-			text: fileList.text = fs.readFileSync(`${notepadPath}/${file}`, 'utf-8')
-		})
-	})
+	const fileList = utils.readFileAll();
 	res.json({fileList})
 })
 
 app.post('/', (req, res) => {
-	fs.writeFile(`${notepadPath}/${req.body.name}.txt`, req.body.text, (err) => {
-		console.log(err);
-	})
-	res.json({wow: 'good'})
+	const isSuccess = utils.postFile(req.body.title, req.body.text);
+	res.json({success: isSuccess, title: req.body.title, text: req.body.text})
 });
 
-app.patch('/', (req, res) => {
-	res.end("PAAAAtch")
+app.put('/', (req, res) => {
+	const isSuccess = utils.postFile(req.body.title, req.body.text);
+	res.json({success: isSuccess, title: req.body.title, text: req.body.text})
 });
 
 app.get('/', (req, res) => {

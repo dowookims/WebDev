@@ -1,10 +1,10 @@
 # Quest13. Session & cookie
 
-쿠키는 클라에, 세션은 클라와 서버 둘다에 저장 가능하다.
+쿠키는 클라이언트에, 세션은 클라와 서버 둘다에 저장 가능하다.
 
 ## 쿠키란 무엇일까요?
   * 쿠키는 최대 크기가 4KB인 작은 파일로, 웹 서버가 클라이언트 컴퓨터에 저장시키는 파일이다.
-  * 쿠키는 텍스트 파일로 특정 목적을 수행, 추적하기 위해 사용되어진다. 
+  * 쿠키는 텍스트 파일로 특정 목적을 수행, 추적하기 위해 사용되어진다.
   * 클라이언트(브라우저) 로컬 에 저장한 후 참고한다.
   * 서버 스크립트는 쿠키를 브라우저에 보낸다.
   * 사용자 인증이 유효한 시간 명시 가능
@@ -105,5 +105,7 @@ session은 key - value 타입의 해쉬 테이블 과 비슷하게 저장된다(
 ```
 
 ### JWT
+
+https://medium.com/@rahulgolwalkar/pros-and-cons-in-using-jwt-json-web-tokens-196ac6d41fb4
 
 ### localStorage, SessionStorage, IndexedDB
