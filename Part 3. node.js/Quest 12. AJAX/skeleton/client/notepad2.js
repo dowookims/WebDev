@@ -19,9 +19,9 @@ class Notepad {
 
 class NavBar {
 	constructor () {
-		this.tabs = [];
 		this.dom = null;
 		this._prepareDOM();
+		
 	}
 
 	_prepareDOM () {
@@ -30,16 +30,21 @@ class NavBar {
 		const menu = menuClone.querySelector('.menu');
 		const iconDiv = menuClone.querySelector('.icon-div');
 		const tabDiv = menuClone.querySelector('.tab-div');
+		const domController = new DomController
+
+		domController.navBar = menu;
+		
+		const domAppend = (instances, dom) => {
+			instances.forEach(instance => {
+				dom.append(instance.dom)
+			});
+		};
+
 		const iconArr = this._prepareIcons();
-		this._prepareTabs();
+		const tabArr = this._prepareTabs();
 
-		iconArr.forEach(icon => {
-			iconDiv.append(icon.dom);
-		});
-
-		this.tabs.forEach(tab => {
-			tabDiv.append(tab.dom);
-		})
+		domAppend(iconArr, iconDiv);
+		domAppend(tabArr, tabDiv);
 
 		this.dom = menu;
 	};
@@ -47,7 +52,6 @@ class NavBar {
 	_prepareIcons () {
 		const menuTemplate = document.getElementById('menu');
 		const menuClone = document.importNode(menuTemplate.content, true);
-		const iconDiv = menuClone.querySelector('.icon-div');
 		const iconArr = [
 			{name: 'new', type: 'create'},
 			{name: 'load', type: 'load'},
@@ -60,16 +64,17 @@ class NavBar {
 	};
 
 	_prepareTabs () {
-		const tabData = [];
+		const stateController = new StateController();
+		const tabData = stateController.tabs;
 		if (tabData.length > 0 ) {
 			tabData.forEach(tab => {
 				const t = new Tab(tab.title, tab.text)
-				this.tabs.push(t);
+				tabData.push(t);
 			})
 		} else {
-			const tab = new Tab();
-			this.tabs.push(tab);
+			new Tab();
 		}
+		return tabData;
 	}
 }
 
@@ -82,16 +87,72 @@ class Tab {
 	}
 
 	_prepareDOM() {
+		const stateController = new StateController();
+		const domController = new DomController();
+
 		const tabTemplate = document.getElementById('tab');
 		const tabClone = document.importNode(tabTemplate.content, true);
 		const tabNameSpan = tabClone.querySelector('.tab-name');
-		const stateControl = new StateControl();
+		const closeSpan = tabClone.querySelector('.close-tab');
+		const tab = tabClone.querySelector('.tab');
+
 		tabNameSpan.innerHTML = this.title;
-		this.dom = tabClone.querySelector('.tab');
+		this.dom = tab
+
+		closeSpan.addEventListener('click', (e) => this._closeTab(e));
+		this.dom.addEventListener('click', () => this._openTab());
+		this._openTab();
+
+		stateController.tabs.push(this);
+		domController.navBar.querySelector('.tab-div').append(this.dom);
+		
 	}
 
-	openTab() {}
-	closeTab() {}
+	_openTab() {
+		const stateController = new StateController();
+		const domController = new DomController();
+		if (stateController.selectedTab) {
+			stateController.selectedTab.title = domController.board.dom.querySelector('.board-title').value;
+			stateController.selectedTab.text = domController.board.dom.querySelector('.textarea').value;
+			stateController.selectedTab.dom.querySelector('.tab-name').innerHTML = stateController.selectedTab.title || 'undefined';
+			stateController.selectedTab.dom.classList.remove('activeTab');
+		}
+		stateController.selectedTab = this;
+		this.dom.classList.add('activeTab');
+		if (domController.board) {
+			domController.board.dom.querySelector('.board-title').value = this.title;
+			domController.board.dom.querySelector('.textarea').value = this.text;
+		}
+		
+	};
+
+	_closeTab(e) {
+		e.stopPropagation();
+		const stateController = new StateController();
+		let tabArr = []
+		for (let i = 0; i < stateController.tabs.length; i++) {
+			if (stateController.tabs[i].title === this.title) {
+				tabArr = [
+					...stateController.tabs.slice(0, i),
+					...stateController.tabs.slice(i+1, stateController.tabs.length)
+				];
+
+				if (stateController.selectedTab === this) {
+					console.log(i);
+					if (stateController.selectedTab.length === 1) {
+						
+					} else if (i === 0) {
+						stateController.tabs[i+1].dom.add('activeTab')
+					} else {
+						stateController.tabs[i-1].dom.add('activeTab')
+					}
+				}
+				break;
+			}
+		}
+		stateController.tabs = tabArr;
+		this.dom.remove();
+	}
 }
 
 class Icon {
@@ -112,19 +173,19 @@ class Icon {
 
 	_clickEvent(){
 		if (this.type === 'create') {
-			const tabDiv = document.querySelector('.tab-div');
-			const tabItem = Tab.create('untitled', '');
-			tabDiv.append(tabItem.dom);
+			const t = new Tab();
 		} else if (this.type ==='load') {
 			const getList = new CustomEvent('getList', {
 				bubbles: true,
 			});
 			app.dispatchEvent(getList);
 		} else if (this.type === 'save') {
-			const saveData = new CustomEvent('saveData', {
-				bubbles: true,
-			});
-			app.dispatchEvent(saveData);
+			const stateController = new StateController();
+			const domController = new DomController();
+			const tab =  stateController.selectedTab;
+			tab.title = domController.board.dom.querySelector('.board-title').value;
+			tab.text = domController.board.dom.querySelector('.textarea').value;
+			tab.dom.querySelector('.tab-name').innerHTML = tab.title;
 		} 	
 	}
 }
@@ -138,22 +199,38 @@ class Board {
 	}
 
 	_prepareDOM() {
+		const domController = new DomController();
+
 		const boardDiv = document.querySelector('.board-div');
 		const textAreaTemplate = document.getElementById('board');
 		const textAreaClone = document.importNode(textAreaTemplate.content, true);
 		const textAreaDiv = textAreaClone.querySelector('.board');
+
+		domController.board = this;
 		this.dom = textAreaDiv;
 	}
 }
 
-class StateControl {
+class StateController {
 	constructor () {
-		if (StateControl.instance) {
-			return StateControl.instance;
+		if (StateController.instance) {
+			return StateController.instance;
 		};
-		StateControl.instance = this;
+		StateController.instance = this;
+		this.tabs = [];
 		this.boardTitle = '';
 		this.boardText = '';
 		this.selectedTab = '';
+	};
+};
+
+class DomController {
+	constructor () {
+		if (DomController.instance) {
+			return DomController.instance;
+		};
+		DomController.instance = this;
+		this.navBar = null;
+		this.board = null;
 	}
 }
