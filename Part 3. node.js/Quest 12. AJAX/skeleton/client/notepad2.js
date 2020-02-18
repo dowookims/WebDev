@@ -260,6 +260,12 @@ class Board {
 	getBoardData() {
 		return {title: this.title.value, text: this.text.value};
 	}
+};
+
+class Modal {
+	constructor () {};
+
+	_prepareDOM() {}
 }
 
 class StateController {

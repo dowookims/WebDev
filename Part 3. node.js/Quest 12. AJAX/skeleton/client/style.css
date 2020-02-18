@@ -63,6 +63,8 @@ body {
 }
 
 .tab-div {
+	max-width: 700px;
+	overflow-x: scroll;
 	display: flex;
 	align-items: center;
 	background-color: #ccc;
@@ -125,4 +127,12 @@ body {
 	padding: 10px;
 }
 
+.modal {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: rgba(33, 33, 33, 0.6);
+}
 
