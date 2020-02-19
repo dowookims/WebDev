@@ -5,7 +5,6 @@ class Notepad {
 	}
 
 	_prepareDOM() {
-		const domController = new DomController();
 		const app = document.getElementById('app');
 		const modal = new Modal();
 		const navBar = new NavBar();
@@ -80,11 +79,13 @@ class NavBar {
 
 class Tab {
 	constructor (title="undefined", text="") {
-		this.created_at = new Date();
+		Tab.id ? Tab.id ++ : Tab.id = 1;
+		this.id = Tab.id;
 		this.title = title;
 		this.text = text;
 		this.dom = null;
 		this._prepareDOM();
+		
 	}
 
 	_prepareDOM() {
@@ -109,7 +110,6 @@ class Tab {
 	}
 
 	_openTab() {
-		console.log("OPEN TAB");
 		const stateController = new StateController();
 		const domController = new DomController();
 		const pastTab = stateController.selectedTab;
@@ -118,13 +118,16 @@ class Tab {
 		if (pastTab) {
 			let boardTitle ='',
 				boardText = '';
+
 			if (boardDOM) {
 				const boardData = boardDOM.getBoardData();
 				boardTitle = boardData.title;
 				boardText = boardData.text;
-			}
+			};
+
 			pastTab.title = boardTitle;
 			pastTab.text = boardText;
+
 			const pastTabTitle = pastTab.title || 'undefined';
 			pastTab.setTabTitle(pastTabTitle);
 			pastTab.dom.classList.remove('activeTab');
@@ -132,9 +135,7 @@ class Tab {
 
 		stateController.selectedTab = this;
 
-		if (boardDOM) {
-			boardDOM.setBoardData(stateController.selectedTab.title, stateController.selectedTab.text);
-		}
+		boardDOM && boardDOM.setBoardData(this.title, this.text);
 
 		this.dom.classList.add('activeTab');
 	};
@@ -142,19 +143,17 @@ class Tab {
 	_closeTab(e) {
 		e.stopPropagation();
 		const stateController = new StateController();
-		const domController = new DomController();
 		const tabList = stateController.tabs;
 		const lastIndex = tabList.length;
 		let tabArr = [];
 		let selectedTabIdx = null;
 
 		for (let i = 0; i < lastIndex; i++) {
-
-			if (tabList[i].created_at === stateController.selectedTab.created_at) {
+			if (tabList[i].id === stateController.selectedTab.id) {
 				selectedTabIdx = i;
 			};
 
-			if (tabList[i].created_at === this.created_at) {
+			if (tabList[i].id === this.id) {
 				tabArr = [
 					...tabList.slice(0, i),
 					...tabList.slice(i+1, lastIndex)
@@ -162,7 +161,7 @@ class Tab {
 
 				if (selectedTabIdx === i) {
 					if (lastIndex === 1) {
-						domController.board.setBoardData("", "");
+						new Tab();
 					} else if (i === lastIndex -1) {
 						tabList[i-1]._openTab();
 					} else {
@@ -201,19 +200,16 @@ class Icon {
 	_clickEvent(){
 		const domController = new DomController();
 		const stateController = new StateController();
-		const serverUrl = 'http://127.0.0.1:8080';
+		const serverUrl = stateController.serverUrl;
 
 		if (this.type === 'create') {
 			new Tab();
+
 		} else if (this.type ==='load') {
 			const modal = domController.modal;
 			modal.handleOpen();
-			fetch(`${serverUrl}/list`)
-			.then(res => res.json())
-			.then(res => {
-				modal.createItem(res.fileList)
-			})
-			.catch(err => console.error(err));
+			modal.createItem(stateController.getNotepadData());
+
 		} else if (this.type === 'save') {
 			const boardData = domController.board.getBoardData();
 			fetch(serverUrl, {
@@ -230,7 +226,6 @@ class Icon {
 				alert(`file save ${message}`)
 			})
 			.catch(err => console.log(err));
-			
 			stateController.selectedTab.setTabTitle(boardData.title);
 		} 	
 	}
@@ -320,6 +315,10 @@ class Modal {
 			modalBody.append(modalItem);
 			file.dom = modalItem;
 			file.dom.addEventListener('click', () => {this.selectModalItem(file)})
+			file.dom.addEventListener('dblclick', () => {
+				this.selectModalItem(file)
+				this.loadDataToTab()
+			});
 			this.fileList.push(file);
 		});
 	};
@@ -343,9 +342,23 @@ class StateController {
 			return StateController.instance;
 		};
 		StateController.instance = this;
+		this.fileList = [];
 		this.tabs = [];
+		this.serverUrl = 'http://127.0.0.1:8080';
 		this.selectedTab = '';
+		this.getNotepadData();
 	};
+
+	getNotepadData() {
+		if (this.fileList.length === 0) {
+			fetch(`${this.serverUrl}/list`)
+			.then(res => res.json())
+			.then(res => { this.fileList = res.fileList })
+			.catch(err => console.error(err));
+		} else {
+			return this.fileList;
+		}
+	}
 };
 
 class DomController {
