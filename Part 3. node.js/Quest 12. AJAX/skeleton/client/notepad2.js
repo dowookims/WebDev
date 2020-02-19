@@ -78,13 +78,14 @@ class NavBar {
 }
 
 class Tab {
-	constructor (title="undefined", text="", saved=false) {
+	constructor (title="undefined", text="", saved=false, originName=null) {
 		Tab.id ? Tab.id ++ : Tab.id = 1;
 		this.id = Tab.id;
 		this.title = title;
 		this.text = text;
 		this.dom = null;
 		this.saved = saved;
+		this.originName = originName;
 		this._prepareDOM();
 		
 	}
@@ -203,24 +204,6 @@ class Icon {
 		const stateController = new StateController();
 		const SERVER_URL = stateController.serverUrl;
 
-		const fetchRequest = (serverUrl, method, data) => {
-			fetch(serverUrl, {
-				method: `${method}`,
-				credentials: 'same-origin',
-				mode: 'cors',
-				headers: {
-					'Content-type': 'application/json'
-				},
-				body: JSON.stringify(data)
-			})
-			.then(res => res.json())
-			.then(res => {
-				const message = res.success ? "success" : "fail"
-				alert(`file ${method} ${message}`)
-			})
-			.catch(err => console.log(err));
-		}
-
 		if (this.type === 'create') {
 			new Tab();
 
@@ -232,9 +215,28 @@ class Icon {
 		} else if (this.type === 'save') {
 			const boardData = domController.board.getBoardData();
 			const isSaved = stateController.selectedTab.saved;
+			const fetchRequest = (serverUrl, method, data) => {
+				fetch(serverUrl, {
+					method: `${method}`,
+					credentials: 'same-origin',
+					mode: 'cors',
+					headers: {
+						'Content-type': 'application/json'
+					},
+					body: JSON.stringify(data)
+				})
+				.then(res => res.json())
+				.then(res => {
+					const message = res.success ? "success" : "fail"
+					alert(`file ${method} ${message}`)
+				})
+				.catch(err => console.log(err));
+			}
+
 			if (isSaved){
 				boardData.saved = true;
 				boardData.oldTitle = stateController.selectedTab.originName;
+				stateController.selectedTab.originName = boardData.title;
 				fetchRequest(SERVER_URL, 'PUT', boardData)
 			} else {
 				stateController.selectedTab.saved = true;
@@ -346,7 +348,7 @@ class Modal {
 
 	loadDataToTab() {
 		const data = this.selectedItem
-		new Tab(data.title, data.text);
+		new Tab(data.title, data.text, data.saved, data.originName);
 		this.handleClose();
 	};
 }
@@ -368,7 +370,7 @@ class StateController {
 		if (this.fileList.length === 0) {
 			fetch(`${this.serverUrl}/list`)
 			.then(res => res.json())
-			.then(res => { this.fileList = res.fileList })
+			.then(res => { this.fileList = res })
 			.catch(err => console.error(err));
 		} else {
 			return this.fileList;
