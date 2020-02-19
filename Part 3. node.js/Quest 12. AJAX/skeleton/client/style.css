@@ -140,10 +140,10 @@ body {
 
 .modal-content {
 	position: absolute;
-	left: 25vw;
-	top: 25vh;
-	width: 50vw;
-	height: 50vh;
+	left: calc((100vw - 500px)/2);
+	top: calc((100vh - 500px)/2);
+	width: 500px;
+	height: 500px;
 	background-color: #fff;
 	border-radius: 10px;
 }
@@ -159,5 +159,54 @@ body {
 	color: #333;
 	font-size: 20px;
 	margin-right: 15px;
+	cursor: pointer;
 }
 
+.modal-content {
+	height: 400px;
+	overflow-y: scroll;
+}
+
+.modal-item {
+	width: 400px;
+	margin: 0 0 10px 20px;
+	padding-left: 20px;
+	line-height: 40px;
+	font-size: 20px;
+	background-color: #4CD579;
+	height: 40px;
+	border-radius: 10px;
+	color: #fff;
+	overflow-x: hidden;
+	cursor: pointer;
+}
+
+.modal-item:hover {
+	background-color: #2CB559;
+}
+
+.selected-item {
+	background-color: #0C9539;
+}
+
+.modal-footer {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 50px;
+}
+
+.modal-submit {
+	width: 100px;
+	height: 30px;
+	background-color: #4C79D5;
+	color: #fff;
+	font-size: 16px;
+	border: none;
+	border-radius: 15px;
+	cursor: pointer;
+}
+
+.modal-submit:hover {
+	background-color: #2C59B5;
+}

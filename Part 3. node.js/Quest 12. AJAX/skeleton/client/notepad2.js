@@ -20,8 +20,7 @@ class Notepad {
 class NavBar {
 	constructor () {
 		this.dom = null;
-		this._prepareDOM();
-		
+		this._prepareDOM();	
 	}
 
 	_prepareDOM () {
@@ -110,6 +109,7 @@ class Tab {
 	}
 
 	_openTab() {
+		console.log("OPEN TAB");
 		const stateController = new StateController();
 		const domController = new DomController();
 		const pastTab = stateController.selectedTab;
@@ -140,14 +140,13 @@ class Tab {
 	};
 
 	_closeTab(e) {
+		e.stopPropagation();
 		const stateController = new StateController();
 		const domController = new DomController();
 		const tabList = stateController.tabs;
 		const lastIndex = tabList.length;
 		let tabArr = [];
 		let selectedTabIdx = null;
-
-		e.preventDefault();
 
 		for (let i = 0; i < lastIndex; i++) {
 
@@ -209,10 +208,11 @@ class Icon {
 		} else if (this.type ==='load') {
 			const modal = domController.modal;
 			modal.handleOpen();
-			let fileList = {};
 			fetch(`${serverUrl}/list`)
 			.then(res => res.json())
-			.then(res => console.log(res.fileList))
+			.then(res => {
+				modal.createItem(res.fileList)
+			})
 			.catch(err => console.error(err));
 		} else if (this.type === 'save') {
 			const boardData = domController.board.getBoardData();
@@ -257,7 +257,6 @@ class Board {
 	}
 
 	setBoardData(title, text) {
-		console.log(this.title)
 		this.title.value = title;
 		this.text.value = text;
 	};
@@ -270,7 +269,8 @@ class Board {
 class Modal {
 	constructor () {
 		this.dom = null;
-		this.open = false;
+		this.fileList = [];
+		this.selectedItem = null;
 		this._prepareDOM();
 	};
 
@@ -280,19 +280,61 @@ class Modal {
 		const modalClone = document.importNode(modalTemplate.content, true);
 		const modal = modalClone.querySelector('.modal');
 		const closeButton = modalClone.querySelector('.modal-close');
+		const submitButton = modalClone.querySelector('.modal-submit');
+		
 		closeButton.addEventListener('click', () => this.handleClose());
+		submitButton.addEventListener('click', () => this.loadDataToTab());
+		modal.addEventListener('click', (e) => this.handleBlackBoxClose(e))
 		this.dom = modal;
 		domController.modal = this;
-		console.log(domController.modal)
 	}
 
 	handleOpen() {
-		this.dom.style.display = "";
+		this.dom.style.display = "block";
 	};
 
 	handleClose() {
+		this.fileList.forEach(file => {
+			file.dom.remove();
+		});
 		this.dom.style.display = "none";
-	}
+	};
+
+	handleBlackBoxClose(e) {
+		if (e.target.className === 'modal') {
+			this.handleClose()
+		}
+	};
+
+	createItem(fileList) {
+		const modalBody = this.dom.querySelector('.modal-body');
+		const modalItem = this.dom.querySelector('.modal-item')
+		const modalTemplate = document.getElementById('modal');
+
+		modalItem && modalItem.remove();
+		
+		fileList.forEach(file => {
+			const modalClone = document.importNode(modalTemplate.content, true);
+			const modalItem = modalClone.querySelector('.modal-item');
+			modalItem.innerHTML = file.title;
+			modalBody.append(modalItem);
+			file.dom = modalItem;
+			file.dom.addEventListener('click', () => {this.selectModalItem(file)})
+			this.fileList.push(file);
+		});
+	};
+
+	selectModalItem(item) {
+		this.selectedItem && this.selectedItem.dom.classList.remove('selected-item');
+		this.selectedItem = item;
+		item.dom.classList.add('selected-item');
+	};
+
+	loadDataToTab() {
+		const data = this.selectedItem
+		new Tab(data.title, data.text);
+		this.handleClose();
+	};
 }
 
 class StateController {
