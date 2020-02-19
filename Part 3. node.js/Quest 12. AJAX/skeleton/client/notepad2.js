@@ -83,11 +83,10 @@ class Tab {
 		this.id = Tab.id;
 		this.title = title;
 		this.text = text;
-		this.dom = null;
 		this.saved = saved;
 		this.originName = originName;
+		this.dom = null;
 		this._prepareDOM();
-		
 	}
 
 	_prepareDOM() {
@@ -234,7 +233,6 @@ class Icon {
 			}
 
 			if (isSaved){
-				boardData.saved = true;
 				boardData.oldTitle = stateController.selectedTab.originName;
 				stateController.selectedTab.originName = boardData.title;
 				fetchRequest(SERVER_URL, 'PUT', boardData)
@@ -294,34 +292,42 @@ class Modal {
 		const closeButton = modalClone.querySelector('.modal-close');
 		const submitButton = modalClone.querySelector('.modal-submit');
 		
-		closeButton.addEventListener('click', () => this.handleClose());
-		submitButton.addEventListener('click', () => this.loadDataToTab());
-		modal.addEventListener('click', (e) => this.handleBlackBoxClose(e))
+		closeButton.addEventListener('click', () => this._handleClose());
+		submitButton.addEventListener('click', () => this._loadDataToTab());
+		modal.addEventListener('click', (e) => {
+			if(e.target.className === 'modal') this._handleClose();
+		})
 		this.dom = modal;
 		domController.modal = this;
 	}
 
-	handleOpen() {
-		this.dom.style.display = "block";
-	};
-
-	handleClose() {
+	_handleClose() {
 		this.fileList.forEach(file => {
 			file.dom.remove();
 		});
 		this.dom.style.display = "none";
 	};
 
-	handleBlackBoxClose(e) {
-		if (e.target.className === 'modal') {
-			this.handleClose()
-		}
+	_loadDataToTab() {
+		const data = this.selectedItem
+		new Tab(data.title, data.text, data.saved, data.originName);
+		this._handleClose();
+	};
+
+	handleOpen() {
+		this.dom.style.display = "block";
 	};
 
 	createItem(fileList) {
 		const modalBody = this.dom.querySelector('.modal-body');
 		const modalItem = this.dom.querySelector('.modal-item')
 		const modalTemplate = document.getElementById('modal');
+
+		const selectModalItem = (item) => {
+			this.selectedItem && this.selectedItem.dom.classList.remove('selected-item');
+			this.selectedItem = item;
+			item.dom.classList.add('selected-item');
+		};
 
 		modalItem && modalItem.remove();
 		
@@ -331,27 +337,15 @@ class Modal {
 			modalItem.innerHTML = file.title;
 			modalBody.append(modalItem);
 			file.dom = modalItem;
-			file.dom.addEventListener('click', () => {this.selectModalItem(file)})
+			file.dom.addEventListener('click', () => {selectModalItem(file)})
 			file.dom.addEventListener('dblclick', () => {
-				this.selectModalItem(file)
-				this.loadDataToTab()
+				selectModalItem(file)
+				this._loadDataToTab()
 			});
 			this.fileList.push(file);
 		});
 	};
-
-	selectModalItem(item) {
-		this.selectedItem && this.selectedItem.dom.classList.remove('selected-item');
-		this.selectedItem = item;
-		item.dom.classList.add('selected-item');
-	};
-
-	loadDataToTab() {
-		const data = this.selectedItem
-		new Tab(data.title, data.text, data.saved, data.originName);
-		this.handleClose();
-	};
-}
+};
 
 class StateController {
 	constructor () {
