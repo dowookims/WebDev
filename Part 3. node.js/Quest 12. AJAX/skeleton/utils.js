@@ -10,7 +10,9 @@ utils.readFileAll = () => {
 	fs.readdirSync(notepadPath).forEach(file => {
 		fileList.push({
 			title: file.split('.')[0],
-			text: fileList.text = fs.readFileSync(`${notepadPath}/${file}`, 'utf-8')
+            text: fileList.text = fs.readFileSync(`${notepadPath}/${file}`, 'utf-8'),
+            saved: true,
+            originName: file.split('.')[0]
 		})
     })
     return fileList
@@ -25,6 +27,17 @@ utils.readFile = (fileName) => {
 utils.postFile = (fileName, text) => {
     try {
         fs.writeFileSync(`${notepadPath}/${fileName}.txt`, text, 'utf-8');
+        return true;
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
+};
+
+utils.putFile = (oldName, newName, text) => {
+    try {
+        fs.renameSync(`${notepadPath}/${oldName}.txt`, `${notepadPath}/${newName}.txt`);
+        fs.writeFileSync(`${notepadPath}/${newName}.txt`, text, 'utf-8');
         return true;
     } catch (e) {
         console.log(e);

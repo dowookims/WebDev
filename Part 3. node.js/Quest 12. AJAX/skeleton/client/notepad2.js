@@ -78,12 +78,13 @@ class NavBar {
 }
 
 class Tab {
-	constructor (title="undefined", text="") {
+	constructor (title="undefined", text="", saved=false) {
 		Tab.id ? Tab.id ++ : Tab.id = 1;
 		this.id = Tab.id;
 		this.title = title;
 		this.text = text;
 		this.dom = null;
+		this.saved = saved;
 		this._prepareDOM();
 		
 	}
@@ -200,7 +201,25 @@ class Icon {
 	_clickEvent(){
 		const domController = new DomController();
 		const stateController = new StateController();
-		const serverUrl = stateController.serverUrl;
+		const SERVER_URL = stateController.serverUrl;
+
+		const fetchRequest = (serverUrl, method, data) => {
+			fetch(serverUrl, {
+				method: `${method}`,
+				credentials: 'same-origin',
+				mode: 'cors',
+				headers: {
+					'Content-type': 'application/json'
+				},
+				body: JSON.stringify(data)
+			})
+			.then(res => res.json())
+			.then(res => {
+				const message = res.success ? "success" : "fail"
+				alert(`file ${method} ${message}`)
+			})
+			.catch(err => console.log(err));
+		}
 
 		if (this.type === 'create') {
 			new Tab();
@@ -212,20 +231,16 @@ class Icon {
 
 		} else if (this.type === 'save') {
 			const boardData = domController.board.getBoardData();
-			fetch(serverUrl, {
-				method: 'POST',
-				credentials: 'same-origin',
-				mode: 'cors',
-				headers: {
-					'Content-type': 'application/json'
-				},
-				body: JSON.stringify(boardData)
-			}).then(res => res.json())
-			.then(res => {
-				const message = res.success ? "success" : "fail"
-				alert(`file save ${message}`)
-			})
-			.catch(err => console.log(err));
+			const isSaved = stateController.selectedTab.saved;
+			if (isSaved){
+				boardData.saved = true;
+				boardData.oldTitle = stateController.selectedTab.originName;
+				fetchRequest(SERVER_URL, 'PUT', boardData)
+			} else {
+				stateController.selectedTab.saved = true;
+				stateController.selectedTab.originName = boardData.title;
+				fetchRequest(SERVER_URL, 'POST', boardData)
+			}
 			stateController.selectedTab.setTabTitle(boardData.title);
 		} 	
 	}

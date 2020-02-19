@@ -18,7 +18,7 @@ app.post('/', (req, res) => {
 });
 
 app.put('/', (req, res) => {
-	const isSuccess = utils.postFile(req.body.title, req.body.text);
+	const isSuccess = utils.putFile(req.body.oldTitle, req.body.title, req.body.text);
 	res.json({success: isSuccess, title: req.body.title, text: req.body.text})
 });
 
