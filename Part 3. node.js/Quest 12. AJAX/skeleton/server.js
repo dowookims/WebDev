@@ -1,4 +1,4 @@
-const fs = require('fs'),
+const 
 	path = require('path'),
 	express = require('express'),
 	utils = require('./utils');
