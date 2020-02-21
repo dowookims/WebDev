@@ -56,6 +56,11 @@ class Notepad {
 
         this.dom.addEventListener('emptyTabs', () => {
             this.board.handleShow();
+        });
+
+        this.dom.addEventListener('tabDataToBoard', (e) => {
+            const { title, text } = e.detail;
+            this.board.setData(title, text)
         })
     }
 
@@ -131,6 +136,7 @@ class NavBar {
         tab.dom.addEventListener('click', (e) => {
             this._emitBoardDataToTab(e, tab);
             this.changeSelectedTab(tab);
+            this._emitTabDataToBoard(e, tab);
         });
         this.dom.querySelector('.tab-div').append(tab.dom);
         this.tabId++; 
@@ -140,8 +146,6 @@ class NavBar {
     changeSelectedTab (tab) {
         this.selectedTab.unSelect();
         tab.select();
-        console.log("SsadsadasdsaT", this.selectedTab);
-        console.log("NdsafdsafdsafasT", tab);
         this.selectedTab = tab;
     };
 
@@ -167,13 +171,13 @@ class NavBar {
         ];
         
         if (currentIdx === idx) {
-            console.log("IF", currentIdx, idx);
             if (idx === currentIdx) {
                 this.changeSelectedTab(this.tabs[idx-1]);
             } else {
                 this.changeSelectedTab(this.tabs[idx+1]);
             };
         };
+        this._emitTabDataToBoard(e, tab);
 
         this.tabs = tabList;
     }
@@ -186,6 +190,14 @@ class NavBar {
         });
         e.target.dispatchEvent(boardDataToTab);
     };
+
+    _emitTabDataToBoard (e, tab) {
+        const tabDataToBoard = new CustomEvent('tabDataToBoard', {
+            bubbles: true,
+            detail: tab
+        });
+        e.target.dispatchEvent(tabDataToBoard);
+    }
 
     _emitEmptyTabs (e) {
         const emptyTabs = new CustomEvent('emptyTabs', {
