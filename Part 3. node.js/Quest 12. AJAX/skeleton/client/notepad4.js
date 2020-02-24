@@ -8,6 +8,7 @@ class Notepad {
         this.selectedTab = null;
         this.board = null;
         this.modal = null;
+        this.fileList = [];
         this._prepareDOM();
     }
 
@@ -57,9 +58,9 @@ class Notepad {
         this.board.setData(this.selectedTab.title, this.selectedTab.text);
     };
 
-    createTab (title) {
+    createTab (title, text, saved, oldTitle) {
         const tabDiv = this.dom.querySelector('.tab-div');
-        const tabInstance = new Tab(this.tabId, title);
+        const tabInstance = new Tab(this.tabId, title, text, saved, oldTitle);
         
         if (this.board.hide) {
             this.board.show();
@@ -85,10 +86,17 @@ class Notepad {
 
     _fetchRequest (method, data=null) {
         if (method === 'get') {
-            fetch(`${this.serverUrl}/list`)
-			.then(res => res.json())
-			.then(res => console.log(res))
-			.catch(err => console.error(err));
+            let result;
+            try {
+                fetch(`${this.serverUrl}/list`)
+                .then(res => res.json())
+                .then(res => this.fileList = res)
+                .catch(err => console.error(err));
+            } catch (e) {
+                console.error(e);
+            } finally {
+                return result;
+            }
         } else {
             fetch(this.serverUrl, {
                 method: `${method}`,
@@ -161,6 +169,20 @@ class Notepad {
                 ...this.tabs.slice(currentIdx+1, lastIdx+1)
             ];
         });
+
+        this.dom.addEventListener('openModal', () => {
+            if (this.fileList.length === 0) {
+                this._fetchRequest('get');
+            };
+            setTimeout(() => {
+                this.modal.open(this.fileList);
+            }, 100)
+        })
+
+        this.dom.addEventListener('loadTab', (e) => {
+            const {title, text, saved, oldTitle } = e.detail;
+            this.createTab(title, text, saved, oldTitle)
+        })
     }
 }
 
@@ -189,6 +211,10 @@ class Icon {
             })
         } else if (this.type === 'save') {
             iconEvent = new CustomEvent('saveTab', {
+                bubbles: true
+            })
+        } else if (this.type === 'load') {
+            iconEvent = new CustomEvent('openModal', {
                 bubbles: true
             })
         }
@@ -313,12 +339,64 @@ class Modal {
 		const closeButton = modalClone.querySelector('.modal-close');
         const submitButton = modalClone.querySelector('.modal-submit');
         
+        submitButton.addEventListener('click', (e) => this.loadTab(e));
+        closeButton.addEventListener('click', (e) => this.close(e));
+        modal.addEventListener('click', (e) => this.close(e));
+
         this.dom = modal;
     }
 
-    open () {}
+    open (fileList) {
+        this.drawInnerModal(fileList);
+        this.dom.style.display= 'block';
+    }
 
-    close () {}
+    close (e) {
+        if (e){
+            if (e.target.className === 'modal' || e.target.className ==='modal-close') {
+                this.dom.style.display = 'none';
+            }
+        } else {
+            this.dom.style.display = 'none';
+        }
+    }
 
-    loadTab () {}
+    drawInnerModal (fileList) {
+        const modalBody = this.dom.querySelector('.modal-body');
+		const modalItem = this.dom.querySelector('.modal-item')
+		const modalTemplate = document.getElementById('modal');
+
+		const selectModalItem = (item) => {
+			this.selectedItem && this.selectedItem.dom.classList.remove('selected-item');
+			this.selectedItem = item;
+			item.dom.classList.add('selected-item');
+		};
+
+		modalItem && modalItem.remove();
+		
+		fileList.forEach(file => {
+            console.log(file);
+			const modalClone = document.importNode(modalTemplate.content, true);
+			const modalItem = modalClone.querySelector('.modal-item');
+			modalItem.innerHTML = file.title;
+			modalBody.append(modalItem);
+			file.dom = modalItem;
+			file.dom.addEventListener('click', () => { selectModalItem(file) })
+			file.dom.addEventListener('dblclick', (e) => {
+                console.log('dblclick')
+				selectModalItem(file);
+				this.loadTab(e);
+			});
+			this.fileList.push(file);
+		});
+    };
+    
+    loadTab (e) {
+        const loadTab = new CustomEvent('loadTab', {
+            bubbles: true,
+            detail: this.selectedItem
+        });
+        e.target.dispatchEvent(loadTab);
+        this.close();
+    }
 }
