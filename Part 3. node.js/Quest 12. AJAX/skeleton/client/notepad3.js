@@ -34,49 +34,44 @@ class NavBar {
 		const tabDiv = menuClone.querySelector('.tab-div');
 		const stateController = new StateController();
 
-		stateController.navBar = this;
-		this.dom = menu;
-		
-		const domAppend = (instances, dom) => {
-			instances.forEach(instance => {
-				dom.append(instance.dom)
-			});
-		};
-
-		const iconArr = this._prepareIcons();
-		const tabArr = this._prepareTabs();
-
-		domAppend(iconArr, iconDiv);
-		domAppend(tabArr, tabDiv);
-	};
-
-	_prepareIcons () {
-		const iconArr = [
+        const iconArr = [
 			{name: 'new', type: 'create'},
 			{name: 'load', type: 'load'},
 			{name: 'save', type: 'save'}
 		];
 
+		stateController.navBar = this;
+		this.dom = menu;
+		
+
+		iconArr.forEach(iconData => {
+            const icon = new Icon(iconData.type);
+            this.icons.push(icon);
+            iconDiv.append(icon);
+        });
+		this._prepareTabs();
+	};
+
+	_prepareIcons () {
 		return iconArr.map(icon => {
 			return new Icon(icon.type);
 		});
 	};
 
 	_prepareTabs () {
-		const stateController = new StateController();
-		const tabData = stateController.tabs;
-		if (tabData.length > 0 ) {
-			tabData.forEach(tab => {
+		if (this.tabs.length > 0 ) {
+			this.tabs.forEach(tab => {
 				const t = new Tab(tab.title, tab.text)
-				tabData.push(t);
+                this.appendTab(t.dom);
 			})
 		} else {
-			new Tab();
+            const t = new Tab();
+            this.appendTab(t.dom);
 		}
-		return tabData;
 	}
 
-	appendTabDOM (dom) {
+	appendTab (dom) {
+        this.tabs.push(t);
 		this.dom.querySelector('.tab-div').append(dom);
 	}
 }
@@ -94,8 +89,6 @@ class Tab {
 	}
 
 	_prepareDOM() {
-		const stateController = new StateController();
-
 		const tabTemplate = document.getElementById('tab');
 		const tabClone = document.importNode(tabTemplate.content, true);
 		const tabNameSpan = tabClone.querySelector('.tab-name');
@@ -108,9 +101,6 @@ class Tab {
 		closeSpan.addEventListener('click', () => this._closeTab());
 		this.dom.addEventListener('click', () => this._openTab());
 		this._openTab();
-
-		stateController.tabs.push(this);
-		stateController.appendTabToNavbar(this.dom)
 	}
 
 	_openTab() {
@@ -380,6 +370,6 @@ class StateController {
 		}
 	}
 	appendTabToNavbar (dom) {
-		this.navBar.appendTabDOM(dom)
+		this.navBar.appendTab(dom)
 	}
 };
