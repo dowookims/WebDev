@@ -8,6 +8,7 @@ class Notepad {
         this.selectedTab = null;
         this.board = null;
         this.modal = null;
+        this.isLogin = false;
         this.fileList = [];
         this._prepareDOM();
     }
@@ -27,10 +28,9 @@ class Notepad {
         app.append(this.modal.dom);
         this.dom = app;
 
-        const iconArray = ['create', 'load', 'save'];
+        const iconArray = ['login', 'logout', 'create', 'load', 'save'];
         iconArray.forEach(icon => {
             const iconInstance = new Icon(icon)
-            
             this.icons.push(iconInstance);
             iconDiv.append(iconInstance.dom);
         });
@@ -86,19 +86,12 @@ class Notepad {
 
     _fetchRequest (method, data=null) {
         if (method === 'get') {
-            let result;
-            try {
-                fetch(`${this.serverUrl}/list`)
-                .then(res => res.json())
-                .then(res => this.fileList = res)
-                .catch(err => console.error(err));
-            } catch (e) {
-                console.error(e);
-            } finally {
-                return result;
-            }
+            fetch(`${this.serverUrl}/list`)
+            .then(res => res.json())
+            .then(res => this.fileList = res)
+            .catch(err => console.error(err));
         } else {
-            fetch(this.serverUrl, {
+            fetch(`${this.serverUrl}/notepad`, {
                 method: `${method}`,
                 credentials: 'same-origin',
                 mode: 'cors',
@@ -181,7 +174,56 @@ class Notepad {
 
         this.dom.addEventListener('loadTab', (e) => {
             const {title, text, saved, oldTitle } = e.detail;
-            this.createTab(title, text, saved, oldTitle)
+            const tab = this.createTab(title, text, saved, oldTitle)
+            this.changeTab(tab);
+        });
+
+        this.dom.addEventListener('login', (e) => {
+            const data = {
+                userId: prompt('아이디를 입력하세요'),
+                password: prompt('비밀번호를 입력하세요.')
+            }
+            fetch(`${this.serverUrl}/login`, {
+                method: 'post',
+                credentials: 'same-origin',
+                mode: 'cors',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(res => {
+                this.isLogin = res.isLogin;
+                if (this.isLogin) {
+                    e.detail.show();
+                    if (this.icons[1].hide) {
+                        this.icons[1].show();
+                        alert(`${res.username} 님 환영합니다.`)
+                    }
+                } else {
+                    alert('아이디 또는 비밀번호를 잘못 입력하셨습니다.');
+                }
+            })
+            .catch(err => console.error(err));
+        })
+
+        this.dom.addEventListener('logout', (e) => {
+            fetch(`${this.serverUrl}/logout`, {
+                method: 'post',
+                credentials: 'same-origin',
+                mode: 'cors',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+            }).then(res => res.json())
+            .then(res => {
+                if(res.result) {
+                    e.detail.show();
+                    this.icons[0].show();
+                    alert('로그아웃 되었습니다.');
+                }
+            })
         })
     }
 }
@@ -190,6 +232,7 @@ class Icon {
     constructor (type) {
         this.type = type;
         this.dom = null;
+        this.hide = false;
         this._prepareDOM();
     }
 
@@ -199,12 +242,17 @@ class Icon {
         const iconNameSpan = iconClone.querySelector('.icon-name');
         
         this.dom = iconClone.querySelector('.icon');
+        this.dom.classList.add(this.type);
+        if (this.type === 'logout') {
+            this.hide = true;
+        }
         this.dom.addEventListener('click', (e) => this._handleEvent(e));
 		iconNameSpan.innerHTML = this.type;
     }
 
     _handleEvent (e) {
         let iconEvent;
+
         if (this.type === 'create') {
             iconEvent = new CustomEvent('createTab', {
                 bubbles: true
@@ -217,8 +265,27 @@ class Icon {
             iconEvent = new CustomEvent('openModal', {
                 bubbles: true
             })
+        } else if (this.type === 'login') {
+            iconEvent = new CustomEvent('login', {
+                bubbles: true,
+                detail: this
+            })
+        } else if (this.type === 'logout') {
+            iconEvent = new CustomEvent('logout', {
+                bubbles: true,
+                detail: this
+            })
         }
         e.target.dispatchEvent(iconEvent)
+    }
+
+    show() {
+        if (this.hide) {
+            this.dom.style.display = 'flex';
+        } else {
+            this.dom.style.display = 'none';
+        }
+        this.hide = !this.hide;
     }
 }
 
@@ -340,8 +407,8 @@ class Modal {
         const submitButton = modalClone.querySelector('.modal-submit');
         
         submitButton.addEventListener('click', (e) => this.loadTab(e));
-        closeButton.addEventListener('click', (e) => this.close(e));
-        modal.addEventListener('click', (e) => this.close(e));
+        closeButton.addEventListener('click', (e) => this.exitByPress(e));
+        modal.addEventListener('click', (e) => this.exitByPress(e));
 
         this.dom = modal;
     }
@@ -351,14 +418,21 @@ class Modal {
         this.dom.style.display= 'block';
     }
 
-    close (e) {
-        if (e){
-            if (e.target.className === 'modal' || e.target.className ==='modal-close') {
-                this.dom.style.display = 'none';
-            }
-        } else {
+    exitByPress (e) {
+        if (e.target.className === 'modal' || e.target.className ==='modal-close') {
             this.dom.style.display = 'none';
         }
+    };
+
+    exitBySubmit () {
+        this.dom.style.display = 'none';
+    }
+
+    removeItems () {
+        this.fileList.forEach(file => {
+            file.dom.remove();
+        })
+        this.fileList = [];
     }
 
     drawInnerModal (fileList) {
@@ -375,7 +449,6 @@ class Modal {
 		modalItem && modalItem.remove();
 		
 		fileList.forEach(file => {
-            console.log(file);
 			const modalClone = document.importNode(modalTemplate.content, true);
 			const modalItem = modalClone.querySelector('.modal-item');
 			modalItem.innerHTML = file.title;
@@ -383,7 +456,6 @@ class Modal {
 			file.dom = modalItem;
 			file.dom.addEventListener('click', () => { selectModalItem(file) })
 			file.dom.addEventListener('dblclick', (e) => {
-                console.log('dblclick')
 				selectModalItem(file);
 				this.loadTab(e);
 			});
@@ -397,6 +469,7 @@ class Modal {
             detail: this.selectedItem
         });
         e.target.dispatchEvent(loadTab);
-        this.close();
+        this.removeItems();
+        this.exitBySubmit();
     }
 }

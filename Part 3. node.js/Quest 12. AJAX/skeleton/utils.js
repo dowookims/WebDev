@@ -45,4 +45,33 @@ utils.putFile = (oldName, newName, text) => {
     }
 };
 
+utils.login = (userId, password) => {
+    const user = {
+        knowre: {
+            password: 'dev',
+            nickname: 'cool'
+        },
+        dowoo: {
+            password: 'kim',
+            nickname: 'hot'
+        },
+        fastfive: {
+            password:'6th',
+            nickname: 'fantastic'
+        }
+    }
+    if (user[userId]) {
+        if (user[userId].password === password){
+            return {
+                nickname: user[userId].nickname,
+                isLogin: true
+            }
+        }
+    };
+    return {
+        nickname: user[userId] || 'error',
+        isLogin: false
+    };
+};
+
 module.exports = utils;
