@@ -57,9 +57,14 @@ class Notepad {
         this.board.setData(this.selectedTab.title, this.selectedTab.text);
     };
 
-    createTab (title = undefined) {
+    createTab (title) {
         const tabDiv = this.dom.querySelector('.tab-div');
-        const tabInstance = new Tab({id: this.tabId, title: title});
+        const tabInstance = new Tab(this.tabId, title);
+        
+        if (this.board.hide) {
+            this.board.show();
+        }
+
         this.tabs.push(tabInstance);
         tabDiv.append(tabInstance.dom);
         this.tabId++;
@@ -68,15 +73,39 @@ class Notepad {
 
     changeTab (tab) {
         const pastTab = this.selectedTab;
-        const selectedTab = tab;
+        const { title, text } = this.board.getData()
 
         pastTab.close();
-        const { title, text } = this.board.getData()
         pastTab.setData(title, text);
         pastTab.changeTitleSpan();
+        tab.open()
+        this.board.setData(tab.title, tab.text);
         this.selectedTab = tab;
-        selectedTab.open();
-        this.board.setData(selectedTab.title, selectedTab.text);
+    }
+
+    _fetchRequest (method, data=null) {
+        if (method === 'get') {
+            fetch(`${this.serverUrl}/list`)
+			.then(res => res.json())
+			.then(res => console.log(res))
+			.catch(err => console.error(err));
+        } else {
+            fetch(this.serverUrl, {
+                method: `${method}`,
+                credentials: 'same-origin',
+                mode: 'cors',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(res => {
+                const message = res.success ? "success" : "fail"
+                alert(`file ${method} ${message}`)
+            })
+            .catch(err => console.log(err));
+        }
     }
 
     _listenCustomEvent () {
@@ -89,13 +118,33 @@ class Notepad {
             this.changeTab(tab);
         });
 
+        this.dom.addEventListener('saveTab', () => {
+            const { title, text } = this.board.getData();
+            const data = { title, text };
+            const isSaved = this.selectedTab.saved;
+            this.selectedTab.setData(title, text);
+            this.selectedTab.changeTitleSpan('title');
+
+            if (isSaved) {
+                data.oldTitle = this.selectedTab.oldTitle;
+                this.selectedTab.oldTitle = title;
+                this._fetchRequest('put', data);
+            } else {
+                this.selectedTab.saved = true;
+                this.selectedTab.oldTitle = this.selectedTab.title;
+                this._fetchRequest('post', data);
+            }
+        })
+
         this.dom.addEventListener('closeTab', (e) => {
             const tab = e.detail;
             const lastIdx = this.tabs.length -1;
-            let currentIdx;
+            let currentIdx = null;
             for (let i = 0; i < lastIdx + 1; i++) {
-                if (tab.id === this.tabs.id) currentIdx = i;
-                break;
+                if (tab.id === this.tabs[i].id) {
+                    currentIdx = i;
+                    break;
+                }
             };
 
             if (this.selectedTab.id === tab.id) {
@@ -138,16 +187,20 @@ class Icon {
             iconEvent = new CustomEvent('createTab', {
                 bubbles: true
             })
+        } else if (this.type === 'save') {
+            iconEvent = new CustomEvent('saveTab', {
+                bubbles: true
+            })
         }
         e.target.dispatchEvent(iconEvent)
     }
 }
 
 class Tab {
-    constructor (id, title, text, saved, oldTitle) {
+    constructor (id, title="undefined", text="", saved=false, oldTitle= '') {
         this.id = id;
-        this.title = title ? title : 'undefined';
-        this.text = text ? text : '';
+        this.title = title;
+        this.text = text;
         this.saved = saved;
         this.oldTitle = oldTitle;
         this._prepareDOM();
@@ -183,12 +236,12 @@ class Tab {
     }
 
     _emitClose (e) {
-        this.dom.remove();
         const closeTab = new CustomEvent('closeTab', {
             bubbles: true,
             detail: this
         });
         e.target.dispatchEvent(closeTab);
+        this.dom.remove();
     }
 
     setData (title, text) {
@@ -237,9 +290,9 @@ class Board {
 
     show () {
         if (this.hide) {
-            this.dom.display = "none";
+            this.dom.style.display ="";
         } else {
-            this.dom.display ="";
+            this.dom.style.display = "none";
         };
         this.hide = !this.hide;
     }
