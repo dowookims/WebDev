@@ -19,7 +19,10 @@ class Notepad {
 
 class NavBar {
 	constructor () {
-		this.dom = null;
+        this.dom = null;
+        this.tabs = [];
+        this.icons = [];
+        this.selectedTab = null;
 		this._prepareDOM();	
 	}
 
@@ -380,88 +383,3 @@ class StateController {
 		this.navBar.appendTabDOM(dom)
 	}
 };
-
-// class View {
-// 	constructor (controller) {
-// 		this.title;
-// 		this.text;
-// 		this.tabs = []
-// 		this.tabDiv;
-// 		this.create;
-// 		this.load;
-// 		this.delete;
-// 		this.save;
-// 		this.selectedTab;
-// 		this.controller = controller;
-// 	}
-
-// 	createTab() {
-// 		let nuTab = new Tab()
-// 		nuTab.addEventListener('click', (e) => {
-// 			this.selectedTab = e.target
-// 		})
-// 		return nuTab
-// 	}
-
-// 	create() {
-// 		let d = this.title.value;
-// 		let tab = this.createTab()
-// 		this.tabDiv.appendToChild(tab)
-// 		this.tabs.push(nuTab)
-// 		// this.controller.createTag(d)
-// 	}
-
-// 	save() {
-// 		let d = this.title.value;
-// 		let c = this.text.value;
-// 		this.selectedTab.value = d
-
-// 		this.save({ title: d, content: c})
-// 	}
-
-// 	successModal(t) {
-// 		this.modal.style.display = 'block'
-// 		this.modal.style.position = 'fixed'
-// 		this.modal.style.transform = 'translate(-50%, -50%)'
-// 		this.modal.style.top = '50%'
-// 		this.modal.style.left = '50%'
-// 		this.modal.content = t
-// 	}
-// }
-// class Controller {
-// 	constructor() {
-// 		this.m = new Model(this)
-// 		this.v = new View(this)
-// 	}
-
-// 	createTag(d) {
-		
-// 	}
-
-// 	save(data, success, error) {
-// 		this.m.save(data, (t) => {
-// 			this.v.successModal(t)
-// 		}, error)
-// 	}
-
-// 	load() {
-// 		this.m.load()
-// 	}
-
-// 	update(old, nu) {
-// 		this.m.update(old, nu)
-// 	}
-
-// 	delete(t) {
-// 		this.m.delete(t)
-// 	}
-// }
-// class Model {
-// 	//server
-// 	save(data, s, e = console.log) {
-// 		axios.post().then(s).catch(e)
-// 	}
-// 	load() {}
-// 	update() {}
-// 	delete() {}
-// }
