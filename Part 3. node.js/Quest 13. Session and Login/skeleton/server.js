@@ -15,30 +15,41 @@ app.use(session({
 app.use(express.json());
 
 app.get('/list', (req, res) => {
-	const fileList = utils.readFileAll();
-	res.json(fileList)
+	if (req.session.isLogin) {
+		const fileList = utils.readFileAll();
+		res.json(fileList)
+	} else {
+		res.redirect('/');
+	}
 })
 
 app.post('/notepad', (req, res) => {
-	const isSuccess = utils.postFile(req.body.title, req.body.text);
-	res.json({success: isSuccess, title: req.body.title, text: req.body.text})
+	if (req.session.isLogin) {
+		const isSuccess = utils.postFile(req.body.title, req.body.text);
+		res.json({success: isSuccess, title: req.body.title, text: req.body.text})
+	} else {
+		res.redirect('/');
+	}
 });
 
 app.put('/notepad', (req, res) => {
-	const isSuccess = utils.putFile(req.body.oldTitle, req.body.title, req.body.text);
-	res.json({success: isSuccess, title: req.body.title, text: req.body.text})
+	if (req.session.isLogin) {
+		const isSuccess = utils.putFile(req.body.oldTitle, req.body.title, req.body.text);
+		res.json({success: isSuccess, title: req.body.title, text: req.body.text})
+	}
 });
 
 app.post('/userdata', (req, res) => {
-	const data = req.body;
-	const isSuccess = utils.saveUserdata(data.userId, data.tabs, data.selectedTab, data.cursor);
-	res.json({success: isSuccess});
+	if (req.session.isLogin) {
+		const data = req.body;
+		const isSuccess = utils.saveUserdata(data.userId, data.tabs, data.selectedTab, data.cursor);
+		res.json({success: isSuccess});
+	}
 });
 
 app.get('/userdata', (req, res) => {
 	if (req.session.userId) {
 		const data = utils.readUserData(req.session.userId)
-		console.log("DATA", data)
 		if (data) {
 			res.json({
 				tabs: data[0],
@@ -57,10 +68,12 @@ app.get('/userdata', (req, res) => {
 app.post('/login', (req, res) => {
 	const user = utils.login(req.body.userId, req.body.password);
 	if (user.isLogin) {
+		res.cookie('sessionId', req.session.id);
 		res.cookie('isLogin', user.isLogin);
 		res.cookie('userId', user.userId);
 		res.cookie('nickname', user.nickname);
 		req.session.userId = user.userId;
+		req.session.isLogin = true;
 		res.json({
 			isLogin: user.isLogin,
 			userId: user.userId || 'error',
