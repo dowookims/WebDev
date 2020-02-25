@@ -1,0 +1,34 @@
+const baz = 42;
+
+exports.foo = { baz };
+
+exports.bar = baz + 1;
+
+
+
+==================================
+
+const baz = 42;
+const foo = { baz };
+const bar = baz + 1;
+
+export default { foo, bar };
+
+
+============================
+
+import foo from mymodule;
+
+{ foo } = require('mymodule');
+
+
+
+
+<form action="/foo" method="POST">
+    <input type="text" name="name" />
+    <input type="text" name="name" />
+    <input type="text" name="name" />
+    <input type="text" name="name" />
+    <input type="text" name="name" />
+    <input type="submit" />
+</form>

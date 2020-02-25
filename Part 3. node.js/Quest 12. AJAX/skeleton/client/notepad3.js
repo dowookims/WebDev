@@ -227,10 +227,12 @@ class Icon {
     
     _prepareDOM() {
 		const iconTemplate = document.getElementById('icon');
-		const iconClone = document.importNode(iconTemplate.content, true);
-		const iconNameSpan = iconClone.querySelector('.icon-name');
-		iconNameSpan.innerHTML = this.type;
+        const iconClone = document.importNode(iconTemplate.content, true);
+        const iconNameSpan = iconClone.querySelector('.icon-name');
+        
         this.dom = iconClone.querySelector('.icon');
+		iconNameSpan.innerHTML = this.type;
+        
         this.dom.addEventListener('click', (e) => this._emitEvents(e));
     }
 
