@@ -1,7 +1,8 @@
 
 const path = require('path'),
     fs = require('fs'),
-    notepadPath = path.join(__dirname, 'notepad');
+    notepadPath = path.join(__dirname, 'notepad'),
+    userInfoPath = path.join(__dirname, 'users');
 
 const utils = {}
 
@@ -45,6 +46,30 @@ utils.putFile = (oldName, newName, text) => {
     }
 };
 
+utils.saveUserdata = (userId, tabs, selectedTab, cursor) => {
+    const sTabs = JSON.stringify(tabs);
+    const sstdTab = JSON.stringify(selectedTab);
+    const sCursor = JSON.stringify(cursor);
+    const data = `${sTabs}|||${sstdTab}|||${sCursor}`
+    try {
+        fs.writeFileSync(`${userInfoPath}/${userId}.txt`, data, 'utf-8');
+        return true;
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
+};
+
+utils.readUserData = (userId) => {
+    try {
+        const data = fs.readFileSync(`${userInfoPath}/${userId}.txt`, 'utf-8');
+        return data.split('|||').map(d => JSON.parse(d))
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
+}
+
 utils.login = (userId, password) => {
     const user = {
         knowre: {
@@ -63,13 +88,14 @@ utils.login = (userId, password) => {
     if (user[userId]) {
         if (user[userId].password === password){
             return {
+                userId: userId,
                 nickname: user[userId].nickname,
                 isLogin: true
             }
         }
     };
     return {
-        nickname: user[userId] || 'error',
+        nickname: 'error',
         isLogin: false
     };
 };

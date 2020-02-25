@@ -9,8 +9,14 @@ class Notepad {
         this.board = null;
         this.modal = null;
         this.isLogin = false;
+        this.nickname = null;
         this.fileList = [];
+        this._loadData();
         this._prepareDOM();
+    }
+
+    async _loadData () {
+            
     }
 
     _prepareDOM () {
@@ -22,7 +28,6 @@ class Notepad {
 
         this.board = new Board();
         this.modal = new Modal();
-
         app.append(menu);
         app.append(this.board.dom);
         app.append(this.modal.dom);
@@ -30,7 +35,11 @@ class Notepad {
 
         const iconArray = ['login', 'logout', 'create', 'load', 'save'];
         iconArray.forEach(icon => {
-            const iconInstance = new Icon(icon)
+            let isLogin = this.isLogin ? true : false;
+            if (icon === 'login') {
+                isLogin = !isLogin;
+            }
+            const iconInstance = new Icon(icon, isLogin)
             this.icons.push(iconInstance);
             iconDiv.append(iconInstance.dom);
         });
@@ -82,16 +91,26 @@ class Notepad {
         tab.open()
         this.board.setData(tab.title, tab.text);
         this.selectedTab = tab;
+    };
+
+
+    async saveUserInitData () {
+        const data = {
+            userId: sessionStorage.getItem('userId'),
+            tabs: this.tabs,
+            selectedTab: this.selectedTab,
+            cursor: this.board.getCursor()
+        };
+        console.log("SAVE DATA", data)
+        const res = await this._fetchRequest('post', 'userdata', data);
+        console.log(res);
     }
 
-    _fetchRequest (method, data=null) {
+    _fetchRequest (method, target, data=null) {
         if (method === 'get') {
-            fetch(`${this.serverUrl}/list`)
-            .then(res => res.json())
-            .then(res => this.fileList = res)
-            .catch(err => console.error(err));
+            return fetch(`${this.serverUrl}/${target}`).then(res => res.json())
         } else {
-            fetch(`${this.serverUrl}/notepad`, {
+            return fetch(`${this.serverUrl}/${target}`, {
                 method: `${method}`,
                 credentials: 'same-origin',
                 mode: 'cors',
@@ -99,13 +118,7 @@ class Notepad {
                     'Content-type': 'application/json'
                 },
                 body: JSON.stringify(data)
-            })
-            .then(res => res.json())
-            .then(res => {
-                const message = res.success ? "success" : "fail"
-                alert(`file ${method} ${message}`)
-            })
-            .catch(err => console.log(err));
+            }).then(res => res.json())
         }
     }
 
@@ -119,21 +132,34 @@ class Notepad {
             this.changeTab(tab);
         });
 
-        this.dom.addEventListener('saveTab', () => {
+        this.dom.addEventListener('saveTab', async () => {
             const { title, text } = this.board.getData();
             const data = { title, text };
             const isSaved = this.selectedTab.saved;
+            let method;
             this.selectedTab.setData(title, text);
             this.selectedTab.changeTitleSpan('title');
 
             if (isSaved) {
                 data.oldTitle = this.selectedTab.oldTitle;
                 this.selectedTab.oldTitle = title;
-                this._fetchRequest('put', data);
+                method ='수정';
             } else {
                 this.selectedTab.saved = true;
                 this.selectedTab.oldTitle = this.selectedTab.title;
-                this._fetchRequest('post', data);
+                method ='작성';
+            }
+
+            try {
+                let res = await this._fetchRequest('post', 'notepad',data);
+                if (res.success) {
+                    this.saveUserInitData();
+                    alert(`${title}파일 ${method}이 완료되었습니다.`);
+                } else {
+                    throw new Error('Server error');
+                }
+            } catch (e) {
+                console.error(e);
             }
         })
 
@@ -163,13 +189,12 @@ class Notepad {
             ];
         });
 
-        this.dom.addEventListener('openModal', () => {
+        this.dom.addEventListener('openModal', async () => {
             if (this.fileList.length === 0) {
-                this._fetchRequest('get');
-            };
-            setTimeout(() => {
+                const res = await this._fetchRequest('get', 'list')
+                this.fileList = res
                 this.modal.open(this.fileList);
-            }, 100)
+            };
         })
 
         this.dom.addEventListener('loadTab', (e) => {
@@ -178,61 +203,54 @@ class Notepad {
             this.changeTab(tab);
         });
 
-        this.dom.addEventListener('login', (e) => {
+        this.dom.addEventListener('login', async () => {
             const data = {
                 userId: prompt('아이디를 입력하세요'),
                 password: prompt('비밀번호를 입력하세요.')
             }
-            fetch(`${this.serverUrl}/login`, {
-                method: 'post',
-                credentials: 'same-origin',
-                mode: 'cors',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-            .then(res => res.json())
-            .then(res => {
+            try {
+                const res = await this._fetchRequest('post', 'login', data);
                 this.isLogin = res.isLogin;
                 if (this.isLogin) {
-                    e.detail.show();
-                    if (this.icons[1].hide) {
-                        this.icons[1].show();
-                        alert(`${res.username} 님 환영합니다.`)
-                    }
+                    this.icons.forEach(icon => {
+                        icon.show()
+                    });
+                    sessionStorage.setItem('userId', res.userId);
+                    sessionStorage.setItem('nickname', res.username);
+                    alert(`${res.username} 님 환영합니다.`);
+                    const resu = await this._fetchRequest('get', 'userdata');
+                    console.log("RESU", resu)
                 } else {
                     alert('아이디 또는 비밀번호를 잘못 입력하셨습니다.');
-                }
-            })
-            .catch(err => console.error(err));
-        })
+                }}
+            catch (e) {
+                console.error(e);
+            }
+        });
 
-        this.dom.addEventListener('logout', (e) => {
-            fetch(`${this.serverUrl}/logout`, {
-                method: 'post',
-                credentials: 'same-origin',
-                mode: 'cors',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-            }).then(res => res.json())
-            .then(res => {
+        this.dom.addEventListener('logout', async () => {
+            try {
+                const res = await this._fetchRequest('post', 'logout', {});
                 if(res.result) {
-                    e.detail.show();
-                    this.icons[0].show();
+                    sessionStorage.clear();
                     alert('로그아웃 되었습니다.');
+                    this.icons.forEach(icon => {
+                        icon.show()
+                    });
+                    location.reload();
                 }
-            })
+            } catch (e) {
+                console.error(e);
+            }
         })
     }
 }
 
 class Icon {
-    constructor (type) {
+    constructor (type, isLogin) {
         this.type = type;
         this.dom = null;
-        this.hide = false;
+        this.hide = isLogin;
         this._prepareDOM();
     }
 
@@ -243,11 +261,11 @@ class Icon {
         
         this.dom = iconClone.querySelector('.icon');
         this.dom.classList.add(this.type);
-        if (this.type === 'logout') {
-            this.hide = true;
-        }
         this.dom.addEventListener('click', (e) => this._handleEvent(e));
-		iconNameSpan.innerHTML = this.type;
+        if (!this.hide) {
+            this.dom.style.display = 'none';
+        }
+        iconNameSpan.innerHTML = this.type;
     }
 
     _handleEvent (e) {
@@ -268,12 +286,10 @@ class Icon {
         } else if (this.type === 'login') {
             iconEvent = new CustomEvent('login', {
                 bubbles: true,
-                detail: this
             })
         } else if (this.type === 'logout') {
             iconEvent = new CustomEvent('logout', {
                 bubbles: true,
-                detail: this
             })
         }
         e.target.dispatchEvent(iconEvent)
@@ -296,6 +312,7 @@ class Tab {
         this.text = text;
         this.saved = saved;
         this.oldTitle = oldTitle;
+        this.dom = null;
         this._prepareDOM();
     }
 
@@ -379,6 +396,16 @@ class Board {
         const { titleDOM, textDOM } = this._getInputFields();
         titleDOM.value = title;
         textDOM.value = text;
+    };
+
+    getCursor () {
+        return this.dom.querySelector('.textarea').selectionStart;
+    };
+
+    setCursor (cursor) {
+        const board = this.dom.querySelector('.textarea');
+        board.focus();
+        board.selectionStart = cursor;
     }
 
     show () {

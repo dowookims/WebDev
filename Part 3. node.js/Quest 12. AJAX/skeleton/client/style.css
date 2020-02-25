@@ -30,6 +30,7 @@ body {
 	display: flex;
 }
 
+
 .icon-div {
 	display: flex;
 }
@@ -61,16 +62,12 @@ body {
 	font-weight: 500;
 }
 
-.logout {
-	display: none;
-};
-
 .tab-div {
+	display: flex;
 	max-width: 700px;
 	overflow-x: scroll;
-	display: flex;
 	align-items: center;
-	background-color: #ccc;
+	background-color: #bbb;
 }
 
 .tab {
@@ -83,11 +80,11 @@ body {
 }
 
 .tab:hover {
-	background-color: #bbb;
+	background-color: #999;
 }
 
 .activeTab {
-	background-color: #eee;
+	background-color: #ddd;
 }
 
 .tab-name {
