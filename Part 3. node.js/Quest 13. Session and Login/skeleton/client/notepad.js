@@ -15,9 +15,7 @@ class Notepad {
         this._prepareDOM();
     }
 
-    async _loadData () {
-            
-    }
+    async _loadData () {}
 
     _prepareDOM () {
         const app = document.getElementById('app');
@@ -45,35 +43,33 @@ class Notepad {
         });
 
         this._listenCustomEvent();
-        this._prepareTab();
     }
 
-    _prepareTab () {
-        const tabData = [];
-        if (tabData.length > 0 ) {
+    _prepareTab (data) {
+        let tabData;
+        if (data.tabs) {
+            tabData = data.tabs;
             for (let i = 0; i< tabData.length; i++) {
-                const tabInstance = this.createTab(tabData[i].title);
-                if (i !== tabData.length - 1) {
-                    tabInstance.close();
-                } else {
+                const tabInstance = this.createTab(tabData[i].title, tabData[i].text, true, tabData[i].title);
+                if (data.selectedTab.title === tabInstance.title) {
                     this.selectedTab = tabInstance;
                 }
-            }
+            };
         } else {
             const tabInstance = this.createTab()
             this.selectedTab = tabInstance;
-        }
+        };
+
         this.selectedTab.open();
         this.board.setData(this.selectedTab.title, this.selectedTab.text);
+        data.cursor && this.board.setCursor(data.cursor);
     };
 
     createTab (title, text, saved, oldTitle) {
         const tabDiv = this.dom.querySelector('.tab-div');
         const tabInstance = new Tab(this.tabId, title, text, saved, oldTitle);
         
-        if (this.board.hide) {
-            this.board.show();
-        }
+        this.board.hide && this.board.show();
 
         this.tabs.push(tabInstance);
         tabDiv.append(tabInstance.dom);
@@ -94,16 +90,14 @@ class Notepad {
     };
 
 
-    async saveUserInitData () {
+    saveUserInitData () {
         const data = {
-            userId: sessionStorage.getItem('userId'),
+            userId: localStorage.getItem('userId'),
             tabs: this.tabs,
             selectedTab: this.selectedTab,
             cursor: this.board.getCursor()
         };
-        console.log("SAVE DATA", data)
-        const res = await this._fetchRequest('post', 'userdata', data);
-        console.log(res);
+        this._fetchRequest('post', 'userdata', data);
     }
 
     _fetchRequest (method, target, data=null) {
@@ -118,7 +112,9 @@ class Notepad {
                     'Content-type': 'application/json'
                 },
                 body: JSON.stringify(data)
-            }).then(res => res.json())
+            })
+            .then(res => res.json())
+            .catch(e => console.error(e));
         }
     }
 
@@ -151,7 +147,7 @@ class Notepad {
             }
 
             try {
-                let res = await this._fetchRequest('post', 'notepad',data);
+                let res = await this._fetchRequest('post', 'notepad', data);
                 if (res.success) {
                     this.saveUserInitData();
                     alert(`${title}파일 ${method}이 완료되었습니다.`);
@@ -161,7 +157,7 @@ class Notepad {
             } catch (e) {
                 console.error(e);
             }
-        })
+        });
 
         this.dom.addEventListener('closeTab', (e) => {
             const tab = e.detail;
@@ -208,18 +204,17 @@ class Notepad {
                 userId: prompt('아이디를 입력하세요'),
                 password: prompt('비밀번호를 입력하세요.')
             }
+
             try {
                 const res = await this._fetchRequest('post', 'login', data);
                 this.isLogin = res.isLogin;
                 if (this.isLogin) {
-                    this.icons.forEach(icon => {
-                        icon.show()
-                    });
-                    sessionStorage.setItem('userId', res.userId);
-                    sessionStorage.setItem('nickname', res.username);
+                    this.icons.forEach(icon => { icon.show() });
+                    localStorage.setItem('userId', res.userId);
+                    localStorage.setItem('nickname', res.username);
                     alert(`${res.username} 님 환영합니다.`);
-                    const resu = await this._fetchRequest('get', 'userdata');
-                    console.log("RESU", resu)
+                    const loadLoginData = await this._fetchRequest('get', 'userdata');
+                    this._prepareTab(loadLoginData)
                 } else {
                     alert('아이디 또는 비밀번호를 잘못 입력하셨습니다.');
                 }}
@@ -232,11 +227,10 @@ class Notepad {
             try {
                 const res = await this._fetchRequest('post', 'logout', {});
                 if(res.result) {
-                    sessionStorage.clear();
+                    this.login = false;
+                    localStorage.clear();
                     alert('로그아웃 되었습니다.');
-                    this.icons.forEach(icon => {
-                        icon.show()
-                    });
+                    this.icons.forEach(icon => { icon.show() });
                     location.reload();
                 }
             } catch (e) {
@@ -296,7 +290,7 @@ class Icon {
     }
 
     show() {
-        if (this.hide) {
+        if (!this.hide) {
             this.dom.style.display = 'flex';
         } else {
             this.dom.style.display = 'none';
@@ -367,7 +361,7 @@ class Tab {
 class Board {
     constructor () {
         this.dom = null;
-        this.hide = false;
+        this.hide = true;
 		this._prepareDOM();
     }
 
@@ -375,7 +369,8 @@ class Board {
         const textAreaTemplate = document.getElementById('board');
 		const textAreaClone = document.importNode(textAreaTemplate.content, true);
 		const textAreaDiv = textAreaClone.querySelector('.board');
-		this.dom = textAreaDiv;
+        this.dom = textAreaDiv;
+        this.dom.style.display = 'none';
     }
 
     _getInputFields() {

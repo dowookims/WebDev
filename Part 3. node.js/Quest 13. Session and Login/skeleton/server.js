@@ -36,16 +36,21 @@ app.post('/userdata', (req, res) => {
 });
 
 app.get('/userdata', (req, res) => {
-	const data = utils.readUserData(req.session.userId)
-	if (data) {
-		res.json({
-			tabs: data[0],
-			selectedTab: data[1],
-			cursor: data[2],
-			success: true
-		})
+	if (req.session.userId) {
+		const data = utils.readUserData(req.session.userId)
+		console.log("DATA", data)
+		if (data) {
+			res.json({
+				tabs: data[0],
+				selectedTab: data[1],
+				cursor: data[2],
+				success: true
+			})
+		} else {
+			res.json({success: false, isLogin: false});
+		}
 	} else {
-		res.json({success: false});
+		res.json({success: false, isLogin: false})
 	}
 })
 
@@ -54,20 +59,16 @@ app.post('/login', (req, res) => {
 	if (user.isLogin) {
 		res.cookie('isLogin', user.isLogin);
 		res.cookie('userId', user.userId);
-		res.cookie('nickname', user.nickname, {
-			maxAge: 60*60*1000,
-			httpOnly: true
-		});
-		req.session.userId = user.userId;
-	} else {
-		res.cookie('isLogin', false);
 		res.cookie('nickname', user.nickname);
+		req.session.userId = user.userId;
+		res.json({
+			isLogin: user.isLogin,
+			userId: user.userId || 'error',
+			username: user.nickname
+		})
+	} else {
+		res.json({ isLogin: false })
 	}
-	res.json({
-		isLogin: user.isLogin,
-		userId: user.userId || 'error',
-		username: user.nickname
-	})
 });
 
 app.post('/logout', (req, res) => {

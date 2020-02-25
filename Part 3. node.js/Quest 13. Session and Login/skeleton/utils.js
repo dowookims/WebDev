@@ -41,7 +41,6 @@ utils.putFile = (oldName, newName, text) => {
         fs.writeFileSync(`${notepadPath}/${newName}.txt`, text, 'utf-8');
         return true;
     } catch (e) {
-        console.error(e);
         return false;
     }
 };
@@ -65,6 +64,9 @@ utils.readUserData = (userId) => {
         const data = fs.readFileSync(`${userInfoPath}/${userId}.txt`, 'utf-8');
         return data.split('|||').map(d => JSON.parse(d))
     } catch (e) {
+        if (e.errno === -2) {
+            return {};
+        }
         console.error(e);
         return false;
     }
