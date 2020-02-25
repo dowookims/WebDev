@@ -102,7 +102,7 @@ class Tab {
 		tabNameSpan.innerHTML = this.title;
 		this.dom = tab
 
-		closeSpan.addEventListener('click', (e) => this._closeTab(e));
+		closeSpan.addEventListener('click', () => this._closeTab());
 		this.dom.addEventListener('click', () => this._openTab());
 		this._openTab();
 
@@ -140,8 +140,7 @@ class Tab {
 		this.dom.classList.add('activeTab');
 	};
 
-	_closeTab(e) {
-		e.stopPropagation();
+	_closeTab() {
 		const stateController = new StateController();
 		const tabList = stateController.tabs;
 		const lastIndex = tabList.length;
