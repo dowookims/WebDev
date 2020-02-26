@@ -161,14 +161,48 @@ TIMESTAMP의 범위는 1970-01-01 00:00:01 UTC to 2038-01-19 03:14:07 UTC.
 
 ### 2.1 Create
 
+```SQL
+INSERT INTO <tablename> (column1,column2,….)
+ 
+VALUES (value1_1,value1_2,….),
+(value2_1, value2_2, ...)
+...
+(value_n_1, valuen_2, ...);
+```
+
 ### 2.2 Read
+
+```SQL
+SELECT (column1, column2 ,...) FROM <TableName>
+```
+
+```SQL
+SELECT * FROM <TableName>
+```
 
 ### 2.3 Update
 
+```SQL
+UPDATE <TableName>
+SET Column1=Value1, Column2=Value2,…
+WHERE <Expression>
+```
+
 ### 2.4 Delete
+
+```SQL
+DELETE FROM <TableName>
+WHERE <Expression>
+```
 
 ## 3. Hashing
 
 ### 3.1 Data Structure related Hashing
 
 ### 3.2 Hashing Algorithm
+
+### 3.3 Types of Hash
+
+#### MD5
+
+#### SHA-2
