@@ -8,6 +8,58 @@
 
 #### 1.1.1 MySQL Enginens
 
+##### InnoDB
+
+InnoDB는 높은 신뢰성과 고성능 사이의 밸런스를 가지고 있는 범용 스토리지 엔진이다.  
+MySQL 8.0 버전에서 `MyISAM` 을 제치고 MySQL 테이블의 default type으로 지정되었다.
+
+InnoDB 테이블은 Primary key를 기반으로 쿼리를 최적화하기 위해 디스크의 데이터를 할당한다. 각 InnoDB 테이블에는 데이터를 정리하여 Primary Key 조회를 위한 I/O를 최소화하는 clustered index라는 primary key index가 있다.
+
+* Transactional-safe (ACID)
+  * Atomicity
+    * 트랜잭션 작업이 부분적으로 실행되거나 중단되지 않는 것을 보장 (All or Nothing)
+  * Consistency
+    * 트랜잭션 작업이 시작되지 전에 데이터베이스 상태가 일관된 상태였다면 트랜잭션 작업이 종료된 후에도 일관성 있는 데이터 베이스 상태를 유지해아한다.
+  * Isolation
+    * 트랜잭션 작업 수행 중에는 다른 트랜잭션에 영향을 주어서도 안되고, 다른 트랜잭션들에 의해 간섭을 받아서도 안 된다
+  * Durability
+    * 일련의 데이터 조작(트렌젝션 조작)을 완료 하고 완료 통지를 사용자가 받는 시점에서 그 조작이 영구적이 되어 그 결과를 잃지 않는 것을 나타낸다
+  
+* commit, rollback, recovery, row-level locking, foreign key를 지원한다.
+* 제약조건, FK, PK 등으로 인해 데이터 무결성에 대한 보장이 된다.
+* row level lock(행 단위)을 하기에, 쓰기, 변경 작업이 빠르다.
+* 데이터 모델 디자인에 많은 시간이 필요하다.
+* Full text search를 지원한다.
+* ordering 가능
+
+##### MyISAM
+
+* non-transactional-safe 테이블을 관리한다.
+* non-acid compliant
+* 데이터 무결성이 보장되지 않는다.
+* Full text index를 통한 search를 지원한다.
+* Table level lock을 사용하기에 쓰기 작업에서 속도가 느리다.
+* 읽기 위주 작업에 주로 사용된다.
+* 한번에 대량의 데이터를 입력하는 배치성 테이블에 적합하다.
+
+##### Memory
+
+* Memory storage engine (known as HEAP)은 콘텐츠들을 메모리에 저장하는 특수 목적의 테이블을 생성한다. 이 테이블은 임시 작업 영역 또는 다른 테이블에서 가져온 데이터의 읽기 전용 캐시로만 사용한다.
+
+##### CSV
+
+* comma-separated values format을 사용하는 텍스트 파일을 저장할 때 사용하는 스토리지 엔진.
+
+##### Archive
+
+* 인덱싱되지 않은 대량의 데이터를 매우 작은 공간에 저장하는 특수 목적 테이블을 생성한다.
+
+##### Etc
+
+* Merge
+* Blackhole
+* Federated
+
 #### 1.1.2 MySQL Data Type
 
 ##### 문자열
@@ -92,4 +144,3 @@ TIMESTAMP의 범위는 1970-01-01 00:00:01 UTC to 2038-01-19 03:14:07 UTC.
 ### 3.1 Data Structure related Hashing
 
 ### 3.2 Hashing Algorhythm
-
