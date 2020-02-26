@@ -6,7 +6,7 @@
 
 ### 1.1 What is MySQL?
 
-#### 1.1.1 MySQL Enginens
+#### 1.1.1 MySQL Engines
 
 ##### InnoDB
 
