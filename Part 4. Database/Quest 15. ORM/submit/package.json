@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "dependencies": {
+    "express": "*",
+    "express-session": "^1.17.0"
+  }
+}
