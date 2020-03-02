@@ -2,8 +2,11 @@ const
 	path = require('path'),
 	express = require('express'),
 	utils = require('./utils'),
-	session = require('express-session');
-	app = express();
+	session = require('express-session')
+	app = express(),
+	{ sequelize } = require('./models');
+
+sequelize.sync();
 
 app.use(express.static('client'));
 app.use(session({
@@ -14,27 +17,27 @@ app.use(session({
 
 app.use(express.json());
 
-app.get('/list', (req, res) => {
+app.get('/list', async (req, res) => {
 	if (req.session.isLogin) {
-		const fileList = utils.readFileAll();
+		const fileList = await utils.readFileAll(req.session.userId);
 		res.json(fileList)
 	} else {
 		res.redirect('/');
 	}
-})
+});
 
 app.post('/notepad', (req, res) => {
 	if (req.session.isLogin) {
-		const isSuccess = utils.postFile(req.body.title, req.body.text);
+		const isSuccess = utils.postFile(req.body.title, req.body.text, req.session.userId);
 		res.json({success: isSuccess, title: req.body.title, text: req.body.text})
 	} else {
 		res.redirect('/');
 	}
 });
 
-app.put('/notepad', (req, res) => {
+app.put('/notepad', async (req, res) => {
 	if (req.session.isLogin) {
-		const isSuccess = utils.putFile(req.body.oldTitle, req.body.title, req.body.text);
+		const isSuccess = await utils.putFile(req.body.oldTitle, req.body.title, req.body.text);
 		res.json({success: isSuccess, title: req.body.title, text: req.body.text})
 	}
 });
@@ -47,26 +50,35 @@ app.post('/userdata', (req, res) => {
 	}
 });
 
-app.get('/userdata', (req, res) => {
+app.put('/userdata', (req, res) => {
+	if (req.session.isLogin) {
+		const data = req.body;
+		const isSuccess = utils.putUserdata(data.userId, data.tabs, data.selectedTab, data.cursor);
+		res.json({success: isSuccess});
+	}
+})
+
+app.get('/userdata', async (req, res) => {
 	if (req.session.userId) {
-		const data = utils.readUserData(req.session.userId)
+		const data = await utils.readUserData(req.session.userId)
 		if (data) {
 			res.json({
-				tabs: data[0],
-				selectedTab: data[1],
-				cursor: data[2],
-				success: true
+				tabs: JSON.parse(data.dataValues.tabs),
+				selectedTab: JSON.parse(data.dataValues.selectedTab),
+				cursor: JSON.parse(data.dataValues.cursorLen),
+				success: true,
+				noState: false
 			})
 		} else {
-			res.json({success: false, isLogin: false});
+			res.json({success: true, noState: true});
 		}
 	} else {
 		res.json({success: false, isLogin: false})
 	}
 })
 
-app.post('/login', (req, res) => {
-	const user = utils.login(req.body.userId, req.body.password);
+app.post('/login', async (req, res) => {
+	const user = await utils.login(req.body.userId, req.body.password);
 	if (user.isLogin) {
 		res.cookie('sessionId', req.session.id);
 		res.cookie('isLogin', user.isLogin);
