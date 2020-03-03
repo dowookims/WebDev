@@ -1,9 +1,5 @@
 
-const path = require('path'),
-    fs = require('fs'),
-    notepadPath = path.join(__dirname, 'notepad'),
-    userInfoPath = path.join(__dirname, 'users'),
-    { User, Post, UserWorkingState } = require('./models');
+const { User, Post, UserWorkingState } = require('./models');
 
 const utils = {}
 
