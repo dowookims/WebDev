@@ -43,26 +43,6 @@ class Notepad {
         this._listenCustomEvent();
     }
 
-    _prepareTab (data) {
-        let tabData;
-        if (data.tabs) {
-            tabData = data.tabs;
-            for (let i = 0; i< tabData.length; i++) {
-                const tabInstance = this.createTab(tabData[i].title, tabData[i].text, true, tabData[i].title);
-                if (data.selectedTab.title === tabInstance.title) {
-                    this.selectedTab = tabInstance;
-                }
-            };
-        } else {
-            const tabInstance = this.createTab()
-            this.selectedTab = tabInstance;
-        };
-
-        this.selectedTab.open();
-        this.board.setData(this.selectedTab.title, this.selectedTab.text);
-        data.cursor && this.board.setCursor(data.cursor);
-    };
-
     createTab (title, text, saved, oldTitle) {
         const tabDiv = this.dom.querySelector('.tab-div');
         const tabInstance = new Tab(this.tabId, title, text, saved, oldTitle);
@@ -120,6 +100,26 @@ class Notepad {
             .catch(e => console.error(e));
         }
     }
+
+    _prepareTab (data) {
+        let tabData;
+        if (data.tabs) {
+            tabData = data.tabs;
+            for (let i = 0; i< tabData.length; i++) {
+                const tabInstance = this.createTab(tabData[i].title, tabData[i].text, true, tabData[i].title);
+                if (data.selectedTab.title === tabInstance.title) {
+                    this.selectedTab = tabInstance;
+                }
+            };
+        } else {
+            const tabInstance = this.createTab()
+            this.selectedTab = tabInstance;
+        };
+
+        this.selectedTab.open();
+        this.board.setData(this.selectedTab.title, this.selectedTab.text);
+        data.cursor && this.board.setCursor(data.cursor);
+    };
 
     _listenCustomEvent () {
         this.dom.addEventListener('openTab', (e) => {
@@ -190,7 +190,7 @@ class Notepad {
 
         this.dom.addEventListener('openModal', async () => {
             if (this.fileList.length === 0) {
-                const res = await this._fetchRequest('get', 'list')
+                const res = await this._fetchRequest('get', 'notepad')
                 this.fileList = res
                 this.modal.open(this.fileList);
             };
@@ -209,7 +209,7 @@ class Notepad {
             }
 
             try {
-                const res = await this._fetchRequest('post', 'login', data);
+                const res = await this._fetchRequest('post', 'auth/login', data);
                 this.isLogin = res.isLogin;
                 if (this.isLogin) {
                     this.icons.forEach(icon => { icon.show() });
@@ -228,7 +228,7 @@ class Notepad {
 
         this.dom.addEventListener('logout', async () => {
             try {
-                const res = await this._fetchRequest('post', 'logout', {});
+                const res = await this._fetchRequest('post', 'auth/logout', {});
                 if(res.result) {
                     this.login = false;
                     localStorage.clear();
