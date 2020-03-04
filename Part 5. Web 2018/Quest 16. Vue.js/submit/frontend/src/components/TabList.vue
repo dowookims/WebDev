@@ -7,8 +7,16 @@
                 :type= "icon"
             />
         </div>
-        <div class="tab--div">
-            <Tab />
+        <div 
+            class="tab--div"
+            v-if="isLogin"
+        >
+            <Tab 
+                v-for="(tab, idx) in tabList"
+                :key="idx"
+                :title="tab.title"
+                :text="tab.text"
+            />
         </div>
     </nav>
 </template>
@@ -16,7 +24,7 @@
 <script>
 import Icon from './Icon';
 import Tab from './Tab';
-
+import { mapState } from 'vuex';
 export default {
     name: 'TabList',
     components: { Icon, Tab },
@@ -25,24 +33,36 @@ export default {
             icons: ['login', 'logout', 'create', 'load', 'save'],
         }
     },
-    methods: {
-    },
+    methods: {},
+    computed: {
+        ...mapState('tab', ['tabList']),
+        isLogin() { 
+            return this.$store.state.auth.isLogin 
+        }
+    }
 }
 </script>
 
 <style scoped>
 .tab-list {
-    margin-top: 20px;
     display: flex;
+    height: 100px;
+    margin-top: 20px;
 }
 
 .icon--div {
-    padding-left: 50px;
     display: flex;
+    align-items: center;
+    height: 50px;
+    padding-left: 50px;
 }
 
 .tab--div {
     display: flex;
-    background-color: yellow;
+    height:50px;
+    margin-left: 30px;
+    width: 920px;
+    padding-top: 5px;
+    overflow-x: scroll;
 }
 </style>

@@ -20,6 +20,9 @@ router.put('/', (req, res) => {
 })
 
 router.get('/', async (req, res) => {
+	console.log("USERID", req.session.userId);
+	console.log("ISLOGIN",req.session.isLogin)
+	console.log(req.session)
 	if (req.session.userId) {
 		const data = await utils.readUserData(req.session.userId)
 		if (data) {

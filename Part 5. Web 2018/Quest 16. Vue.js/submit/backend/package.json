@@ -1,6 +1,7 @@
 {
   "private": true,
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "*",
     "express-session": "^1.17.0",
     "mysql2": "^2.1.0",

@@ -1,8 +1,7 @@
 const 
-	path = require('path'),
 	express = require('express'),
-	utils = require('./utils'),
-	session = require('express-session')
+	session = require('express-session'),
+	cors = require('cors'),
 	app = express(),
 	{ sequelize } = require('./models')
 	notepadRouter = require('./routes/notepad'),
@@ -15,8 +14,9 @@ app.use(express.static('client'));
 app.use(session({
 	secret: 'vavara',
 	resave: false,
-	saveUninitialized: true,
+	saveUninitialized: false,
 }));
+app.use(cors());
 
 app.use(express.json());
 
@@ -25,9 +25,9 @@ app.use('/auth', authRouter);
 app.use('/userdata', userdataRouter);
 
 app.get('/', (req, res) => {
-	res.end('hello')
+	res.status(404).json({message: 'hellow'})
 });
 
-const server = app.listen(8080, () => {
+const server = app.listen(8082, () => {
 	console.log('Server started!');
 });

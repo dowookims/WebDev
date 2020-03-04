@@ -1,5 +1,8 @@
 <template>
-    <div class="board">
+    <div 
+        class="board"
+        v-if="isLogin"
+    >
         <div class="board--header">
             <input 
                 class="board--title"
@@ -16,9 +19,11 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default {
     name: 'Board',
     computed: {
+        ...mapState('auth', ['isLogin']),
         title: {
             get () {
                 return this.$store.state.board.title

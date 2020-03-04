@@ -4,8 +4,10 @@ const utils = require('../utils');
 const router = express.Router();
 
 router.post('/login', async (req, res) => {
-	const user = await utils.login(req.body.userId, req.body.password);
+	const data = req.body.data
+	const user = await utils.login(data.userId, data.password);
 	if (user.isLogin) {
+		console.log("************************")
 		res.cookie('sessionId', req.session.id);
 		res.cookie('isLogin', user.isLogin);
 		res.cookie('userId', user.userId);
