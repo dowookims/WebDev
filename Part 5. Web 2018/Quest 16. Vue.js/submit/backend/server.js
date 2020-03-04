@@ -10,6 +10,8 @@ const
 
 sequelize.sync();
 
+// change user login logic to JWT
+
 app.use(express.static('client'));
 app.use(session({
 	secret: 'vavara',
