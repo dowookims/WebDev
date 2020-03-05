@@ -1,5 +1,6 @@
+const { User, Post, UserWorkingState } = require('../models');
+const auth = require('./auth')
 
-const { User, Post, UserWorkingState } = require('./models');
 
 const utils = {}
 
@@ -41,6 +42,7 @@ utils.putFile = async (title, text, userId) => {
 };
 
 utils.saveUserdata = async (userId, tabs, selectedTab, cursor) => {
+    console.log("SAVEUSERDATA", userId, tabs, selectedTab, cursor)
     const sTabs = JSON.stringify(tabs);
     const sstdTab = JSON.stringify(selectedTab);
     const sCursor = JSON.stringify(cursor);
@@ -89,17 +91,18 @@ utils.readUserData = async (userId) => {
 
 utils.login = async (userId, password) => {
     const user = await User.findOne({ where: { id: userId } });
-    if (user == null || user.dataValues.password !== password) {
+    if (!user || user.dataValues.password !== password) {
         return {
             isLogin: false,
-            result: true
+            success: true
         }
     } else {
         return {
-            userId: user.dataValues.id,
-            nickname: user.dataValues.nickname,
             isLogin: true,
-            result: true
+            success: true,
+            userId,
+            nickname: user.dataValues.nickname,
+            token: auth.makeToken(userId, user.dataValues.nickname)
         }
     }
 };
