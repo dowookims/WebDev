@@ -117,3 +117,9 @@ ex) 사용자 - 게시물 / 박물관 - 전시작품
 
 두 객체간 상대 객체 여럿을 가질 수 있는 관계를 의미한다.  
 ex) 학생 - 수업
+
+
+
+`추가 정리 사항`
+
+# Object-relational impedance mismatch
