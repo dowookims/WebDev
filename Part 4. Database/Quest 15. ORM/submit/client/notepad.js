@@ -1,5 +1,6 @@
 class Notepad {
     constructor () {
+        localStorage.clear();
         this.serverUrl = 'http://127.0.0.1:8080';
         this.tabId = 1;
         this.dom = null;
@@ -11,11 +12,10 @@ class Notepad {
         this.isLogin = false;
         this.nickname = null;
         this.fileList = [];
-        this._loadData();
+        this.noState = false;
         this._prepareDOM();
     }
 
-    async _loadData () {}
 
     _prepareDOM () {
         const app = document.getElementById('app');
@@ -34,9 +34,7 @@ class Notepad {
         const iconArray = ['login', 'logout', 'create', 'load', 'save'];
         iconArray.forEach(icon => {
             let isLogin = this.isLogin ? true : false;
-            if (icon === 'login') {
-                isLogin = !isLogin;
-            }
+            if (icon === 'login') { isLogin = !isLogin; }
             const iconInstance = new Icon(icon, isLogin)
             this.icons.push(iconInstance);
             iconDiv.append(iconInstance.dom);
@@ -44,26 +42,6 @@ class Notepad {
 
         this._listenCustomEvent();
     }
-
-    _prepareTab (data) {
-        let tabData;
-        if (data.tabs) {
-            tabData = data.tabs;
-            for (let i = 0; i< tabData.length; i++) {
-                const tabInstance = this.createTab(tabData[i].title, tabData[i].text, true, tabData[i].title);
-                if (data.selectedTab.title === tabInstance.title) {
-                    this.selectedTab = tabInstance;
-                }
-            };
-        } else {
-            const tabInstance = this.createTab()
-            this.selectedTab = tabInstance;
-        };
-
-        this.selectedTab.open();
-        this.board.setData(this.selectedTab.title, this.selectedTab.text);
-        data.cursor && this.board.setCursor(data.cursor);
-    };
 
     createTab (title, text, saved, oldTitle) {
         const tabDiv = this.dom.querySelector('.tab-div');
@@ -97,7 +75,12 @@ class Notepad {
             selectedTab: this.selectedTab,
             cursor: this.board.getCursor()
         };
-        this._fetchRequest('post', 'userdata', data);
+        if (this.noState) {
+            this._fetchRequest('post', 'userdata', data)
+        } else {
+            this._fetchRequest('put', 'userdata', data);
+            this.noState = false;
+        }
     }
 
     _fetchRequest (method, target, data=null) {
@@ -117,6 +100,26 @@ class Notepad {
             .catch(e => console.error(e));
         }
     }
+
+    _prepareTab (data) {
+        let tabData;
+        if (data.tabs) {
+            tabData = data.tabs;
+            for (let i = 0; i< tabData.length; i++) {
+                const tabInstance = this.createTab(tabData[i].title, tabData[i].text, true, tabData[i].title);
+                if (data.selectedTab.title === tabInstance.title) {
+                    this.selectedTab = tabInstance;
+                }
+            };
+        } else {
+            const tabInstance = this.createTab()
+            this.selectedTab = tabInstance;
+        };
+
+        this.selectedTab.open();
+        this.board.setData(this.selectedTab.title, this.selectedTab.text);
+        data.cursor && this.board.setCursor(data.cursor);
+    };
 
     _listenCustomEvent () {
         this.dom.addEventListener('openTab', (e) => {
@@ -187,7 +190,7 @@ class Notepad {
 
         this.dom.addEventListener('openModal', async () => {
             if (this.fileList.length === 0) {
-                const res = await this._fetchRequest('get', 'list')
+                const res = await this._fetchRequest('get', 'notepad')
                 this.fileList = res
                 this.modal.open(this.fileList);
             };
@@ -206,15 +209,15 @@ class Notepad {
             }
 
             try {
-                const res = await this._fetchRequest('post', 'login', data);
+                const res = await this._fetchRequest('post', 'auth/login', data);
                 this.isLogin = res.isLogin;
                 if (this.isLogin) {
                     this.icons.forEach(icon => { icon.show() });
                     localStorage.setItem('userId', res.userId);
-                    localStorage.setItem('nickname', res.username);
                     alert(`${res.username} 님 환영합니다.`);
                     const loadLoginData = await this._fetchRequest('get', 'userdata');
-                    this._prepareTab(loadLoginData)
+                    this._prepareTab(loadLoginData);
+                    this.noState = loadLoginData.noState || false;
                 } else {
                     alert('아이디 또는 비밀번호를 잘못 입력하셨습니다.');
                 }}
@@ -225,7 +228,7 @@ class Notepad {
 
         this.dom.addEventListener('logout', async () => {
             try {
-                const res = await this._fetchRequest('post', 'logout', {});
+                const res = await this._fetchRequest('post', 'auth/logout', {});
                 if(res.result) {
                     this.login = false;
                     localStorage.clear();
