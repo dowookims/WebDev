@@ -1,31 +1,26 @@
 const express = require('express');
-const utils = require('../utils');
+const Controller = require('../utils').controller;
+const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
+router.use('/', authMiddleware)
+
 router.post('/', (req, res) => {
-	if (req.session.isLogin) {
-		const isSuccess = utils.postFile(req.body.title, req.body.text, req.session.userId);
-		res.json({success: isSuccess, title: req.body.title, text: req.body.text})
-	} else {
-		res.redirect('/');
-	}
+	const request = req.body
+	const isSuccess = Controller.postFile(request.title, request.text, request.userId);
+	res.json({success: isSuccess, title: request.title, text: request.text})
 });
 
 router.put('/', async (req, res) => {
-	if (req.session.isLogin) {
-		const isSuccess = await utils.putFile(req.body.oldTitle, req.body.title, req.body.text);
-		res.json({success: isSuccess, title: req.body.title, text: req.body.text})
-	}
+	const request = req.body.data
+	const isSuccess = await Controller.putFile(request.oldTitle, request.title, request.text);
+	res.json({success: isSuccess, title: request.title, text: request.text})
 });
 
 router.get('/', async (req, res) => {
-	if (req.session.isLogin) {
-		const fileList = await utils.readFileAll(req.session.userId);
-		res.json(fileList)
-	} else {
-		res.redirect('/');
-	}
+	const fileList = await Controller.readFileAll(req.session.userId);
+	res.json(fileList)
 });
 
 module.exports = router;

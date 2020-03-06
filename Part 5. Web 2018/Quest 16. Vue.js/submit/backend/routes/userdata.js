@@ -1,43 +1,38 @@
 const express = require('express');
-const utils = require('../utils');
+const { auth, controller } = require('../utils');
+const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
+router.use('/', authMiddleware)
+
 router.post('/', (req, res) => {
-	if (req.session.isLogin) {
-		const data = req.body;
-		const isSuccess = utils.saveUserdata(data.userId, data.tabs, data.selectedTab, data.cursor);
-		res.json({success: isSuccess});
-	}
+	const data = req.body;
+	console.log("DATA", data);
+	const isSuccess = controller.saveUserdata(data.userId, data.tabs, data.selectedTab, data.cursor);
+	res.json({success: isSuccess});
 });
 
 router.put('/', (req, res) => {
-	if (req.session.isLogin) {
-		const data = req.body;
-		const isSuccess = utils.putUserdata(data.userId, data.tabs, data.selectedTab, data.cursor);
-		res.json({success: isSuccess});
-	}
+	const data = req.body;
+	const isSuccess = controller.putUserdata(data.userId, data.tabs, data.selectedTab, data.cursor);
+	res.json({success: isSuccess});
 })
 
 router.get('/', async (req, res) => {
-	console.log("USERID", req.session.userId);
-	console.log("ISLOGIN",req.session.isLogin)
-	console.log(req.session)
-	if (req.session.userId) {
-		const data = await utils.readUserData(req.session.userId)
-		if (data) {
-			res.json({
-				tabs: JSON.parse(data.dataValues.tabs),
-				selectedTab: JSON.parse(data.dataValues.selectedTab),
-				cursor: JSON.parse(data.dataValues.cursorLen),
-				success: true,
-				noState: false
-			})
-		} else {
-			res.json({success: true, noState: true});
-		}
+	const clientToken = req.headers['x-access-token'];
+	const decodeInfo = auth.verifyToken(clientToken);
+	const data = await controller.readUserData(decodeInfo.id);
+	if (data) {
+		res.json({
+			tabs: JSON.parse(data.dataValues.tabs),
+			selectedTab: JSON.parse(data.dataValues.selectedTab),
+			cursor: JSON.parse(data.dataValues.cursorLen),
+			success: true,
+			noState: false
+		})
 	} else {
-		res.json({success: false, isLogin: false})
+		res.json({success: true, noState: true});
 	}
 })
 

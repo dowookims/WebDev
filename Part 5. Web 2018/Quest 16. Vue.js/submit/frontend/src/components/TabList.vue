@@ -14,6 +14,7 @@
             <Tab 
                 v-for="(tab, idx) in tabList"
                 :key="idx"
+                :index="idx"
                 :title="tab.title"
                 :text="tab.text"
             />
@@ -38,7 +39,7 @@ export default {
         ...mapState('tab', ['tabList']),
         isLogin() { 
             return this.$store.state.auth.isLogin 
-        }
+        },
     }
 }
 </script>

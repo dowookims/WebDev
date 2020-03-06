@@ -3,7 +3,8 @@ import api from '../../api';
 const state = {
     isLogin: false,
     userId: '',
-    username: '',
+    nickname: '',
+    token: null,
 }
 
 const getters = {}
@@ -15,8 +16,11 @@ const mutations = {
     setUserId (state, payload) {
         state.userId = payload
     },
-    setUserName(state, payload) {
+    setNickame(state, payload) {
         state.username = payload;
+    },
+    setToken(state, payload) {
+        state.token = payload;
     }
 }
 
@@ -24,16 +28,13 @@ const actions = {
     async setLogin ({ commit }, payload) {
         try {
             const res = await api.login(payload);
-            const isLogin = res.data.isLogin;
-            console.log("RES", res)
+            const { isLogin, userId, nickname, token } = res.data;
             commit('setIsLogin', isLogin);
-
+            commit('setToken', token);
+            commit('setUserId', userId);
+            commit('setNickame', nickname);
+            
             if (isLogin) {
-                const res2 = await api.getUserData();
-                console.log("RES2", res2);
-                const { userId, username } = res.data;
-                commit('setUserId', userId);
-                commit('setUserName', username);
                 return true
             }
             return false

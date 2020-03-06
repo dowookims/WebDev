@@ -39,7 +39,7 @@ export default {
             set (text) {
                 this.$store.commit('board/setText', text)
             }
-        }
+        },
     }
 }
 </script>

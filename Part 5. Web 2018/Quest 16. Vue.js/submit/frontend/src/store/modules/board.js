@@ -11,6 +11,13 @@ const mutations = {
     },
     setText (state, text) {
         state.text = text
+    },
+    setCursor (state, cursor) {
+        state.cursor = cursor
+    },
+    setBoardData (state, { title, text }) {
+        state.title = title;
+        state.text = text;
     }
 }
 
