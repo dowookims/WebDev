@@ -1,7 +1,6 @@
 const 
 	path = require('path'),
 	express = require('express'),
-	utils = require('./utils'),
 	session = require('express-session')
 	app = express(),
 	{ sequelize } = require('./models')

@@ -89,8 +89,8 @@ class Notepad {
         } else {
             return fetch(`${this.serverUrl}/${target}`, {
                 method: `${method}`,
-                credentials: 'same-origin',
-                mode: 'cors',
+                // credentials: 'same-origin',
+                // mode: 'cors',
                 headers: {
                     'Content-type': 'application/json'
                 },
