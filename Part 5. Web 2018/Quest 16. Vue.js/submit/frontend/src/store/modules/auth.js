@@ -5,6 +5,7 @@ const state = {
     userId: '',
     nickname: '',
     token: null,
+    hasState: true
 }
 
 const getters = {}
@@ -21,6 +22,9 @@ const mutations = {
     },
     setToken(state, payload) {
         state.token = payload;
+    },
+    setHasState(state, payload) {
+        state.hasState = payload;
     }
 }
 

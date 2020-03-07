@@ -42,9 +42,47 @@ export default {
         }
     },
 
+    async putUserData (token, data) {
+        try {
+            const res = await axios.put('http://127.0.0.1:8082/userdata', data, {
+                headers: {
+                    'x-access-token': token
+                },
+            })
+            return res;
+        } catch (e) {
+            console.error(e);
+        }
+    },
     async savePost (token, data) {
         try {
             const res = await axios.post('http://127.0.0.1:8082/notepad', data, {
+                headers: {
+                    'x-access-token': token
+                },
+            })
+            return res;
+        } catch (e) {
+            console.error(e);
+        }
+    },
+
+    async putPost (token, data) {
+        try {
+            const res = await axios.put('http://127.0.0.1:8082/notepad', data, {
+                headers: {
+                    'x-access-token': token
+                },
+            })
+            return res;
+        } catch (e) {
+            console.error(e);
+        }
+    },
+
+    async getAllPost (token) {
+        try {
+            const res = await axios.get('http://127.0.0.1:8082/notepad', {
                 headers: {
                     'x-access-token': token
                 },

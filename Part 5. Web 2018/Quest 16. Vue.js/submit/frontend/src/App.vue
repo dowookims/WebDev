@@ -3,6 +3,7 @@
     <Header />
     <TabList />
     <Board />
+    <Modal />
   </div>
 </template>
 
@@ -10,10 +11,11 @@
 import Header from './components/Header';
 import TabList from './components/TabList';
 import Board from './components/Board';
+import Modal from './components/Modal';
 
 export default {
   name: 'App',
-  components: { Header, TabList, Board }
+  components: { Header, TabList, Board, Modal }
 }
 </script>
 

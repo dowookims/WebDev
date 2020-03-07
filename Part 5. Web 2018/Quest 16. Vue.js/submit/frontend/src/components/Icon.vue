@@ -26,6 +26,9 @@ export default {
     methods: {
         ...mapActions('auth', [ 'setLogin', 'setLogout']),
         ...mapActions('tab', ['setTabData', 'setTitle']),
+        ...mapActions('modal', ['getAllPosts']),
+        ...mapMutations('modal', ['setOpen']),
+        ...mapMutations('auth', ['setHasState']),
         ...mapMutations('tab', ['createTab', 'setSelectedTab']),
         ...mapMutations('board', ['setBoardData']),
 
@@ -36,8 +39,11 @@ export default {
                 const res = await this.setLogin({userId, password});
                 if (res) {
                     alert('로그인 되었습니다.')
-                    const { tabs, selectedTab } = this.setTabData(this.token);
-                    if (tabs) {
+                    const userData = await this.setTabData(this.token);
+                    const { tabs, selectedTab, hasState } = userData;
+                    console.log("LOGIN USERDATA", userData)
+                    this.setHasState(hasState);
+                    if (hasState) {
                         const tab = tabs[selectedTab];
                         const boardDOM = document.querySelector('.board--text');
                         boardDOM.focus();
@@ -53,34 +59,56 @@ export default {
                 this.setLogout();
                 alert('로그아웃 되었습니다.')
             } else if (this.type ==='create') {
-                this.createTab();
-                this.setSelectedTab(this.tabList.length-1);
-            } else if (this.type ==='save') {
+                this.setBoardData('', '');
+                this.createTab({title: 'undefined', text: '', saved: false});
+                this.setSelectedTab(this.tabList.length -1);
+                console.log(this.tabList);
+            } else if (this.type === 'load' ) {
+                this.setOpen();
+                this.getAllPosts(this.token);
+            }else if (this.type ==='save') {
                 const currentCursor = document.querySelector('.board--text').selectionStart;
                 this.$store.commit('board/setCursor', currentCursor);
                 this.tabList[this.selectedTab].title = this.title;
                 const data = {
+                    id :this.tabList[this.selectedTab].id,
                     title: this.title,
                     text: this.text,
-                    userId: this.userId
+                    userId: this.userId,
+                    saved: this.tabList[this.selectedTab].saved
                 };
+
                 const userData = {
                     userId: this.userId,
                     tabs: this.tabList,
                     selectedTab: this.selectedTab,
                     cursor: this.cursor
                 }
-                const res = await api.savePost(this.token, data);
-                const userRes = await api.postUserData(this.token, userData)
-                console.log(res);
-                console.log(userRes);
-                alert("SAVED");
+
+                let res;
+                if (data.saved) {
+                    alert("PUT")
+                    res = await api.putPost(this.token, data);
+                } else {
+                    alert("POST")
+                    res = await api.savePost(this.token, data);
+                }
+                console.log("DATAA SAVED", res)
+                this.tabList[this.selectedTab] = res.data;
+                
+                let userRes;
+                if (this.hasState) {
+                    userRes = await api.putUserData(this.token, userData);
+                } else {
+                    userRes = await api.postUserData(this.token, userData);
+                }
+                console.log("USERRES", userRes);
             }
         }
     },
 
     computed: {
-        ...mapState('auth', ['isLogin', 'userId', 'token']),
+        ...mapState('auth', ['isLogin', 'userId', 'token', 'hasState']),
         ...mapState('tab', ['tabList', 'selectedTab', 'cursor']),
         ...mapState('board', ['title', 'text']),
         show () {

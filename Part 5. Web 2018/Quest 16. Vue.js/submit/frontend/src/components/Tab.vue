@@ -10,7 +10,7 @@
         <div class="tab--close-div">
             <span 
                 class="tab--close-span"
-                @click="closeTab()">
+                @click.stop="closeTab(index)">
                 &times;
             </span>
         </div>
@@ -34,6 +34,7 @@ export default {
             const boardTitle = this.$store.state.board.title;
             const boardText = this.$store.state.board.text;
             const pastTab = this.$store.state.tab.tabList[this.selectedTab];
+            console.log("PT", pastTab);
             pastTab.title = boardTitle;
             pastTab.text = boardText;
             this.setSelectedTab(idx);
@@ -45,13 +46,14 @@ export default {
                 ...this.tabList.slice(0, idx),
                 ...this.tabList.slice(idx+1, lastIndex)
             ];
+            
             if (idx === this.selectedTab) {
                 if (idx === lastIndex -1){
-                    this.setSelectedTab(idx - 2)
-                } else {
                     this.setSelectedTab(idx - 1)
                 }
             }
+
+            console.log("NL", idx, newList)
             this.setTabList(newList);
         }
     },

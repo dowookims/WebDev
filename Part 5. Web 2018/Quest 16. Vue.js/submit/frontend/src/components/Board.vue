@@ -1,7 +1,7 @@
 <template>
     <div 
         class="board"
-        v-if="isLogin"
+        v-if="show"
     >
         <div class="board--header">
             <input 
@@ -23,10 +23,11 @@ import { mapState } from 'vuex';
 export default {
     name: 'Board',
     computed: {
+        ...mapState('tab', ['tabList', 'selectedTab']),
         ...mapState('auth', ['isLogin']),
         title: {
             get () {
-                return this.$store.state.board.title
+                return this.$store.state.tab.tabList[this.selectedTab].title
             },
             set (title) {
                 this.$store.commit('board/setTitle', title)
@@ -34,12 +35,15 @@ export default {
         },
         text: {
             get () {
-                return this.$store.state.board.text
+                return this.$store.state.tab.tabList[this.selectedTab].text
             },
             set (text) {
                 this.$store.commit('board/setText', text)
             }
         },
+        show() {
+            return this.isLogin && this.tabList.length > 0;
+        }
     }
 }
 </script>

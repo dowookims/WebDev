@@ -23,26 +23,29 @@ utils.postFile = async (title, text, userId) => {
             createdAt: new Date(),
             updatedAt: new Date()
         })
-        return true;
+        return res.dataValues;
     } catch (e) {
         console.error(e);
         return false;
     }
 };
 
-utils.putFile = async (title, text, userId) => {
+utils.putFile = async (id ,title, text, userId) => {
     try {
         const res = await Post.update({
             title, text, userId, updatedAt: new Date()
+        }, {
+            where: {id}
         });
-        return true;
+        return res.dataValues;
     } catch (e) {
+        console.error(e);
         return false;
     }
 };
 
 utils.saveUserdata = async (userId, tabs, selectedTab, cursor) => {
-    console.log("SAVEUSERDATA", userId, tabs, selectedTab, cursor)
+
     const sTabs = JSON.stringify(tabs);
     const sstdTab = JSON.stringify(selectedTab);
     const sCursor = JSON.stringify(cursor);
