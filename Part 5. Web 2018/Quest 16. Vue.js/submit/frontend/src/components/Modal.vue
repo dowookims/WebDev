@@ -11,10 +11,22 @@
 			>&times;</span>
         </div>
         <div class="modal--body">
-            <div class="modal--item"></div>
+            <div 
+				class="modal--item"
+				v-for="file in files"
+				:key= "file.id"
+				@click="handleClick($event, file)"
+				@dblclick="handleDblClick(file)"
+			>
+			{{ file.title}}
+			</div>
         </div>
         <div class="modal--footer">
-            <button class="modal--submit">load</button>
+            <button 
+				class="modal--submit"
+				@click="handleSubmit"
+				:disabled="disabledSubmit"
+			>load</button>
         </div>
     </div>
 </div>
@@ -25,10 +37,29 @@ import { mapState, mapMutations } from 'vuex';
 export default {
 	name: 'modal',
 	methods: {
-		...mapMutations('modal', ['setOpen'])
+		...mapMutations('modal', ['setOpen', 'setSelectedItem']),
+		...mapMutations('tab', ['createTab']),
+		handleClick(e, file) {
+			if (this.selectedItem) {
+				this.selectedItem.dom.classList.remove('selected')
+			}
+			this.setSelectedItem({dom: e.target, file});
+			e.target.classList.add('selected')
+		},
+		handleDblClick(file) {
+			this.createTab(file);
+			this.setOpen();
+		},
+		handleSubmit() {
+			this.createTab(this.selectedItem.file);
+			this.setOpen();
+		}
 	},
     computed: {
-        ...mapState('modal', ['open'])
+		...mapState('modal', ['open', 'files', 'selectedItem']),
+		disabledSubmit() {
+			return this.selectedItem ? false : true;
+		}
     }
 }
 
@@ -92,7 +123,7 @@ export default {
 	background-color: #2CB559;
 }
 
-.selected--item {
+.selected {
 	background-color: #0C9539;
 }
 

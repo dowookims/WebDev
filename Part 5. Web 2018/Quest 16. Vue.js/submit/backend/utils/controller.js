@@ -37,7 +37,8 @@ utils.putFile = async (id ,title, text, userId) => {
         }, {
             where: {id}
         });
-        return res.dataValues;
+        console.log("PUT RES", res)
+        return res;
     } catch (e) {
         console.error(e);
         return false;

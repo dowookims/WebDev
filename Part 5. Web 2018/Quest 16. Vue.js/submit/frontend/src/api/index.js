@@ -1,9 +1,11 @@
 import axios from 'axios';
 
+axios.defaults.baseURL = 'http://127.0.0.1:8082'
+
 export default {
     async login(data) {
         try {
-            const res = await axios.post('http://127.0.0.1:8082/auth/login', {data});
+            const res = await axios.post('/auth/login', {data});
             return res;
         } catch (e) {
             console.error(e);
@@ -11,7 +13,7 @@ export default {
     },
     async logout () {
         try {
-            const res = axios.post('http://127.0.0.1:8082/auth/logout');
+            const res = axios.post('/auth/logout');
             return res;
         } catch (e) {
             console.errorr(e);
@@ -19,7 +21,7 @@ export default {
     },
     async getUserData (token) {
         try {
-            const res = axios.get('http://127.0.0.1:8082/userdata', {
+            const res = axios.get('/userdata', {
                 headers: {
                     'x-access-token': token
                 }
@@ -31,7 +33,7 @@ export default {
     },
     async postUserData (token, data) {
         try {
-            const res = await axios.post('http://127.0.0.1:8082/userdata', data, {
+            const res = await axios.post('/userdata', data, {
                 headers: {
                     'x-access-token': token
                 },
@@ -44,7 +46,7 @@ export default {
 
     async putUserData (token, data) {
         try {
-            const res = await axios.put('http://127.0.0.1:8082/userdata', data, {
+            const res = await axios.put('/userdata', data, {
                 headers: {
                     'x-access-token': token
                 },
@@ -56,7 +58,7 @@ export default {
     },
     async savePost (token, data) {
         try {
-            const res = await axios.post('http://127.0.0.1:8082/notepad', data, {
+            const res = await axios.post('/notepad', data, {
                 headers: {
                     'x-access-token': token
                 },
@@ -69,7 +71,7 @@ export default {
 
     async putPost (token, data) {
         try {
-            const res = await axios.put('http://127.0.0.1:8082/notepad', data, {
+            const res = await axios.put('/notepad', data, {
                 headers: {
                     'x-access-token': token
                 },
@@ -82,7 +84,7 @@ export default {
 
     async getAllPost (token) {
         try {
-            const res = await axios.get('http://127.0.0.1:8082/notepad', {
+            const res = await axios.get('/notepad', {
                 headers: {
                     'x-access-token': token
                 },

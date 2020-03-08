@@ -10,8 +10,8 @@ const state = {
 const getters = {}
 
 const mutations = {
-    createTab(state) {
-        state.tabList= [...state.tabList, {...state.defaultTab}];
+    createTab(state, payload) {
+        state.tabList= [...state.tabList, {...payload}];
     },
     setTabList(state, payload) {
         state.tabList = payload

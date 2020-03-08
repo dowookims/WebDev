@@ -17,10 +17,16 @@ router.post('/', async (req, res) => {
 });
 
 router.put('/', async (req, res) => {
-	const request = req.body
-	const post = await Contrcontrolleroller.putFile(request.id, request.title, request.text, request.userId);
-	if (post) {
-		res.json({...post, saved: true, success: true})
+	const request = req.body;
+	const post = {
+		id: request.id,
+		title: request.title,
+		text: request.text,
+		userId: request.userId,
+	}
+	const success = await controller.putFile(request.id, request.title, request.text, request.userId);
+	if (success[0] === 1) {
+		res.json({...post, success: true})
 	} else {
 		res.json({success: false})
 	}

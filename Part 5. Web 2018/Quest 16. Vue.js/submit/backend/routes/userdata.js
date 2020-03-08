@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
 	const clientToken = req.headers['x-access-token'];
 	const decodeInfo = auth.verifyToken(clientToken);
 	const data = await controller.readUserData(decodeInfo.id);
-	
+	console.log(data);
 	if (data) {
 		res.json({
 			tabs: JSON.parse(data.dataValues.tabs),

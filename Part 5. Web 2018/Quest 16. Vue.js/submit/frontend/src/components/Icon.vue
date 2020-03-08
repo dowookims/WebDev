@@ -41,7 +41,6 @@ export default {
                     alert('로그인 되었습니다.')
                     const userData = await this.setTabData(this.token);
                     const { tabs, selectedTab, hasState } = userData;
-                    console.log("LOGIN USERDATA", userData)
                     this.setHasState(hasState);
                     if (hasState) {
                         const tab = tabs[selectedTab];
@@ -58,6 +57,7 @@ export default {
             } else if (this.type === 'logout') {
                 this.setLogout();
                 alert('로그아웃 되었습니다.')
+                location.reload();
             } else if (this.type ==='create') {
                 this.setBoardData('', '');
                 this.createTab({title: 'undefined', text: '', saved: false});
@@ -69,7 +69,8 @@ export default {
             }else if (this.type ==='save') {
                 const currentCursor = document.querySelector('.board--text').selectionStart;
                 this.$store.commit('board/setCursor', currentCursor);
-                this.tabList[this.selectedTab].title = this.title;
+                const tabTitle = this.title ? this.title : this.tabList[this.selectedTab].title
+                this.tabList[this.selectedTab].title = tabTitle;
                 const data = {
                     id :this.tabList[this.selectedTab].id,
                     title: this.title,
@@ -87,13 +88,14 @@ export default {
 
                 let res;
                 if (data.saved) {
-                    alert("PUT")
                     res = await api.putPost(this.token, data);
                 } else {
-                    alert("POST")
                     res = await api.savePost(this.token, data);
                 }
-                console.log("DATAA SAVED", res)
+                if (res) {
+                    alert("메모가 성공적으로 저장 되었습니다.")
+                }
+
                 this.tabList[this.selectedTab] = res.data;
                 
                 let userRes;
@@ -102,7 +104,7 @@ export default {
                 } else {
                     userRes = await api.postUserData(this.token, userData);
                 }
-                console.log("USERRES", userRes);
+                console.log("userRes", userRes);
             }
         }
     },

@@ -2,7 +2,8 @@ import api from '../../api'
 
 const state = {
     open: false,
-    files: []
+    files: [],
+    selectedItem: null,
 }
 
 const getters = {}
@@ -13,6 +14,9 @@ const mutations = {
     },
     setFiles(state, payload) {
         state.files = payload
+    },
+    setSelectedItem(state, payload) {
+        state.selectedItem = payload;
     }
 }
 
