@@ -8,7 +8,8 @@ const webpack = require('webpack');
 module.exports = {
     mode: "development",
     entry: {
-        app: ['babel-polyfill', './src/main.js']
+        app: ['babel-polyfill', './src/main.js'],
+        vendor: ['axios']
     },
     devtool: 'inline-source-map',
     devServer: {
@@ -17,7 +18,7 @@ module.exports = {
         contentBase: './dist'
     },
     output: {
-        filename: '[name].bundle.js',
+        filename: '[name].[hash].js',
         path: path.resolve(__dirname, 'dist'),
         publicPath: ''
     },
@@ -57,13 +58,18 @@ module.exports = {
         }),
         new webpack.HotModuleReplacementPlugin()
     ],
-    // optimization: {
-    //     runtimeChunk: {
-    //         name: "runtime"
-    //     },
-    //     splitChunks: {
-    //         name: "vendor",
-    //         chunks: "initial"
-    //     }
-    // }
+    optimization: {
+        runtimeChunk: {
+            name: "runtime"
+        },
+        splitChunks: {
+            cacheGroups: {
+                vendor: {
+                    chunks: "initial",
+                    name: "vendor",
+                    enforce: true,
+                }
+            }
+        }
+    }
 };
