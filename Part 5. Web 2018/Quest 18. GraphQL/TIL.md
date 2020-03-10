@@ -303,3 +303,5 @@ Resolver는 함수의 collection으로 gql query에 대한 응답을 생성한�
 
 [GraphQL 개념잡기](https://tech.kakao.com/2019/08/01/graphql-basic/)  
 [graphql kr](https://graphql-kr.github.io/learn/execution/)
+
+[GraphQL DataLoader를 이용한 성능 최적화](https://y0c.github.io/2019/11/24/graphql-query-optimize-with-dataloader/)

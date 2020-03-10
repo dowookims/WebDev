@@ -1,0 +1,37 @@
+type Post {
+    id: Int
+    title: String!
+    text: String
+    createdAt: Date
+    updatedAt: Date
+}
+
+type User {
+    id: String!
+    nickname: String
+    password: String
+    createdAt: Date
+    updatedAt: Date
+}
+
+type UserWorkingState {
+    tabs: String
+    selectedTab: String
+    cursorLen: String
+    userId: String
+}
+
+type Query {
+    posts(userId: String): [Post]!
+    userWorkingState(userId: String): UserWorkingState
+    login(userId: String, password: String): User
+}
+
+type Mutations {
+    createPost(title: String, text: String, userId: String): Post
+    updatePost(id: Int, title: String, text: String, userId: String): Post
+    createWorkingState(userId: String, tabs: String, selectedTab: String, cursor: Int): UserWorkingState
+    updateWorkingState(,userId: String, tabs: String, selectedTab: String, cursor: Int): UserWorkingState
+}
+
+scalar Date
