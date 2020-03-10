@@ -1,4 +1,4 @@
-# Quest 17. GraphQL
+# Quest 18. GraphQL
 
 
 ## Introduction
