@@ -46,6 +46,7 @@ module.exports = {
         extensions: ['*', '.js', '.vue', '.json']
     },
     plugins: [
+        new MiniCssExtractPlugin(),
         new VueLoaderPlugin(),
         new ManifestPlugin({
             fileName: "manifest.json",
