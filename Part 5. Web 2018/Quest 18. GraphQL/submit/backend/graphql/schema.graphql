@@ -12,6 +12,9 @@ type User {
     password: String
     createdAt: Date
     updatedAt: Date
+    isLogin: Boolean
+    success: Boolean
+    token: String
 }
 
 type UserWorkingState {
