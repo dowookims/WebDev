@@ -1,20 +1,36 @@
+const makeToken = require('../middleware/makeToken');
 const { User, Post, UserWorkingState } = require('../models');
 const resolvers = {
     Query: {
-        posts: async (userId) => {
-            const res = await Post.findAll({ where: {userId }})
+        posts: async (_, { userId}) => {
+            const res = await Post.findAll({ where: { userId }})
             return res.map(post => post.dataValues)
         },
-        userWorkingState: (userId) => {
-            return UserWorkingState.findOne({ where: { userId }})
+        userWorkingState: async (_, { userId }, { request, isAuthenticated }) => {
+            return await UserWorkingState.findOne({ where: { userId }})
         },
-        login: (userId, password) => {
-            return User.findOne({ where: { id: userId }})
+        login: async (_, { userId, password }, { request }) => {
+            const user = await User.findOne({ where: { id: userId }})
+            let isLogin = false;
+            let success = false;
+            let token = null;
+            if (!user) {
+                return {success, isLogin}
+            }
+            else if (user.dataValues.password === password) {
+                token = makeToken(userId, user.dataValues.nickname)
+                isLogin = true;
+                success = true;
+                request.user = userId
+            } else {
+                success = true;
+            };
+            return { ...user.dataValues, isLogin, success, token}
         }
     },
     Mutations: {
-        createPost: (_, { title, text, userId}) => {
-            const post = Post.create({
+        createPost: async (_, { title, text, userId}, { request, isAuthenticated }) => {
+            const post = await Post.create({
                 title,
                 text,
                 userId,
@@ -23,8 +39,8 @@ const resolvers = {
             })
             return post.dataValues
         },
-        updatePost: (_, {id, title, text, userId}) => {
-            const post = Post.update({
+        updatePost: async (_, {id, title, text, userId}, { request, isAuthenticated }) => {
+            const post = await Post.update({
                 title,
                 text,
                 userId,
@@ -34,8 +50,8 @@ const resolvers = {
             });
             return post
         },
-        createWorkingState: (_, { userId, tabs, selectedTab, cursor}) => {
-            const UserWorkingState = UserWorkingState.create({
+        createWorkingState: async (_, { userId, tabs, selectedTab, cursor}, { request, isAuthenticated }) => {
+            const UserWorkingState = await UserWorkingState.create({
                 tabs: JSON.stringify(tabs),
                 selectedTab,
                 cursor,
@@ -45,13 +61,17 @@ const resolvers = {
             });
             return UserWorkingState.dataValues;
         },
-        updateWorkingState: (_, { userId, tabs, selectedTab, cursor}) => {
-            const UserWorkingState = UserWorkingState.update({
-                tabs: JSON.stringify(tabs),
-                selectedTab,
-                cursor,
-                updatedAt: new Date()
-            }, { where: { userId }})
+        updateWorkingState: async (_, { userId, tabs, selectedTab, cursor}, { request, isAuthenticated }) => {
+            const userWorkingState = await UserWorkingState.update(
+                {
+                    tabs: JSON.stringify(tabs),
+                    selectedTab,
+                    cursor,
+                    updatedAt: new Date()
+                }, 
+                { where: { userId }}
+            )
+            return userWorkingState;
         }
     }
 }
