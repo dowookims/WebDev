@@ -78,7 +78,7 @@ REST는 자원 기반의 구조(ROA, Resource Oriented Architecture) 설계 중�
 #### 단점
 
 * 표준이 존재하지 않는다.
-* 사용할 수 있는 메소드가 젷한적이다.
+* 사용할 수 있는 메소드가 제한적이다.
 * 구형 브라우저가 아직 제대로 지원해주지 못하는 부분이 존재한다.
 * Client에서 필요한 데이터만을 받아 오는게 아닌 모든 데이터를 받아와야 한다.
 * 관리해야 할 End Point가 많아지게 된다.
@@ -146,7 +146,7 @@ gql 서비스가 실행되면 gql 쿼리를 전송하여 유효성을 검사하�
 
 ### 2) Schema
 
-gql 서비스는 언어 종속적이지 않다.
+gql에서 사용할 데이터 및 쿼리, 뮤테이션을 정의하는 것이다.
 
 #### type
 
@@ -301,7 +301,18 @@ Resolver는 함수의 collection으로 gql query에 대한 응답을 생성한�
 
 ### 4) DataLoader
 
-[GraphQL 개념잡기](https://tech.kakao.com/2019/08/01/graphql-basic/)  
-[graphql kr](https://graphql-kr.github.io/learn/execution/)
+DataLoader is a generic utility to be used as part of your application's data fetching layer to provide a consistent API over various backends and reduce requests to those backends via batching and caching.
 
-[GraphQL DataLoader를 이용한 성능 최적화](https://y0c.github.io/2019/11/24/graphql-query-optimize-with-dataloader/)
+ORM에서 N+1 문제가 발생하는데, 이를 해결하기 위한 방법으로 N+1 을 1+1로 변환해주는 라이브러리이다. DataLoader는 위에서 언급하듯 batching과 caching을 사용한다.
+
+```
+A batch loading function accepts an Array of keys, and returns a Promise which resolves to an Array of values*.
+
+Then load individual values from the loader. DataLoader will coalesce all individual loads which occur within a single frame of execution (a single tick of the event loop) and then call your batch function with all requested keys.
+```
+
+[GraphQL 개념잡기](https://tech.kakao.com/2019/08/01/graphql-basic/)  
+[graphql kr](https://graphql-kr.github.io/learn/execution/)  
+[data loader](https://github.com/graphql/dataloader)
+[GraphQL DataLoader를 이용한 성능 최적화](https://y0c.github.io/2019/11/24/graphql-query-optimize-with-dataloader/)  
+[Make more efficient requests with DataLoader](https://medium.com/gaplabs-engineering/make-more-efficient-requests-with-dataloader-96ff50eb8998)

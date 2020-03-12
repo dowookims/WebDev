@@ -50,7 +50,6 @@ export default {
                         boardDOM.selectionStart = this.cursor;
                         this.setBoardData({ title: jTab.title, text: jTab.text});
                     } else {
-                        console.log("2")
                         this.setBoardData({ title: 'undefined', text: ''});
                     }
                 } else {
