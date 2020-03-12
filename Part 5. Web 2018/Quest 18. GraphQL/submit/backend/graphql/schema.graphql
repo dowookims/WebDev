@@ -2,6 +2,7 @@ type Post {
     id: Int
     title: String!
     text: String
+    userId: String
     createdAt: Date
     updatedAt: Date
 }
@@ -18,9 +19,9 @@ type User {
 }
 
 type UserWorkingState {
-    tabs: String
-    selectedTab: String
-    cursorLen: String
+    tabs: Object
+    cursorLen: Int
+    selectedTab: Int
     userId: String
 }
 
@@ -30,11 +31,12 @@ type Query {
     login(userId: String, password: String): User
 }
 
-type Mutations {
+type Mutation {
     createPost(title: String, text: String, userId: String): Post
     updatePost(id: Int, title: String, text: String, userId: String): Post
-    createWorkingState(userId: String, tabs: String, selectedTab: String, cursor: Int): UserWorkingState
-    updateWorkingState(,userId: String, tabs: String, selectedTab: String, cursor: Int): UserWorkingState
+    createWorkingState(userId: String, tabs: String, selectedTab: Int, cursorLen: Int): UserWorkingState
+    updateWorkingState(userId: String, tabs: String, selectedTab: Int, cursorLen: Int): UserWorkingState
 }
 
 scalar Date
+scalar Object

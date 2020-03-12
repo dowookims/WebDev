@@ -34,7 +34,6 @@ export default {
             const boardTitle = this.$store.state.board.title;
             const boardText = this.$store.state.board.text;
             const pastTab = this.$store.state.tab.tabList[this.selectedTab];
-            console.log("PT", pastTab);
             pastTab.title = boardTitle;
             pastTab.text = boardText;
             this.setSelectedTab(idx);

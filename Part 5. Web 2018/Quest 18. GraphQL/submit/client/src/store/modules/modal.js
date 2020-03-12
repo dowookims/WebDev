@@ -21,9 +21,9 @@ const mutations = {
 }
 
 const actions = {
-    async getAllPosts({commit}, token) {
-        const files = await api.getAllPost(token);
-        commit('setFiles', files.data)
+    async getAllPosts({commit}, payload) {
+        const files = await api.getAllPost(payload.userId, payload.token);
+        commit('setFiles', files.data.data.posts)
     }
 }
 

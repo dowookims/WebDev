@@ -7,7 +7,9 @@ const resolvers = {
             return res.map(post => post.dataValues)
         },
         userWorkingState: async (_, { userId }, { request, isAuthenticated }) => {
-            return await UserWorkingState.findOne({ where: { userId }})
+            const res = await UserWorkingState.findOne({ where: { userId }});
+            const result = res.dataValues;
+            return { ...result, tabs: JSON.parse(result.tabs)}
         },
         login: async (_, { userId, password }, { request }) => {
             const user = await User.findOne({ where: { id: userId }})
@@ -28,7 +30,7 @@ const resolvers = {
             return { ...user.dataValues, isLogin, success, token}
         }
     },
-    Mutations: {
+    Mutation: {
         createPost: async (_, { title, text, userId}, { request, isAuthenticated }) => {
             const post = await Post.create({
                 title,
@@ -51,22 +53,22 @@ const resolvers = {
             return post
         },
         createWorkingState: async (_, { userId, tabs, selectedTab, cursor}, { request, isAuthenticated }) => {
-            const UserWorkingState = await UserWorkingState.create({
+            const userWorkingState = await UserWorkingState.create({
                 tabs: JSON.stringify(tabs),
-                selectedTab,
-                cursor,
+                selectedTab: parseInt(selectedTab),
+                cursor: parseInt(cursor),
                 userId,
                 createdAt: new Date(),
                 updatedAt: new Date()
             });
-            return UserWorkingState.dataValues;
+            return userWorkingState.dataValues;
         },
         updateWorkingState: async (_, { userId, tabs, selectedTab, cursor}, { request, isAuthenticated }) => {
             const userWorkingState = await UserWorkingState.update(
                 {
                     tabs: JSON.stringify(tabs),
-                    selectedTab,
-                    cursor,
+                    selectedTab: parseInt(selectedTab),
+                    cursor: parseInt(cursor),
                     updatedAt: new Date()
                 }, 
                 { where: { userId }}

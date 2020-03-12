@@ -1,8 +1,8 @@
 import api from '../../api';
 
 const state = {
-    tabList: [{title: 'undefined', text:'', saved: false}],
-    defaultTab: {title: 'undefined', text:'', saved: false},
+    tabList: [{title: 'undefined', text:''}],
+    defaultTab: {title: 'undefined', text:''},
     selectedTab: 0,
     cursor: 0
 }
@@ -30,15 +30,16 @@ const mutations = {
 }
 
 const actions = {
-    async setTabData ({ commit }, { userId, token }) {
-        const result = await api.getUserData(userId, token);
-        const { tabs, selectedTab, cursor, hasState } = result.data;
+    async setTabData ({ commit }, payload) {
+        const result = await api.getUserData(payload.userId, payload.token);
+        const { tabs, selectedTab, cursorLen, userId } = result.data.data.userWorkingState;
         if (tabs) {
-            commit('setTabList', tabs);
+            commit('setTabList', JSON.parse(tabs.replace(/'/g, '"')));
         }
+        const hasState = userId ? true : false
         commit('setSelectedTab', selectedTab || 0);
-        commit('setCursor', cursor || 0);
-        return { tabs, selectedTab, cursor, hasState};
+        commit('setCursor', cursorLen || 0);
+        return { tabs, selectedTab, cursor: cursorLen, hasState};
     }
 }
 

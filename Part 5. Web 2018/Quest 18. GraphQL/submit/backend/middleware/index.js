@@ -3,7 +3,6 @@ const { User } = require('../models');
 
 module.exports = (req, res, next) => {
     const token = req.headers['x-access-token'];
-    console.log("TOKEN", token)
     if (token) {
         const userId = jwt.verify(token, "hithere").id;
         const user = User.findOne({ where: { id: userId }})

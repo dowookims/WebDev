@@ -40,60 +40,44 @@ export default {
             console.error(e)
         }
     },
-    async postUserData (token, data) {
+    async postUserData (data, token) {
         try {
-            const res = await axios.post('http://127.0.0.1:4000', data, tokenOptions(token));
+            const res = await axios.post('http://127.0.0.1:4000', Query.createWorkingState(data), tokenOptions(token));
             return res;
         } catch (e) {
             console.error(e);
         }
     },
 
-    async putUserData (token, data) {
+    async putUserData (data, token) {
         try {
-            const res = await axios.post('http://127.0.0.1:4000', data, {
-                headers: {
-                    'x-access-token': token
-                },
-            })
+            const res = await axios.post('http://127.0.0.1:4000', Query.updateWorkingState(data), tokenOptions(token))
             return res;
         } catch (e) {
             console.error(e);
         }
     },
-    async savePost (token, data) {
+    async savePost (data, token) {
         try {
-            const res = await axios.post('http://127.0.0.1:4000', data, {
-                headers: {
-                    'x-access-token': token
-                },
-            })
+            const res = await axios.post('http://127.0.0.1:4000', Query.createPost(data), tokenOptions(token))
             return res;
         } catch (e) {
             console.error(e);
         }
     },
 
-    async putPost (token, data) {
+    async putPost (data, token) {
         try {
-            const res = await axios.post('http://127.0.0.1:4000', data, {
-                headers: {
-                    'x-access-token': token
-                },
-            })
+            const res = await axios.post('http://127.0.0.1:4000', Query.updatePost(data), tokenOptions(token))
             return res;
         } catch (e) {
             console.error(e);
         }
     },
 
-    async getAllPost (token) {
+    async getAllPost (userId, token) {
         try {
-            const res = await axios.post('http://127.0.0.1:4000', {
-                headers: {
-                    'x-access-token': token
-                },
-            })
+            const res = await axios.post('http://127.0.0.1:4000', Query.posts(userId), tokenOptions(token))
             return res;
         } catch (e) {
             console.error(e);

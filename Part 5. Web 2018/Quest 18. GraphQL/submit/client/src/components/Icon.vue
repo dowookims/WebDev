@@ -39,16 +39,18 @@ export default {
                 const res = await this.setLogin({userId, password});
                 if (res) {
                     alert('로그인 되었습니다.')
-                    const userData = await this.setTabData(userId, this.token);
+                    const payload = {userId, token: this.token}
+                    const userData = await this.setTabData(payload);
                     const { tabs, selectedTab, hasState } = userData;
                     this.setHasState(hasState);
                     if (hasState) {
-                        const tab = tabs[selectedTab];
+                        const jTab = JSON.parse(tabs.replace(/'/g, '"'))[selectedTab];
                         const boardDOM = document.querySelector('.board--text');
                         boardDOM.focus();
                         boardDOM.selectionStart = this.cursor;
-                        this.setBoardData({ title: tab.title, text: tab.text});
+                        this.setBoardData({ title: jTab.title, text: jTab.text});
                     } else {
+                        console.log("2")
                         this.setBoardData({ title: 'undefined', text: ''});
                     }
                 } else {
@@ -60,12 +62,12 @@ export default {
                 location.reload();
             } else if (this.type ==='create') {
                 this.setBoardData('', '');
-                this.createTab({title: 'undefined', text: '', saved: false});
+                this.createTab({title: 'undefined', text: ''});
                 this.setSelectedTab(this.tabList.length -1);
-                console.log(this.tabList);
+                console.log("TABLIST", this.tabList);
             } else if (this.type === 'load' ) {
                 this.setOpen();
-                this.getAllPosts(this.token);
+                this.getAllPosts({userId: this.userId, token: this.token});
             }else if (this.type ==='save') {
                 const currentCursor = document.querySelector('.board--text').selectionStart;
                 this.$store.commit('board/setCursor', currentCursor);
@@ -76,7 +78,6 @@ export default {
                     title: this.title,
                     text: this.text,
                     userId: this.userId,
-                    saved: this.tabList[this.selectedTab].saved
                 };
 
                 const userData = {
@@ -87,22 +88,22 @@ export default {
                 }
 
                 let res;
-                if (data.saved) {
-                    res = await api.putPost(this.token, data);
+                if (data.createdAt) {
+                    res = await api.putPost(data, this.token);
                 } else {
-                    res = await api.savePost(this.token, data);
+                    res = await api.savePost(data, this.token);
                 }
                 if (res) {
                     alert("메모가 성공적으로 저장 되었습니다.")
                 }
 
-                this.tabList[this.selectedTab] = res.data;
+                this.tabList[this.selectedTab] = res.data.data.createPost;
                 
                 let userRes;
                 if (this.hasState) {
-                    userRes = await api.putUserData(this.token, userData);
+                    userRes = await api.putUserData(userData, this.token);
                 } else {
-                    userRes = await api.postUserData(this.token, userData);
+                    userRes = await api.postUserData(userData, this.token);
                 }
                 console.log("userRes", userRes);
             }
