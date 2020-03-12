@@ -29,4 +29,4 @@
   * Apollo Client를 쓰지 않고 Vanilla JavaScript로 GraphQL 요청을 보내려면 어떻게 해야 할까요?
 
 ## Quest
-* 직전 퀘스트의 메모장의 서버 부분을 GraphQL API로 리팩토링 해 보세요.
+* 직전 퀘스트의 메모장의 서버 부분을 GraphQL API로 리팩토링 해 보세요. ~~~
