@@ -36,10 +36,8 @@ export default {
     },
     methods: {},
     computed: {
+        ...mapState('auth', ['isLogin']),
         ...mapState('tab', ['tabList']),
-        isLogin() { 
-            return this.$store.state.auth.isLogin 
-        },
     }
 }
 </script>

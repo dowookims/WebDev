@@ -34,7 +34,8 @@ const actions = {
         const result = await api.getUserData(payload.userId, payload.token);
         const { tabs, selectedTab, cursorLen, userId } = result.data.data.userWorkingState;
         if (tabs) {
-            commit('setTabList', JSON.parse(tabs.replace(/'/g, '"')));
+            commit('setTabList', tabs)
+            // commit('setTabList', JSON.parse(tabs.replace(/'/g, '"')));
         }
         const hasState = userId ? true : false
         commit('setSelectedTab', selectedTab || 0);

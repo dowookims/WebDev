@@ -44,7 +44,8 @@ export default {
                     const { tabs, selectedTab, hasState } = userData;
                     this.setHasState(hasState);
                     if (hasState) {
-                        const jTab = JSON.parse(tabs.replace(/'/g, '"'))[selectedTab];
+                        const jTab = tabs[selectedTab];
+                        // const jTab = JSON.parse(tabs.replace(/'/g, '"'))[selectedTab];
                         const boardDOM = document.querySelector('.board--text');
                         boardDOM.focus();
                         boardDOM.selectionStart = this.cursor;
