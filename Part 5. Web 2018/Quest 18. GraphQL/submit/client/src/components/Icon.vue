@@ -1,6 +1,7 @@
 <template>
     <div 
         class="icon"
+        :class="type"
         v-if="show"
         @click="handleClick"
     >

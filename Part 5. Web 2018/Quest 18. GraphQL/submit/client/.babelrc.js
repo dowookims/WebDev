@@ -1,4 +1,5 @@
 module.exports = {
-    presets: ['@babel/preset-env'],
-    plugins: ["@babel/plugin-transform-async-to-generator"]
+    presets: [
+        ['@babel/preset-env', { targets: { node: 'current' } }]
+    ],
 }
