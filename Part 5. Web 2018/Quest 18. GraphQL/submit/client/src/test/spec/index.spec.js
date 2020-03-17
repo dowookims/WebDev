@@ -13,7 +13,7 @@ describe("PAGE START", () => {
     }),
 
     describe("#2. USER LOGIN", () => {
-        test("#2-1. user login success", async () => {
+        beforeEach(async () => {
             page.on('dialog', async dialog => {
                 const message = dialog.message();
                 if (message === "아이디를 입력하세요") {
@@ -23,9 +23,26 @@ describe("PAGE START", () => {
                 }
             })
             await page.click(".login");
+        })
+        test("#2-1. has 4 icons", async () => {
             const iconArr = await page.$$('.icon');
             expect(iconArr.length).toBe(4);
-        })
+        });
+        test("#2-2 has tab", async () => {
+            const tab = await page.$$('.tab');
+            expect(tab).toBeTruthy();
+        });
+        test("#2-3 click load", async () => {
+            await page.click('.load');
+            const modal = await page.$('.modal');
+            expect(modal).toBeTruthy();
+        });
+        test("#2-4 click create", async () => {
+            const tabLen = await page.$$('tab').length;
+            await page.click('.save');
+            const changeTabLen = await page.$$('.tab').length;
+            expect(changeTabLen).toBe(tabLen + 1);
+        });
     }),
 
     test("#3 login failed", async () => {
